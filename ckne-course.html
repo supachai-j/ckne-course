@@ -1,0 +1,1145 @@
+<title>CKNE Lab Manual</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --surface-2:#e9edf1; --border:#d4dbe2;
+  --text:#1a2430; --text-dim:#5b6b7a;
+  --accent:#b6791f; --accent-soft:#f3e3c8; --accent-ink:#ffffff;
+  --flow:#1f7a8c; --flow-soft:#dcedf0;
+  --good:#2f7d4f; --good-soft:#e1f3e6;
+  --bad:#b23a34; --bad-soft:#fbe4e1;
+  --shadow:0 1px 2px rgba(20,30,40,.06),0 6px 20px rgba(20,30,40,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10161d; --surface:#161e27; --surface-2:#1d2732; --border:#2b3742;
+    --text:#e7edf2; --text-dim:#93a2af;
+    --accent:#e8a33d; --accent-soft:#3a2e17; --accent-ink:#161000;
+    --flow:#5cc3d6; --flow-soft:#16323a;
+    --good:#56c17f; --good-soft:#123322;
+    --bad:#e2685f; --bad-soft:#3a1c1a;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10161d; --surface:#161e27; --surface-2:#1d2732; --border:#2b3742;
+  --text:#e7edf2; --text-dim:#93a2af;
+  --accent:#e8a33d; --accent-soft:#3a2e17; --accent-ink:#161000;
+  --flow:#5cc3d6; --flow-soft:#16323a;
+  --good:#56c17f; --good-soft:#123322;
+  --bad:#e2685f; --bad-soft:#3a1c1a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"IBM Plex Sans Thai",system-ui,"Segoe UI",sans-serif;line-height:1.55;font-size:16px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;font-weight:700;text-wrap:balance;margin:0 0 .5em}
+code,.mono,pre,.cmd{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+a{color:var(--flow)}
+::selection{background:var(--accent-soft)}
+.app{display:grid;grid-template-columns:280px 1fr;grid-template-rows:56px 1fr;grid-template-areas:"top top" "side main";min-height:100vh}
+@media (max-width:820px){.app{grid-template-columns:1fr}.app{grid-template-areas:"top" "main"}.sidebar{position:fixed;inset:56px 0 0 0;transform:translateX(-100%);transition:transform .25s ease;z-index:40;background:var(--bg)}.sidebar.open{transform:translateX(0)}}
+.topbar{grid-area:top;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap;cursor:pointer;background:none;border:none;color:var(--text);font-family:inherit;font-size:1rem}
+.brand .mark{width:26px;height:26px;border-radius:6px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:"IBM Plex Mono";font-weight:700;font-size:.8rem}
+.progress-strip{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.progress-track{flex:1;height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;min-width:60px}
+.progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s ease}
+.progress-label{font-family:"IBM Plex Mono";font-size:.78rem;color:var(--text-dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.menu-btn{display:none;background:none;border:1px solid var(--border);border-radius:8px;width:34px;height:34px;color:var(--text);cursor:pointer;font-size:1rem}
+@media (max-width:820px){.menu-btn{display:block}}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text-dim);cursor:pointer;font-family:"IBM Plex Mono";font-size:.75rem}
+.sidebar{grid-area:side;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;padding:14px 10px 40px}
+.side-group{margin-bottom:4px}
+.side-mod{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:9px 8px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600}
+.side-mod:hover{background:var(--surface-2)}
+.side-mod .num{font-family:"IBM Plex Mono";font-size:.72rem;color:var(--text-dim);width:20px;flex:none}
+.side-mod .w{margin-left:auto;font-family:"IBM Plex Mono";font-size:.68rem;color:var(--text-dim);background:var(--surface-2);border-radius:99px;padding:2px 7px}
+.side-topics{padding-left:32px;margin:2px 0 8px;display:flex;flex-direction:column;gap:1px}
+.side-topic{display:flex;align-items:center;gap:8px;text-align:left;background:none;border:none;color:var(--text-dim);padding:6px 8px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.82rem}
+.side-topic:hover{background:var(--surface-2);color:var(--text)}
+.side-topic.active{background:var(--accent-soft);color:var(--text);font-weight:600}
+.side-topic .dot{width:7px;height:7px;border-radius:99px;background:var(--border);flex:none}
+.side-topic.done .dot{background:var(--good)}
+.side-topic.partial .dot{background:var(--accent)}
+main{grid-area:main;min-width:0;padding:28px 32px 80px;max-width:880px;margin:0 auto;width:100%}
+@media (max-width:600px){main{padding:20px 16px 60px}}
+.eyebrow{font-family:"IBM Plex Mono";font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)}
+.h1{font-size:1.7rem;margin-top:.2em}
+.lede{color:var(--text-dim);max-width:65ch}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+.section{margin-top:28px}
+.concept{padding:20px 22px}
+.concept p{margin:.6em 0}
+.concept ul{margin:.5em 0;padding-left:1.3em}
+.concept li{margin:.3em 0}
+.concept code{background:var(--surface-2);border-radius:4px;padding:.1em .4em;font-size:.88em}
+figure{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px 10px;box-shadow:var(--shadow)}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:.82rem;color:var(--text-dim);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.lab{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.lab-head .tag{font-family:"IBM Plex Mono";font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);border-radius:5px;padding:3px 8px;font-weight:600}
+.lab-head h3{margin:0;font-size:1.02rem}
+.lab-prereq{padding:10px 18px;font-size:.85rem;color:var(--text-dim);border-bottom:1px dashed var(--border)}
+.step{padding:16px 18px;border-bottom:1px solid var(--border)}
+.step:last-of-type{border-bottom:none}
+.step-head{display:flex;align-items:flex-start;gap:10px}
+.step-check{margin-top:3px;width:18px;height:18px;flex:none;accent-color:var(--good);cursor:pointer}
+.step-num{font-family:"IBM Plex Mono";font-size:.75rem;color:var(--text-dim);flex:none;padding-top:2px}
+.step-body{flex:1;min-width:0}
+.step-instr{font-size:.92rem;margin-bottom:8px}
+.cmd-block{position:relative;background:#0d1319;border:1px solid #26313c;border-radius:8px;overflow-x:auto}
+.cmd-block pre{margin:0;padding:12px 44px 12px 14px;color:#d9e6ee;font-size:.82rem;white-space:pre;overflow-x:auto}
+.copy-btn{position:absolute;top:8px;right:8px;background:#1d2732;border:1px solid #2b3742;color:#93a2af;border-radius:6px;font-family:"IBM Plex Mono";font-size:.68rem;padding:4px 7px;cursor:pointer}
+.copy-btn:hover{color:#e7edf2}
+.disclose{margin-top:8px}
+.disclose summary{font-size:.78rem;color:var(--text-dim);cursor:pointer;font-family:"IBM Plex Mono";list-style:none}
+.disclose summary::-webkit-details-marker{display:none}
+.disclose summary:before{content:"▸ "}
+.disclose[open] summary:before{content:"▾ "}
+.disclose .box{margin-top:6px;padding:10px 12px;border-radius:7px;font-size:.82rem}
+.disclose.expect .box{background:var(--good-soft);color:var(--text)}
+.disclose.trouble .box{background:var(--bad-soft);color:var(--text)}
+.challenge{margin:0;padding:16px 18px;background:var(--accent-soft)}
+.challenge h4{margin:0 0 6px;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;font-family:"IBM Plex Mono"}
+.challenge .reveal-btn{margin-top:10px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 12px;font-size:.8rem;cursor:pointer;color:var(--text)}
+.mark-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.mark-btn{background:var(--good);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer;font-size:.88rem}
+.mark-btn.done{background:var(--surface-2);color:var(--text-dim)}
+.nav-btns{display:flex;gap:8px}
+.nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;cursor:pointer;color:var(--text);font-size:.85rem}
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:"IBM Plex Mono";font-size:.68rem;border-radius:99px;padding:3px 9px;background:var(--surface-2);color:var(--text-dim)}
+.grid-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:18px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px}
+.tile:hover{border-color:var(--accent)}
+.tile-top{display:flex;justify-content:space-between;align-items:flex-start}
+.tile .ring{width:40px;height:40px;flex:none}
+.tile h3{font-size:.95rem;margin:0}
+.tile p{margin:0;font-size:.78rem;color:var(--text-dim)}
+.tile .stat{font-family:"IBM Plex Mono";font-size:.7rem;color:var(--text-dim);margin-top:auto}
+.dash-hero{display:flex;gap:24px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+.dash-stat{font-family:"IBM Plex Mono"}
+.dash-stat .n{font-size:2.4rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.dash-stat .l{font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
+.bp-chart{display:flex;flex-direction:column;gap:8px;min-width:260px;flex:1}
+.bp-row{display:grid;grid-template-columns:150px 1fr 40px;align-items:center;gap:8px;font-size:.78rem}
+.bp-row .lbl{color:var(--text-dim)}
+.bp-bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bp-bar i{display:block;height:100%;background:var(--flow);border-radius:99px}
+.bp-row .pct{font-family:"IBM Plex Mono";text-align:right;color:var(--text-dim)}
+.quiz-q{padding:18px;border-bottom:1px solid var(--border)}
+.quiz-q:last-child{border-bottom:none}
+.quiz-q p.qtext{font-weight:600;margin:0 0 10px}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:.88rem}
+.opt:hover{border-color:var(--flow)}
+.opt.correct{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt input{margin-top:2px}
+.qexplain{display:none;margin-top:8px;font-size:.82rem;color:var(--text-dim);background:var(--surface-2);border-radius:7px;padding:9px 11px}
+.qexplain.show{display:block}
+.quiz-submit{margin:18px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer}
+.quiz-result{margin:0 18px 18px;font-family:"IBM Plex Mono";font-size:.85rem}
+.footer-note{margin-top:50px;padding-top:16px;border-top:1px solid var(--border);color:var(--text-dim);font-size:.78rem}
+svg text{fill:currentColor;font-family:"IBM Plex Mono"}
+.diagram-accent{color:var(--flow)}
+.diagram-accent2{color:var(--accent)}
+</style>
+
+<div class="app" id="app">
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <button class="brand" id="brandBtn"><span class="mark">CK</span>CKNE Lab Manual</button>
+    <div class="progress-strip">
+      <div class="progress-track"><div class="progress-fill" id="topProgressFill" style="width:0%"></div></div>
+      <span class="progress-label" id="topProgressLabel">0% พร้อมสอบ</span>
+    </div>
+    <button class="theme-btn" id="themeBtn">โหมดสี</button>
+  </div>
+  <nav class="sidebar" id="sidebar"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const MODULES = [
+{
+  id:"m0", short:"Lab Setup", title:"Module 0 · เตรียม Lab Environment", weight:0,
+  blurb:"สร้างคลัสเตอร์จริงไว้รันแล็บทุกโมดูลในคอร์สนี้ ทุกแล็บใช้ Cilium เป็น CNI หลักตลอดทั้งคอร์ส เพราะ Cilium ครอบคลุม feature ที่ CKNE blueprint ต้องการเกือบทั้งหมดในตัวเดียว: CNI/IPAM, kube-proxy replacement, NetworkPolicy แบบ L7/DNS-aware, Gateway API, egress gateway, ClusterMesh, WireGuard encryption และ Hubble observability",
+  topics:[
+    {
+      id:"m0-t1", title:"ติดตั้ง kind cluster + Cilium", summary:"สร้าง multi-node cluster ด้วย kind แล้วติดตั้ง Cilium แทน CNI default",
+      concept:`<p>ข้อสอบ CKNE เป็น performance-based เต็มรูปแบบ ดังนั้นการมี <strong>cluster จริง</strong> ให้ฝึกสำคัญกว่าอ่านทฤษฎี คอร์สนี้ใช้ <code>kind</code> (Kubernetes IN Docker) เพราะสร้าง multi-node cluster บนเครื่องเดียวได้ฟรี และปิด default CNI ได้เพื่อติดตั้ง Cilium เอง</p>
+      <ul>
+        <li><strong>kind</strong> — รัน node เป็น container, เหมาะกับแล็บ networking เพราะควบคุม topology ได้เต็มที่</li>
+        <li><strong>disableDefaultCNI: true</strong> — ปิด kindnet ไม่ให้ชนกับ Cilium ที่จะติดตั้งเอง</li>
+        <li><strong>kubeProxyMode: "none"</strong> — ไม่ให้ kind ติดตั้ง kube-proxy เลย เพราะเราจะให้ Cilium ทำหน้าที่แทนด้วย eBPF (kube-proxy replacement) ซึ่งเป็นสิ่งที่ Module 2 จะเข้าไปตรวจสอบ</li>
+        <li>เมื่อสร้าง cluster ด้วย <code>--name ckne</code> node จะชื่อ <code>ckne-control-plane</code>, <code>ckne-worker</code>, <code>ckne-worker2</code> และ kubectl context ชื่อ <code>kind-ckne</code> — ชื่อเหล่านี้ถูกอ้างถึงในแล็บทุกโมดูล</li>
+      </ul>`,
+      lab:{ title:"สร้างคลัสเตอร์ 3 node และติดตั้ง Cilium",
+        prereqs:"ติดตั้ง Docker, kind, kubectl, Helm ในเครื่องให้พร้อมก่อน",
+        steps:[
+          {i:"สร้างไฟล์ config ของ kind ที่ปิด default CNI, ไม่ติดตั้ง kube-proxy (ให้ Cilium ทำแทน) และกำหนด pod subnet", c:"cat <<EOF > kind-config.yaml\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnetworking:\n  disableDefaultCNI: true\n  kubeProxyMode: \"none\"\n  podSubnet: \"10.244.0.0/16\"\nnodes:\n  - role: control-plane\n  - role: worker\n  - role: worker\nEOF\nkind create cluster --config kind-config.yaml --name ckne", e:"kind สร้าง node 3 ตัวสำเร็จ ข้อความท้ายสุด \"Set kubectl context to kind-ckne\"", tr:"ถ้า Docker daemon ไม่รัน ให้ start Docker ก่อน; ถ้า port ชนให้ลบ cluster เก่าด้วย kind delete cluster --name ckne"},
+          {i:"ตรวจว่า node ยัง NotReady เพราะยังไม่มี CNI", c:"kubectl get nodes", e:"ทุก node ขึ้นสถานะ NotReady — ถูกต้องแล้ว เพราะยังไม่มี CNI ติดตั้ง pod network จึงยังไม่พร้อม", tr:"ถ้า kubectl ต่อ cluster ไม่ได้ ตรวจ context ด้วย kubectl config current-context ควรเป็น kind-ckne"},
+          {i:"เพิ่ม Helm repo ของ Cilium แล้วติดตั้ง — เปิด kube-proxy replacement, Hubble และ Prometheus metrics ไว้ล่วงหน้าให้ครบสำหรับทุกโมดูล", c:"helm repo add cilium https://helm.cilium.io/\nhelm repo update\nhelm install cilium cilium/cilium --version 1.15.6 \\\n  --namespace kube-system \\\n  --set kubeProxyReplacement=true \\\n  --set k8sServiceHost=ckne-control-plane \\\n  --set k8sServicePort=6443 \\\n  --set hubble.relay.enabled=true \\\n  --set hubble.ui.enabled=true \\\n  --set prometheus.enabled=true \\\n  --set operator.prometheus.enabled=true", e:"Helm แสดง \"STATUS: deployed\"", tr:"k8sServiceHost/k8sServicePort จำเป็นเมื่อไม่มี kube-proxy เพราะ Cilium ต้องรู้ที่อยู่ API server ตรงๆ ก่อนที่ datapath ของตัวเองจะพร้อม — ชื่อ ckne-control-plane ใช้ได้เพราะ Docker resolve ชื่อ container บน network kind ให้; ถ้า pull image ช้าให้รอแล้วเช็ค kubectl -n kube-system get pods อีกครั้ง"},
+          {i:"ติดตั้ง Cilium CLI แล้วตรวจสถานะให้ครบทุก component เป็นสีเขียว", c:"cilium status --wait", e:"บรรทัด Cilium, Operator, Hubble Relay ทุกตัวขึ้น OK และ Cluster Pods: X/X managed", tr:"ถ้าค้างนาน ตรวจ kubectl -n kube-system get pods -l k8s-app=cilium ว่ามี pod ติด CrashLoopBackOff หรือไม่ แล้วดู logs"},
+          {i:"ยืนยันว่า node กลับมา Ready ทั้งหมดแล้ว", c:"kubectl get nodes -o wide", e:"ทั้ง 3 node ขึ้นสถานะ Ready", tr:"ถ้ายัง NotReady ให้รอ 1-2 นาทีให้ CNI daemonset ขึ้นครบทุก node ก่อน"}
+        ],
+        challenge:{ task:"รัน cilium connectivity test --test-namespace cilium-test เพื่อยืนยันว่า pod-to-pod, pod-to-service ทำงานถูกต้องทั้งคลัสเตอร์ — ใช้เวลาหลายนาที เหมาะรันค้างไว้ระหว่างพักเบรก", reveal:"คำสั่งนี้จะสร้าง namespace ทดสอบ deploy pod หลายคู่แล้วยิง traffic ครบทุก path (same node, cross node, through service, through Gateway ถ้ามี) — ถ้าท้ายสุดขึ้น \"✅ All 42 tests successful\" แปลว่า networking พื้นฐานพร้อมสำหรับแล็บโมดูลถัดไป" }
+      }
+    }
+  ]
+},
+{
+  id:"m1", short:"Core Infra & CNI", title:"Module 1 · Core Infrastructure & CNI", weight:15,
+  blurb:"พื้นฐานที่สุดของ networking ใน k8s: CNI ทำงานอย่างไร, IP มาจากไหน, และ Linux ใช้กลไกอะไรต่อ pod เข้ากับ network จริง — โดเมนนี้คือฐานของทุกโดเมนที่เหลือ",
+  topics:[
+    { id:"m1-t1", title:"CNI Spec และสถาปัตยกรรม Plugin", summary:"CNI คือ spec ไม่ใช่ product — kubelet เรียก plugin ตาม spec นี้ทุกครั้งที่ pod ถูกสร้าง/ลบ",
+      concept:`<p><strong>CNI (Container Network Interface)</strong> เป็น spec กลางที่กำหนดว่า container runtime ต้องเรียก plugin อย่างไรเพื่อตั้งค่า network ให้ pod — ไม่ใช่ software ตัวเดียว ดังนั้น Calico, Cilium, Flannel ล้วนเป็น "CNI plugin" ที่ implement spec เดียวกันคนละแบบ</p>
+      <ul>
+        <li><strong>ADD/DEL</strong> — kubelet เรียก binary ของ plugin ผ่าน <code>/opt/cni/bin</code> พร้อม config จาก <code>/etc/cni/net.d</code> ทุกครั้งที่ pod ถูกสร้างหรือลบ</li>
+        <li><strong>Flannel</strong> — เรียบง่าย เน้น overlay (VXLAN) อย่างเดียว ไม่มี NetworkPolicy ในตัว</li>
+        <li><strong>Calico</strong> — เน้น native L3 routing ผ่าน BGP, มี NetworkPolicy ครบ, ทำงานได้ทั้ง overlay และ non-overlay</li>
+        <li><strong>Cilium</strong> — ใช้ eBPF แทน iptables ทั้ง datapath, มี L7 policy, kube-proxy replacement, observability (Hubble) ในตัว — ครอบคลุม CKNE blueprint มากที่สุด</li>
+      </ul>`,
+      lab:{ title:"ตรวจสอบ CNI config และ binary ที่ kubelet เรียกจริง",
+        prereqs:"ต้องผ่าน Module 0 (มี cluster + Cilium พร้อมแล้ว)",
+        steps:[
+          {i:"เข้าไปใน worker node แล้วดู CNI config ที่ Cilium เขียนไว้", c:"docker exec -it ckne-worker cat /etc/cni/net.d/05-cilium.conflist", e:"เห็น JSON ที่ type คือ \"cilium-cni\" พร้อม field enable-debug และอื่นๆ", tr:"ถ้าไฟล์ไม่มี แปลว่า Cilium agent บน node นั้นยังไม่ reconcile เสร็จ ลอง kubectl -n kube-system get pods -o wide ดูว่า pod cilium บน node นั้น Running หรือยัง"},
+          {i:"ดู binary ของ CNI plugin ที่ kubelet เรียกจริงตอนสร้าง pod", c:"docker exec -it ckne-worker ls -la /opt/cni/bin/", e:"เห็นไฟล์ cilium-cni และ plugin เสริมอื่นๆ เช่น loopback, portmap", tr:"หากว่างเปล่า ให้ตรวจว่า cilium agent daemonset ติดตั้ง initContainer ที่ copy binary สำเร็จหรือไม่ (kubectl -n kube-system logs ds/cilium -c mount-cgroup)"},
+          {i:"สร้าง pod ทดสอบแล้วดู event ตอน CNI ADD ทำงาน", c:"kubectl run netcheck --image=nicolaka/netshoot --command -- sleep 3600\nkubectl describe pod netcheck | grep -A3 Events", e:"เห็น event AddedInterface พร้อมชื่อ eth0 และ Mac address", tr:"ถ้า pod ค้าง ContainerCreating นาน ให้ดู kubectl -n kube-system logs ds/cilium ช่วงเวลาที่ pod ถูกสร้าง หา error จาก CNI ADD"}
+        ],
+        challenge:{ task:"เปรียบเทียบ config ที่ /etc/cni/net.d ระหว่าง control-plane node กับ worker node — ต่างกันหรือไม่ เพราะอะไร", reveal:"โดยทั่วไปเหมือนกันเพราะ Cilium agent รันเป็น DaemonSet บนทุก node รวม control-plane (ถ้าไม่ถูก taint กันไว้) และเขียน conflist ชุดเดียวกันจาก ConfigMap กลาง — ถ้าต่างกันมักแปลว่า agent บน node หนึ่งยัง reconcile ไม่เสร็จหรือ version ไม่ตรงกัน"}
+      }
+    },
+    { id:"m1-t2", title:"IPAM และ Pod / Service / Cluster CIDR", summary:"ใครเป็นคนแจก IP ให้ pod และช่วง CIDR แต่ละชั้นต่างกันอย่างไร",
+      concept:`<p><strong>IPAM (IP Address Management)</strong> คือกลไกที่ CNI plugin ใช้แจก IP ให้ pod แต่ละตัวโดยไม่ชนกัน มี 3 ช่วง CIDR ที่ต้องแยกให้ออกเพราะข้อสอบชอบถามสลับกัน</p>
+      <ul>
+        <li><strong>Pod CIDR</strong> — ช่วง IP ของ pod ทั้งคลัสเตอร์ (เช่น 10.244.0.0/16) มักถูกแบ่งย่อยเป็น per-node block (เช่น /24 ต่อ node)</li>
+        <li><strong>Service CIDR</strong> — ช่วง virtual IP ของ ClusterIP Service (เช่น 10.96.0.0/12) ไม่มี route จริง เป็นแค่ VIP ที่ kube-proxy/eBPF ทำ DNAT</li>
+        <li><strong>Cluster CIDR</strong> — บางเอกสารใช้คำนี้แทน Pod CIDR ต้องดู context</li>
+        <li>Cilium ใช้ <strong>CiliumNode</strong> CRD เก็บ IPAM allocation ต่อ node แทนที่จะพึ่ง kube-controller-manager เพียงอย่างเดียว (โหมด cluster-pool)</li>
+      </ul>`,
+      lab:{ title:"ตรวจสอบการจอง IP และ pool ที่ Cilium ใช้จริง",
+        steps:[
+          {i:"ดู CIDR ที่จองให้แต่ละ node ผ่าน CiliumNode CRD", c:"kubectl get ciliumnodes -o jsonpath='{range .items[*]}{.metadata.name}{\": \"}{.spec.ipam.podCIDRs}{\"\\n\"}{end}'", e:"เห็นชื่อ node คู่กับ CIDR เช่น ckne-worker: [10.244.1.0/24]", tr:"ถ้า field ว่าง ให้ตรวจว่า Cilium ตั้งค่า ipam.mode เป็น cluster-pool (ค่า default) หรือยัง ผ่าน kubectl -n kube-system get cm cilium-config -o yaml | grep ipam"},
+          {i:"ดู IP ที่ pod แต่ละตัวได้รับจริงเทียบกับ pod CIDR ของ node นั้น", c:"kubectl get pods -o wide | grep netcheck", e:"IP ของ pod netcheck ต้องอยู่ในช่วง CIDR ของ node ที่มันรันอยู่ (เช่น 10.244.1.5)", tr:"ถ้า IP อยู่นอกช่วง อาจเป็นเพราะ config podSubnet ตอนสร้าง kind cluster ไม่ตรงกับที่ Cilium ตั้งไว้"},
+          {i:"ดู Service CIDR แยกจาก Pod CIDR เพื่อยืนยันว่าเป็นคนละช่วง", c:"kubectl cluster-info dump | grep -m1 service-cluster-ip-range", e:"เห็นช่วงเช่น 10.96.0.0/12 ซึ่งไม่ทับกับ Pod CIDR (10.244.0.0/16)", tr:"ถ้าคำสั่งไม่เจอบรรทัดนี้ ลองดูใน docker exec -it ckne-control-plane cat /etc/kubernetes/manifests/kube-apiserver.yaml แทน"}
+        ],
+        challenge:{ task:"ถ้าต้องขยายคลัสเตอร์เกิน 256 pod ต่อ node (เกิน /24) จะปรับตรงไหน และมีผลกระทบอะไรตามมา", reveal:"ต้องปรับ per-node CIDR mask ผ่าน --set ipam.operator.clusterPoolIPv4PodCIDRList และ --set ipam.operator.clusterPoolIPv4MaskSize ตอนติดตั้ง Cilium (หรือแก้ cilium-config แล้ว restart operator) — ผลกระทบคือต้อง plan pod CIDR รวมให้ใหญ่พอตั้งแต่แรก เพราะเปลี่ยน mask size ของ node ที่มี pod รันอยู่แล้วจะทำให้ IP เดิมขัดแย้งได้"}
+      }
+    },
+    { id:"m1-t3", title:"Linux Networking Primitives", summary:"netns, veth, bridge, iptables/nftables คือชิ้นส่วนที่ CNI ประกอบขึ้นมาเป็น pod network",
+      concept:`<p>ไม่ว่า CNI plugin ไหนก็ยืนอยู่บนกลไก Linux kernel ชุดเดียวกัน เข้าใจสิ่งเหล่านี้แล้วจะ debug ปัญหา networking ได้ไม่ว่าใช้ CNI ตัวไหน</p>
+      <ul>
+        <li><strong>Network namespace (netns)</strong> — sandbox แยก network stack ต่อ pod มี interface/routing table/iptables ของตัวเอง</li>
+        <li><strong>veth pair</strong> — interface คู่เชื่อม netns ของ pod เข้ากับ root namespace ของ node เหมือนสาย cable เสมือน</li>
+        <li><strong>Linux bridge / eBPF hook</strong> — CNI แบบเก่า (bridge, Flannel) ต่อ veth เข้า bridge ส่วน Cilium attach eBPF program ตรงที่ veth แทนการใช้ bridge</li>
+        <li><strong>iptables/nftables</strong> — ใช้ทำ NAT, filtering; Cilium เลี่ยงส่วนนี้เกือบทั้งหมดด้วย eBPF ทำให้เร็วกว่าที่ scale ใหญ่</li>
+      </ul>`,
+      lab:{ title:"ไล่ดู netns และ veth pair ของ pod จริงด้วยมือ",
+        steps:[
+          {i:"หา PID ของ container ที่ pod netcheck ใช้ผ่าน crictl บน node ที่มันรันอยู่", c:"docker exec -it ckne-worker crictl ps | grep netcheck\ndocker exec -it ckne-worker crictl inspect <container-id> | grep -i pid", e:"ได้เลข PID ของ process หลักใน container นั้น", tr:"ถ้า crictl ไม่มีสิทธิ์ ให้ลองต่อท้ายด้วย sudo หรือเช็คว่า containerd socket path ถูกต้อง (--runtime-endpoint)"},
+          {i:"ใช้ nsenter เข้าไปดู network namespace ของ pod นั้นโดยตรงจากฝั่ง node", c:"docker exec -it ckne-worker nsenter -t <PID> -n ip addr", e:"เห็น interface eth0 พร้อม IP ที่ตรงกับ kubectl get pod -o wide", tr:"ถ้า error 'no such process' แปลว่า PID ผิด หรือ container restart ไปแล้ว ให้ดึง PID ใหม่"},
+          {i:"หาปลายอีกด้านของ veth pair บนฝั่ง root namespace ของ node", c:"docker exec -it ckne-worker nsenter -t <PID> -n ethtool -S eth0 | grep peer_ifindex\ndocker exec -it ckne-worker ip link | grep '<ifindex ที่ได้>:'", e:"เจอ interface ชื่อ lxcXXXX หรือคล้ายกันบน node ที่ index ตรงกับ peer_ifindex", tr:"ถ้า ethtool ไม่มีในเครื่อง node ให้ apt/apk install ethtool ก่อน หรือดูผ่าน /sys/class/net/eth0/iflink แทน"}
+        ],
+        challenge:{ task:"อธิบายเป็นข้อๆ ว่า packet เดินทางจาก process ใน pod จนถึง network card จริงของเครื่อง (physical NIC) ผ่านกี่ชั้น อะไรบ้าง", reveal:"process → socket → eth0 ใน netns ของ pod → veth pair → (lxc interface ฝั่ง root netns) → eBPF program ของ Cilium ตัดสินใจ (local pod, route ไป node อื่น หรือออก external) → ถ้าไปไกลกว่า node ต้องผ่าน routing table/VXLAN encapsulation ของ root netns → physical NIC"}
+      }
+    },
+    { id:"m1-t4", title:"Pod-to-Pod Connectivity: Overlay vs Native Routing", summary:"สอง pod คุยกันข้าม node ได้อย่างไร — ผ่าน tunnel (overlay) หรือ route ตรง (BGP)",
+      diagram:"cniPath",
+      concept:`<p>เมื่อ Pod A บน Node 1 คุยกับ Pod B บน Node 2 มี 2 แนวทางหลักที่ CNI plugin เลือกใช้</p>
+      <ul>
+        <li><strong>Overlay (encapsulation)</strong> — ห่อ packet เดิมด้วย header ใหม่ (VXLAN/GENEVE) แล้วส่งผ่าน node-to-node เหมือนอุโมงค์ ข้อดีคือไม่ต้องยุ่งกับ physical network routing เลย ข้อเสียคือมี overhead จากการ encap/decap</li>
+        <li><strong>Native routing (BGP)</strong> — ประกาศ pod CIDR ของแต่ละ node ผ่าน BGP ให้ physical network รู้จัก แล้ว route ตรงแบบ L3 ไม่มี encapsulation ข้อดีคือเร็วกว่าและ debug ง่ายกว่าด้วย tool มาตรฐาน (traceroute เห็น hop จริง) ข้อเสียคือต้องมี BGP peer กับ network จริง</li>
+        <li>Cilium เลือกได้ทั้งสองแบบผ่าน <code>routingMode: tunnel</code> (VXLAN, ค่า default) หรือ <code>routingMode: native</code> (ต้องมี BGP หรือ direct-routing)</li>
+      </ul>`,
+      lab:{ title:"ยิง traffic ข้าม node แล้วจับ packet บน overlay interface",
+        prereqs:"ใช้ pod netcheck จาก topic ก่อนหน้า และสร้าง pod ที่สองบน node อื่น",
+        steps:[
+          {i:"บังคับสร้าง pod ที่สองให้ไปอยู่คนละ node กับ netcheck ด้วย node affinity แบบง่ายผ่าน nodeName", c:"kubectl get pod netcheck -o jsonpath='{.spec.nodeName}'\nkubectl run netcheck2 --image=nicolaka/netshoot --overrides='{\"spec\":{\"nodeName\":\"ckne-worker2\"}}' --command -- sleep 3600", e:"netcheck2 ถูก schedule ไปยัง ckne-worker2 ซึ่งเป็นคนละ node จาก netcheck", tr:"ถ้า overrides ไม่ทำงานบน kubectl version เก่า ให้เขียนเป็นไฟล์ YAML แล้ว kubectl apply -f แทน"},
+          {i:"เปิด tcpdump ดัก VXLAN traffic (UDP port 8472) บน overlay interface ของ node ที่ netcheck รันอยู่", c:"docker exec -it ckne-worker tcpdump -i any -n udp port 8472 -c 10", e:"ค้างรอ packet — ยังไม่เห็นอะไรจนกว่าจะมี traffic ข้าม node จริง", tr:"ถ้า interface any ไม่รองรับ ลองระบุชื่อ interface ตรงๆ เช่น cilium_vxlan"},
+          {i:"เปิด terminal ใหม่ ping จาก netcheck ไปยัง netcheck2 เพื่อ generate traffic ข้าม node", c:"kubectl exec netcheck -- ping -c 5 $(kubectl get pod netcheck2 -o jsonpath='{.status.podIP}')", e:"ได้ reply กลับมาสำเร็จ 5 ครั้ง latency ต่ำ (sub-millisecond ถึงหลัก ms บนเครื่อง local)", tr:"ถ้า ping ไม่สำเร็จ กลับไปเช็ค cilium status ว่า cluster mesh/agent ทุก node ยัง healthy"},
+          {i:"กลับไปดู terminal tcpdump ว่าจับ VXLAN packet ได้จริง", c:"# ดูผลลัพธ์ที่ terminal tcpdump ค้างไว้", e:"เห็น packet UDP port 8472 ระหว่าง IP ของทั้งสอง node แสดงว่า ICMP ของ pod ถูกห่อเป็น VXLAN ส่งข้าม node", tr:"ถ้าไม่เห็นเลย ให้ตรวจว่า routingMode ของ Cilium เป็น tunnel จริงด้วย cilium config view | grep routing-mode"}
+        ],
+        challenge:{ task:"เปลี่ยน Cilium เป็น routingMode: native (ไม่มี overlay) แล้วลองอธิบายว่าต้องเตรียมอะไรเพิ่มบน kind ซึ่งไม่มี physical router ให้ peer BGP จริง", reveal:"บน kind ทำได้ยากเพราะ node เป็น container ไม่มี physical router ให้ peer BGP ตามจริง วิธีทดสอบ native routing ใน lab มักใช้ direct-routing ผ่าน Docker bridge network เดียวกัน (auto-direct-node-routes: true) แทนการตั้ง BGP เต็มรูปแบบ ส่วนใน production จริงต้องมี BGP session ระหว่าง Cilium (ผ่าน bgpv2 หรือ MetalLB/FRR) กับ top-of-rack switch"}
+      }
+    }
+  ],
+  quiz:[
+    {q:"CNI คืออะไรกันแน่?", options:["ซอฟต์แวร์ตัวหนึ่งที่ต้องติดตั้งเสมอ","สเปกกลางที่กำหนดวิธี kubelet เรียก plugin ตั้งค่า network ให้ pod","โปรโตคอล routing ของ Kubernetes","ชื่อเรียกอื่นของ kube-proxy"], correct:1, explain:"CNI (Container Network Interface) เป็น specification กลาง Calico/Cilium/Flannel ต่างเป็น plugin ที่ implement spec นี้คนละแบบ"},
+    {q:"ข้อใดอธิบาย Pod CIDR กับ Service CIDR ได้ถูกต้อง?", options:["เป็นช่วงเดียวกันเสมอ","Pod CIDR คือ IP จริงของ pod, Service CIDR เป็น virtual IP ที่ไม่มี route จริง","Service CIDR ใหญ่กว่า Pod CIDR เสมอ","ทั้งคู่ถูกจัดการโดย CoreDNS"], correct:1, explain:"Pod CIDR แจก IP จริงให้ pod ผ่าน IPAM ส่วน Service CIDR เป็น VIP ที่ kube-proxy/eBPF ทำ DNAT เท่านั้น ไม่มี route จริงในเครือข่าย"},
+    {q:"veth pair ทำหน้าที่อะไร?", options:["เข้ารหัส traffic ระหว่าง pod","เชื่อม network namespace ของ pod เข้ากับ root namespace ของ node","แจก IP ให้ pod","ทำ DNS resolution ให้ pod"], correct:1, explain:"veth เป็น interface คู่เสมือนสาย cable เชื่อม netns ของ pod เข้ากับ node — เป็นกลไกพื้นฐานที่ทุก CNI plugin ใช้"},
+    {q:"ความแตกต่างหลักระหว่าง overlay กับ native routing คืออะไร?", options:["overlay เร็วกว่าเสมอ","overlay ห่อ packet ด้วย header ใหม่ (encapsulation) ส่วน native routing ประกาศเส้นทางผ่าน BGP โดยไม่ห่อ packet","native routing ใช้ได้เฉพาะ Calico เท่านั้น","overlay ไม่รองรับ NetworkPolicy"], correct:1, explain:"Overlay (เช่น VXLAN) เพิ่ม header ห่อ packet เดิม ทำให้ physical network ไม่ต้องรู้จัก pod CIDR ส่วน native routing ใช้ BGP ประกาศเส้นทางจริงไม่มี encapsulation overhead"},
+    {q:"Cilium ใช้กลไกใดแทน iptables ในการทำ packet filtering/NAT เป็นหลัก?", options:["nftables อย่างเดียว","eBPF","IPVS เท่านั้น","VRRP"], correct:1, explain:"Cilium attach eBPF program เข้ากับจุดต่างๆ ใน kernel datapath โดยตรง ลดการพึ่งพา iptables ทำให้ scale ได้ดีกว่าที่ traffic/service สูงมาก"},
+    {q:"ถ้า kubectl get nodes ขึ้น NotReady ทั้งคลัสเตอร์ทันทีหลังสร้าง kind cluster ด้วย disableDefaultCNI: true สาเหตุที่เป็นไปได้มากที่สุดคือ?", options:["Docker daemon พัง","ยังไม่ได้ติดตั้ง CNI plugin ใดๆ pod network จึงยังไม่พร้อม","kubelet เวอร์ชันเก่าเกินไป","Service CIDR ทับกับ Pod CIDR"], correct:1, explain:"เมื่อปิด default CNI ไว้ node จะค้างสถานะ NotReady จนกว่าจะติดตั้ง CNI plugin (เช่น Cilium) และ daemonset ขึ้นสำเร็จ เป็นพฤติกรรมที่ถูกต้องตามคาด"},
+    {q:"CiliumNode CRD ใช้เก็บข้อมูลอะไรเป็นหลัก?", options:["รายชื่อ user ที่มีสิทธิ์เข้าคลัสเตอร์","การจอง IPAM (pod CIDR) ต่อ node","ค่า TLS certificate ของ node","Log ของ Hubble"], correct:1, explain:"ในโหมด cluster-pool IPAM ของ Cilium ใช้ CiliumNode CRD เก็บ pod CIDR block ที่จองให้แต่ละ node แทนการพึ่ง kube-controller-manager เพียงอย่างเดียว"},
+    {q:"เหตุผลหลักที่คอร์สนี้เลือกทดสอบ native routing ยากบน kind คืออะไร?", options:["kind ไม่รองรับ Cilium","node ของ kind เป็น container ไม่มี physical router ให้ peer BGP ตามจริง","native routing ใช้ได้เฉพาะ cloud provider เท่านั้น","kind ไม่มี kube-apiserver"], correct:1, explain:"Native routing ต้องพึ่ง physical/virtual router ประกาศเส้นทางผ่าน BGP ซึ่งบน kind (node เป็น container) ไม่มีอุปกรณ์เครือข่ายจริงให้ peer จึงมักทดสอบด้วย direct-routing ผ่าน Docker bridge แทน"}
+  ]
+},
+{
+  id:"m2", short:"Service & DNS", title:"Module 2 · Service Networking & DNS", weight:25,
+  blurb:"โดเมนที่หนักที่สุดในข้อสอบ (25%) — ว่าด้วยวิธีที่ traffic หาทางไปถึง pod ที่ถูกต้อง ทั้งผ่าน Service, kube-proxy, CoreDNS และ Gateway API",
+  topics:[
+    { id:"m2-t1", title:"Service Types และ EndpointSlices", summary:"ClusterIP, NodePort, LoadBalancer, Headless ต่างกันตรงไหน และ EndpointSlice เก็บอะไร",
+      concept:`<p>Service เป็น abstraction ที่ให้ชื่อ/IP คงที่กับกลุ่ม pod ที่ label ตรงกัน โดยไม่สนว่า pod จริงจะถูกสร้าง/ลบไปกี่ตัว</p>
+      <ul>
+        <li><strong>ClusterIP</strong> (default) — VIP ใช้ได้เฉพาะภายในคลัสเตอร์</li>
+        <li><strong>NodePort</strong> — เปิด port เดียวกันบนทุก node ทำให้เข้าถึงจากภายนอกผ่าน node IP:port ได้</li>
+        <li><strong>LoadBalancer</strong> — ขอ external LB จาก cloud provider (หรือ MetalLB ใน on-prem) มาชี้เข้า NodePort/ClusterIP</li>
+        <li><strong>Headless (clusterIP: None)</strong> — ไม่มี VIP, DNS คืนค่าเป็น IP ของ pod ทุกตัวตรงๆ เหมาะกับ stateful workload ที่ client ต้องรู้จัก pod แต่ละตัว</li>
+        <li><strong>EndpointSlice</strong> — แทนที่ Endpoints แบบเก่า เก็บ IP ของ backend pod ที่ Ready เป็นชุดย่อยๆ (สูงสุด 100 ต่อ slice) เพื่อลด load ตอน scale ใหญ่</li>
+      </ul>`,
+      lab:{ title:"deploy Service ทั้ง 3 แบบแล้วเทียบพฤติกรรม",
+        steps:[
+          {i:"deploy Deployment ตัวอย่างและสร้าง ClusterIP Service", c:"kubectl create deployment web --image=nginx --replicas=3\nkubectl expose deployment web --port=80 --name=web-clusterip", e:"kubectl get svc web-clusterip แสดง TYPE ClusterIP พร้อม virtual IP", tr:"ถ้า pod ยังไม่ Ready ให้รอ image pull เสร็จก่อน (kubectl get pods -w)"},
+          {i:"สร้าง headless service ชี้ label เดียวกัน แล้วเทียบผล DNS", c:"kubectl expose deployment web --port=80 --name=web-headless --cluster-ip=None\nkubectl run dns-test --image=nicolaka/netshoot --command -- sleep 3600\nkubectl exec dns-test -- nslookup web-headless", e:"nslookup ของ web-headless คืน IP ของ pod ทั้ง 3 ตัวตรงๆ ต่างจาก web-clusterip ที่คืน VIP เดียว", tr:"ถ้า nslookup ไม่เจอ service เลย ตรวจว่า CoreDNS ยัง Running อยู่ที่ kube-system"},
+          {i:"ดู EndpointSlice ที่ผูกกับ web-clusterip", c:"kubectl get endpointslices -l kubernetes.io/service-name=web-clusterip -o yaml | grep -A2 addresses", e:"เห็น IP ของ pod 3 ตัวถูกจัดกลุ่มเป็น endpoints array ภายใต้ slice เดียว", tr:"ถ้าไม่มี endpointslice เลย ให้เช็ค label selector ของ Service ว่าตรงกับ label บน pod จริงหรือไม่"},
+          {i:"ลบ pod หนึ่งตัวแล้วดูว่า EndpointSlice อัปเดตเร็วแค่ไหน", c:"kubectl delete pod -l app=web --field-selector status.phase=Running -o name | head -1 | xargs kubectl delete\nkubectl get endpointslices -l kubernetes.io/service-name=web-clusterip -w", e:"เห็นจำนวน address ใน slice ลดลงทันทีที่ pod เก่าหลุด แล้วเพิ่มกลับเมื่อ pod ใหม่ Ready", tr:"ถ้า watch ไม่ขยับ กด Ctrl+C แล้ว get ใหม่เป็นช่วงๆ แทน"}
+        ],
+        challenge:{ task:"อธิบายว่าทำไม EndpointSlice ถึงถูกออกแบบมาแทน Endpoints แบบเดิม โดยเฉพาะที่ scale หลักพัน pod ต่อ Service", reveal:"Endpoints แบบเก่าเก็บทุก IP ไว้ใน object เดียว ทำให้ต้อง broadcast object ก้อนใหญ่ทุกครั้งที่มี pod เปลี่ยนแม้แค่ตัวเดียว ส่ง load หนักให้ kube-apiserver/etcd และทุก node ที่ watch อยู่ EndpointSlice แบ่งเป็นชิ้นเล็ก (สูงสุด 100 endpoint ต่อ slice) ทำให้อัปเดตเฉพาะ slice ที่เปลี่ยนจริง ลด network/CPU overhead มหาศาลตอน scale ใหญ่"}
+      }
+    },
+    { id:"m2-t2", title:"kube-proxy Modes: iptables / IPVS / eBPF", summary:"3 วิธีที่ Service VIP ถูกแปลงเป็น backend pod จริง",
+      diagram:"kubeProxy",
+      concept:`<p>kube-proxy (หรือ eBPF ของ Cilium ที่มาแทนมันได้) มีหน้าที่เดียว: ทำให้ traffic ที่ยิงไปยัง Service VIP ถูกส่งต่อไปยัง backend pod จริงตัวใดตัวหนึ่ง</p>
+      <ul>
+        <li><strong>iptables mode</strong> (default เดิม) — เขียนกฎ DNAT เป็นลูกโซ่ (chain) ต่อ Service หนึ่งตัว ที่ scale สูงๆ (Service หลักพัน) กฎจะยาวมากทำให้ lookup ช้าลงเชิงเส้น</li>
+        <li><strong>IPVS mode</strong> — ใช้ kernel IPVS ซึ่งเป็น hash table แทน chain lookup จึงเร็วคงที่ (O(1)) ไม่ขึ้นกับจำนวน Service รองรับ load balancing algorithm หลายแบบ (round robin, least connection)</li>
+        <li><strong>eBPF (kube-proxy replacement)</strong> — Cilium ไม่ใช้ kube-proxy เลย ใช้ eBPF map ทำ DNAT ตรงใน datapath เร็วกว่าทั้งสองแบบและลด hop ที่ packet ต้องเดิน</li>
+        <li>ทั้ง 3 โหมดฟัง event เดียวกันจาก EndpointSlice — ต่างกันแค่ "วิธีเก็บกฎ" ไม่ใช่ "แหล่งข้อมูล"</li>
+      </ul>`,
+      lab:{ title:"ยืนยันว่าคลัสเตอร์นี้ใช้ eBPF แทน kube-proxy และดูกฎที่ถูกสร้าง",
+        prereqs:"คลัสเตอร์นี้สร้างด้วย kubeProxyMode: \"none\" (kind ไม่ติดตั้ง kube-proxy เลย) คู่กับ kubeProxyReplacement=true ฝั่ง Cilium ตั้งแต่ Module 0",
+        steps:[
+          {i:"ยืนยันว่าไม่มี kube-proxy DaemonSet รันอยู่ (เพราะ Cilium ทำหน้าที่แทน)", c:"kubectl -n kube-system get ds kube-proxy\ncilium status | grep KubeProxyReplacement", e:"คำสั่งแรกได้ error \"not found\" และคำสั่งที่สองแสดง KubeProxyReplacement: True ยืนยันว่า eBPF รับหน้าที่แทนจริง", tr:"ถ้ายังเจอ kube-proxy DaemonSet อยู่ แปลว่า kind config ตอน Module 0 ไม่ได้ตั้ง kubeProxyMode: \"none\" (flag kubeProxyReplacement ฝั่ง Cilium ไม่ลบ DaemonSet ที่มีอยู่แล้วให้) ต้องสร้าง cluster ใหม่ หรือลบ DaemonSet ทิ้งเอง"},
+          {i:"ดูรายการ Service ทั้งหมดที่ Cilium eBPF ทำ load balancing อยู่ในตัวมันเอง", c:"cilium service list", e:"เห็นตาราง ID / Frontend (VIP:port) / Backend (pod IP หลายตัว) ของ web-clusterip", tr:"ถ้า cilium CLI สั่งจากนอก pod ไม่ได้ ให้ kubectl -n kube-system exec -it ds/cilium -- cilium service list แทน"},
+          {i:"เทียบความเร็วเชิงแนวคิด: ลองนับจำนวนกฎที่ Cilium ต้องอัปเดตเมื่อมี Service ใหม่ ผ่าน eBPF map แทน iptables chain", c:"cilium bpf lb list | wc -l", e:"ได้ตัวเลขรายการใน eBPF load-balancer map ซึ่งอัปเดตแบบ O(1) ต่อรายการ ไม่ต้องเขียนกฎใหม่ทั้ง chain", tr:"ถ้าคำสั่งไม่รู้จัก ตรวจ version ของ cilium CLI ให้ตรงกับ agent version"}
+        ],
+        challenge:{ task:"ทำไมทีมที่มี Service มากกว่า 5,000 ตัวถึงมักเลี่ยง iptables mode โดยเด็ดขาด", reveal:"iptables ประเมินกฎแบบ linear scan ต่อ chain ทำให้ latency การ match กฎเพิ่มขึ้นตามจำนวน Service/endpoint เชิงเส้น (O(n)) ที่ scale หลักพันจะเห็น packet processing latency สูงขึ้นชัดเจนและ kube-proxy sync เวลานานขึ้นทุกครั้งที่ endpoint เปลี่ยน ส่วน IPVS และ eBPF ใช้ hash table/map lookup ที่คงที่ (O(1)) ไม่ว่าจำนวน Service จะเยอะแค่ไหน"}
+      }
+    },
+    { id:"m2-t3", title:"CoreDNS: Corefile และ Service Discovery", summary:"ทุก pod หา Service เจอได้เพราะ CoreDNS — ปรับ Corefile อย่างไรให้ resolve โดเมนพิเศษได้",
+      diagram:"coreDns",
+      concept:`<p>CoreDNS เป็น DNS server แบบ plugin-chain รันเป็น Deployment ใน kube-system ให้บริการผ่าน Service ชื่อ <code>kube-dns</code> ตั้งค่าทั้งหมดอยู่ใน <strong>Corefile</strong> (ConfigMap)</p>
+      <ul>
+        <li><strong>kubernetes plugin</strong> — ตอบ query สำหรับ <code>*.svc.cluster.local</code> โดยอ่านจาก Service/EndpointSlice ใน apiserver โดยตรง</li>
+        <li><strong>forward plugin</strong> — ส่ง query ที่ไม่ใช่โดเมนภายในคลัสเตอร์ต่อไปยัง upstream DNS (มักอ่านจาก <code>/etc/resolv.conf</code> ของ node)</li>
+        <li><strong>cache plugin</strong> — cache คำตอบไว้ระยะสั้นลด load ต่อ apiserver</li>
+        <li>Pod แต่ละตัวรู้จัก CoreDNS ผ่าน <code>/etc/resolv.conf</code> ที่ kubelet เขียนให้อัตโนมัติ ชี้ไปที่ kube-dns ClusterIP</li>
+        <li>ค้นหาชื่อสั้นได้ (เช่น <code>web-clusterip</code> แทนชื่อเต็ม) เพราะมี <code>search</code> domain ต่อท้ายอัตโนมัติตาม namespace</li>
+      </ul>`,
+      lab:{ title:"แก้ Corefile เพิ่ม custom stub-domain แล้วพิสูจน์ด้วย dig",
+        steps:[
+          {i:"ดู Corefile ปัจจุบันก่อนแก้", c:"kubectl -n kube-system get configmap coredns -o yaml", e:"เห็น block .:53 ที่มี plugin errors, health, kubernetes, prometheus, forward, cache, loop, reload, loadbalance เรียงกัน", tr:"ถ้า configmap ชื่อไม่ตรง ลอง kubectl -n kube-system get cm | grep -i dns หาแทน"},
+          {i:"เพิ่ม stub-domain ใหม่ที่ forward โดเมนสมมติ internal.corp ไปยัง DNS server อื่น (จำลองด้วย 8.8.8.8 ในแล็บ)", c:"kubectl -n kube-system edit configmap coredns\n# เพิ่ม block ใหม่ต่อท้าย Corefile:\n# internal.corp:53 {\n#     forward . 8.8.8.8\n# }", e:"save แล้ว CoreDNS reload อัตโนมัติภายในไม่กี่วินาที (plugin reload ตรวจ Corefile เปลี่ยนเอง)", tr:"ถ้าไม่ reload ให้ restart deployment ด้วยมือ: kubectl -n kube-system rollout restart deployment coredns"},
+          {i:"ทดสอบ resolve โดเมนภายในคลัสเตอร์จากภายใน pod ด้วย dig", c:"kubectl exec dns-test -- dig +short web-clusterip.default.svc.cluster.local", e:"ได้ ClusterIP ของ web-clusterip กลับมาเป็นตัวเลข IP เดียว", tr:"ถ้า dig ไม่มีในเครื่อง image ให้ใช้ nslookup แทนได้ผลลัพธ์คล้ายกัน"},
+          {i:"ยืนยันว่า stub-domain ใหม่ถูก route ผ่าน block ที่เพิ่มจริง โดยดู log ของ CoreDNS", c:"kubectl -n kube-system logs deployment/coredns --tail=20", e:"เห็น query log (ถ้าเปิด plugin log) แสดงว่า query โดเมน internal.corp ถูกจับคู่กับ block ใหม่ ไม่ใช่ block . เดิม", tr:"ถ้าไม่เห็น log เลย ให้เพิ่ม plugin log ในทุก block ของ Corefile ก่อน"}
+        ],
+        challenge:{ task:"ทำไมการเรียง block ใน Corefile ถึงมีผลต่อผลลัพธ์ — ถ้า block . (catch-all) มาก่อน block internal.corp จะเกิดอะไรขึ้น", reveal:"CoreDNS จับคู่ query กับ zone ที่ specific ที่สุดก่อนเสมอไม่ว่าจะเขียนเรียงลำดับใดในไฟล์ (เหมือน DNS zone matching ปกติ) แต่ถ้าตั้ง zone ซ้อนทับกันแบบกำกวม การเรียงอาจส่งผลต่อ plugin บางตัวที่ทำงานแบบ first-match เช่น rewrite หรือ template จึงควรเขียน zone เฉพาะเจาะจงกว่าไว้ก่อนเสมอเพื่อไม่ให้สับสน"}
+      }
+    },
+    { id:"m2-t4", title:"Gateway API vs Ingress", summary:"มาตรฐานใหม่ที่แยก concern ระหว่างทีม infra กับทีม application ชัดเจนกว่า Ingress",
+      diagram:"gatewayApi",
+      concept:`<p><strong>Ingress</strong> เป็น API ดั้งเดิมของ k8s สำหรับ HTTP routing แต่มีข้อจำกัดสำคัญ: fields ที่ vendor-specific ต้องยัดใส่ annotation ทั้งหมด ทำให้พกพาข้าม implementation ไม่ได้ และไม่มีการแยกสิทธิ์ระหว่างทีม infra กับทีม dev ชัดเจน</p>
+      <ul>
+        <li><strong>GatewayClass</strong> — เทียบเท่า StorageClass บอกว่าใช้ controller ตัวไหน (เช่น cilium)</li>
+        <li><strong>Gateway</strong> — คุมระดับ infrastructure: listener, port, TLS cert — ดูแลโดยทีม platform</li>
+        <li><strong>HTTPRoute</strong> — คุมระดับ application: path matching, header matching, traffic split ระหว่าง Service — ดูแลโดยทีม dev เอง แยก namespace ได้</li>
+        <li>Gateway API รองรับ <strong>traffic splitting</strong> โดย native (backendRefs พร้อม weight) ซึ่ง Ingress ต้องพึ่ง annotation เฉพาะ controller เท่านั้น</li>
+        <li>CKNE ถามเรื่องนี้หนักเพราะเป็นทิศทางที่ k8s ผลักดันแทน Ingress ในระยะยาว</li>
+      </ul>`,
+      lab:{ title:"ติดตั้ง Gateway API แล้วทำ path-based routing เทียบกับ Ingress",
+        prereqs:"ใช้ Cilium ที่รองรับ Gateway API (เปิดผ่าน --set gatewayAPI.enabled=true ตอนติดตั้ง หรือ helm upgrade เพิ่ม flag นี้)",
+        steps:[
+          {i:"ติดตั้ง Gateway API CRDs (standard channel) และเปิดใช้ฝั่ง Cilium", c:"kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml\nhelm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --reuse-values --set gatewayAPI.enabled=true", e:"CRD ชื่อ gateways.gateway.networking.k8s.io และ httproutes.gateway.networking.k8s.io ถูกสร้าง, Cilium operator restart แล้วขึ้น Running", tr:"ถ้า Cilium ไม่ reconcile Gateway ให้เช็ค kubectl -n kube-system logs deployment/cilium-operator หา error เกี่ยวกับ gatewayAPI"},
+          {i:"สร้าง Gateway ที่เปิด listener HTTP พอร์ต 80", c:"cat <<EOF | kubectl apply -f -\napiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata:\n  name: web-gw\nspec:\n  gatewayClassName: cilium\n  listeners:\n  - name: http\n    protocol: HTTP\n    port: 80\nEOF", e:"kubectl get gateway web-gw แสดง status Programmed: True หลังผ่านไปไม่กี่วินาที", tr:"ถ้า Programmed เป็น False ให้ kubectl describe gateway web-gw ดู condition message"},
+          {i:"สร้าง HTTPRoute จับคู่ path /web ไปยัง web-clusterip", c:"cat <<EOF | kubectl apply -f -\napiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: web-route\nspec:\n  parentRefs:\n  - name: web-gw\n  rules:\n  - matches:\n    - path: {type: PathPrefix, value: /web}\n    backendRefs:\n    - name: web-clusterip\n      port: 80\nEOF", e:"kubectl get httproute web-route แสดง status Accepted: True", tr:"ถ้า Accepted: False มักเป็นเพราะ parentRefs สะกดชื่อ Gateway ผิด หรือ backendRefs ชี้ Service ที่ไม่มีจริง"},
+          {i:"หา external IP/port ของ Gateway แล้วยิง curl ทดสอบ path matching", c:"kubectl get svc cilium-gateway-web-gw\ncurl http://<EXTERNAL-IP>/web", e:"ได้หน้า nginx default กลับมา (HTML ที่ขึ้นต้นด้วย Welcome to nginx)", tr:"บน kind ที่ไม่มี LoadBalancer จริง ให้ port-forward แทน: kubectl port-forward svc/cilium-gateway-web-gw 8080:80 แล้ว curl localhost:8080/web"}
+        ],
+        challenge:{ task:"เขียน HTTPRoute เดิมให้รองรับ 2 backend (web-v1, web-v2) แบบ weighted 80/20 โดยไม่แก้ Gateway เลย — แสดงว่าทำไมสถาปัตยกรรมนี้ถึงแยก concern ได้ดีกว่า Ingress", reveal:"เพิ่ม backendRefs สองรายการใน rule เดียวกัน พร้อม field weight: 80 และ weight: 20 — Gateway ไม่ต้องแก้เลยเพราะ traffic-split เป็นเรื่องระดับ application (HTTPRoute) ล้วนๆ ทีม dev แก้ HTTPRoute ของตัวเองได้อิสระโดยไม่ต้องขอสิทธิ์แตะ Gateway ที่ทีม platform ดูแล ต่างจาก Ingress annotation ที่มักผูกกับสิทธิ์ระดับเดียวกันทั้งไฟล์"}
+      }
+    }
+  ],
+  quiz:[
+    {q:"Headless Service (clusterIP: None) ต่างจาก ClusterIP ปกติอย่างไร?", options:["Headless เร็วกว่าเสมอ","DNS ของ Headless คืน IP ของทุก pod ตรงๆ แทนที่จะคืน VIP เดียว","Headless ใช้ได้เฉพาะกับ NodePort","ClusterIP ไม่มี DNS name"], correct:1, explain:"Headless Service ไม่มี VIP ให้ kube-proxy/eBPF ทำ DNAT ดังนั้น DNS query จะคืนค่า IP ของ pod ทุกตัวที่ label ตรงกันโดยตรง เหมาะกับ client ที่ต้องรู้จัก pod แต่ละตัว เช่น StatefulSet"},
+    {q:"เหตุผลหลักที่ Kubernetes เปลี่ยนจาก Endpoints มาเป็น EndpointSlice คืออะไร?", options:["EndpointSlice รองรับ IPv6 เท่านั้น","ลด load ต่อ apiserver/etcd ตอน scale ใหญ่โดยแบ่งเป็นชิ้นย่อยแทนก้อนเดียว","EndpointSlice ทำ encryption อัตโนมัติ","Endpoints ใช้กับ Ingress ไม่ได้"], correct:1, explain:"EndpointSlice แบ่ง endpoint เป็นชิ้นย่อย (สูงสุด 100 ต่อ slice) ทำให้อัปเดตเฉพาะ slice ที่เปลี่ยนจริง ลด network/CPU overhead เมื่อ Service มี backend pod จำนวนมาก"},
+    {q:"ทำไม IPVS mode ถึงมีประสิทธิภาพดีกว่า iptables mode เมื่อจำนวน Service เพิ่มขึ้นมาก?", options:["IPVS ใช้ hash table lookup แบบ O(1) แทน chain scan แบบ O(n)","IPVS ไม่ต้องใช้ kernel","IPVS ทำงานเฉพาะบน cloud เท่านั้น","iptables ไม่รองรับ TCP"], correct:0, explain:"iptables ประเมินกฎแบบ linear scan ตาม chain ทำให้ latency เพิ่มตามจำนวน Service เชิงเส้น ส่วน IPVS ใช้ kernel hash table ซึ่ง lookup คงที่ไม่ว่าจำนวน Service จะมากแค่ไหน"},
+    {q:"ในคลัสเตอร์ที่เปิด kubeProxyReplacement=true บน Cilium สิ่งใดหายไปจากคลัสเตอร์?", options:["CoreDNS","kube-proxy DaemonSet","NetworkPolicy","Gateway API CRDs"], correct:1, explain:"เมื่อเปิด kube-proxy replacement Cilium ทำหน้าที่ load balancing ผ่าน eBPF map เองทั้งหมด ทำให้ไม่จำเป็นต้องรัน kube-proxy DaemonSet อีกต่อไป"},
+    {q:"plugin ใดใน Corefile ของ CoreDNS ทำหน้าที่ตอบ query สำหรับ *.svc.cluster.local?", options:["forward","cache","kubernetes","loop"], correct:2, explain:"plugin kubernetes อ่านข้อมูล Service/EndpointSlice จาก apiserver โดยตรงเพื่อตอบ query ภายในโดเมน cluster.local"},
+    {q:"query DNS ที่ไม่ตรงกับโดเมนภายในคลัสเตอร์ (เช่น google.com) จะถูกจัดการอย่างไรใน CoreDNS?", options:["ถูก drop ทันที","ถูก forward ไปยัง upstream DNS ผ่าน forward plugin","ถูก cache ตลอดไปโดยไม่ query จริง","CoreDNS ปฏิเสธ query ประเภทนี้เสมอ"], correct:1, explain:"forward plugin ส่ง query ที่ plugin kubernetes ตอบไม่ได้ต่อไปยัง upstream DNS server (มักอ่านจาก /etc/resolv.conf ของ node)"},
+    {q:"ใน Gateway API ทรัพยากรใดที่ทีม application ทั่วไปควรเป็นเจ้าของ/แก้ไขเอง?", options:["GatewayClass","Gateway","HTTPRoute","ทั้งสามอย่างเท่ากัน"], correct:2, explain:"Gateway API ออกแบบให้ HTTPRoute เป็นระดับ application (path/header matching, traffic split) แยกจาก Gateway ซึ่งเป็นระดับ infrastructure (listener, TLS) ที่ทีม platform ดูแล"},
+    {q:"ข้อได้เปรียบของ traffic splitting ใน Gateway API เทียบกับ Ingress คืออะไร?", options:["Gateway API ทำ traffic split ผ่าน field มาตรฐาน (weight ใน backendRefs) โดยไม่ต้องพึ่ง annotation เฉพาะ controller","Ingress ทำ traffic split ได้เร็วกว่าเสมอ","Gateway API ไม่รองรับ traffic split","ทั้งสองไม่ต่างกัน"], correct:0, explain:"Gateway API มี backendRefs พร้อม weight เป็น field มาตรฐานใน spec ทำให้ portable ข้าม implementation ต่าง Ingress ที่ต้องพึ่ง annotation เฉพาะของแต่ละ controller"},
+    {q:"GatewayClass ใน Gateway API เทียบเคียงได้กับทรัพยากรใดใน Kubernetes?", options:["StorageClass","ConfigMap","NetworkPolicy","ServiceAccount"], correct:0, explain:"GatewayClass ทำหน้าที่คล้าย StorageClass คือระบุว่าจะใช้ controller ตัวไหนจัดการ Gateway ที่อ้างถึงคลาสนั้น เป็นแนวคิด class-based provisioning เดียวกัน"},
+    {q:"ถ้า kubectl get httproute แสดง status Accepted: False สาเหตุที่พบบ่อยที่สุดคืออะไร?", options:["Gateway หรือ backend Service ที่ parentRefs/backendRefs อ้างถึงไม่มีอยู่จริงหรือสะกดผิด","CoreDNS ล่ม","Node ไม่มี label","Pod ใช้ CPU เกิน limit"], correct:0, explain:"HTTPRoute จะ Accepted: False เมื่อ controller ตรวจสอบแล้วพบว่า parentRefs (Gateway) หรือ backendRefs (Service) ที่อ้างถึงไม่ถูกต้องหรือไม่มีอยู่จริง"}
+  ]
+},
+{
+  id:"m3", short:"Traffic Mgmt", title:"Module 3 · Advanced Traffic Management", weight:20,
+  blurb:"เมื่อ traffic ซับซ้อนกว่า request-response ธรรมดา: canary release, egress control, multi-cluster และ traffic routing สำหรับ AI/inference workload",
+  topics:[
+    { id:"m3-t1", title:"Canary Release ด้วย Weighted HTTPRoute", summary:"ทำ progressive rollout โดยไม่ต้องพึ่ง service mesh เต็มรูปแบบ",
+      concept:`<p>Gateway API ทำ traffic splitting ระดับ weight ได้ในตัวผ่าน <code>backendRefs[].weight</code> — เพียงพอสำหรับ canary release พื้นฐานโดยไม่ต้องติดตั้ง service mesh เต็มรูปแบบ (sidecar) เลย</p>
+      <ul>
+        <li>Weight เป็นค่าสัมพัทธ์ (relative) ไม่ใช่ percentage ตรงตัว — ถ้าใส่ 80 กับ 20 ระบบคิดสัดส่วน 80:20 เหมือนกับใส่ 4 กับ 1</li>
+        <li>ทุก request ที่ผ่าน rule เดียวกันจะสุ่มเลือก backend ตาม weight โดยประมาณ (ไม่ได้แม่นยำ 100% ต่อ request จำนวนน้อย)</li>
+        <li>rollback ทำได้ทันทีแค่แก้ weight กลับเป็น 100/0 โดยไม่ต้อง redeploy</li>
+      </ul>`,
+      lab:{ title:"ปรับ HTTPRoute เดิมให้แบ่งน้ำหนักระหว่างสองเวอร์ชัน แล้ววัดผลจริง",
+        prereqs:"ใช้ web-gw และ web-route จาก Module 2 Topic 4 เป็นฐาน",
+        steps:[
+          {i:"สร้าง Deployment/Service เวอร์ชันที่สองเพื่อเทียบกับของเดิม", c:"kubectl create deployment web-v2 --image=nginxdemos/hello --replicas=2\nkubectl expose deployment web-v2 --port=80 --name=web-v2-svc", e:"kubectl get pods -l app=web-v2 แสดง 2 pod สถานะ Running", tr:"ถ้า image pull ช้าบนเครื่อง local ให้รอสักครู่แล้วเช็คซ้ำ"},
+          {i:"แก้ HTTPRoute เดิมให้มี backendRefs สองตัวพร้อม weight 80/20", c:"kubectl patch httproute web-route --type merge -p '{\"spec\":{\"rules\":[{\"matches\":[{\"path\":{\"type\":\"PathPrefix\",\"value\":\"/web\"}}],\"backendRefs\":[{\"name\":\"web-clusterip\",\"port\":80,\"weight\":80},{\"name\":\"web-v2-svc\",\"port\":80,\"weight\":20}]}]}}'", e:"kubectl get httproute web-route -o yaml แสดง backendRefs สองรายการพร้อม weight ตามที่ตั้ง", tr:"ถ้า patch fail เพราะ JSON path ไม่ตรง โครงสร้างเดิม ให้ kubectl edit httproute web-route แล้วแก้ด้วยมือแทน"},
+          {i:"ยิง request ซ้ำหลายครั้งแล้วนับว่าตกที่ backend ไหนกี่ครั้ง", c:"for i in $(seq 1 20); do curl -s http://localhost:8080/web | grep -o 'nginx\\|Hello' ; done | sort | uniq -c", e:"เห็นสัดส่วนประมาณ 16-17 ครั้งไปที่ nginx (v1) และ 3-4 ครั้งไปที่ Hello (v2) ใกล้เคียง 80/20", tr:"ถ้ายังใช้ port-forward เดิมค้างจาก Module 2 ให้เปิดใหม่ชี้ไปที่ Gateway svc ก่อนยิง curl"}
+        ],
+        challenge:{ task:"ทำ rollback แบบทันทีจาก 80/20 กลับเป็น 100% v1 โดยไม่ downtime แล้วอธิบายว่าทำไมวิธีนี้ปลอดภัยกว่าการ kubectl delete deployment web-v2 ตรงๆ", reveal:"แก้ weight เป็น {web-clusterip:100, web-v2-svc:0} (หรือเอา backendRef ของ v2 ออก) แล้ว apply — traffic หยุดไป v2 ทันทีโดย pod ของ v2 ยังรันอยู่เผื่อ roll-forward อีกครั้ง ต่างจากการ delete deployment ที่ทำลาย pod ทันที ถ้าจะ roll-forward ใหม่ต้องรอ image pull + startup ใหม่ทั้งหมด ซึ่งช้ากว่าการแค่ปรับ weight มาก"}
+      }
+    },
+    { id:"m3-t2", title:"Egress Gateway", summary:"บังคับ traffic ขาออกจาก namespace ให้ผ่าน IP คงที่ตัวเดียว เพื่อให้ปลายทาง whitelist ได้",
+      diagram:"egressGw",
+      concept:`<p>ปัญหาที่พบบ่อย: บริการภายนอก (เช่น payment gateway) ต้องการ whitelist source IP แต่ pod ใน k8s มี IP เปลี่ยนตลอดเวลาตาม scheduling — <strong>Egress Gateway</strong> แก้ปัญหานี้โดยบังคับ traffic ขาออกจาก namespace/pod ที่กำหนด ให้วิ่งผ่าน node ที่ถูกเลือกเป็น gateway แล้ว SNAT ด้วย IP คงที่ตัวเดียวเสมอ</p>
+      <ul>
+        <li><strong>CiliumEgressGatewayPolicy</strong> — เลือก source (namespace/podSelector), destination CIDR, และ egress node/IP ที่จะใช้</li>
+        <li>ต้องเปิด flag <code>egressGateway.enabled=true</code> ตอนติดตั้ง Cilium (ไม่ได้เปิด default)</li>
+        <li>ต่างจาก NAT gateway ของ cloud provider ตรงที่นี่ควบคุมได้ระดับ pod/namespace ไม่ใช่ระดับ subnet ทั้งก้อน</li>
+      </ul>`,
+      lab:{ title:"เปิด Egress Gateway แล้วพิสูจน์ว่า source IP คงที่จริง",
+        prereqs:"ต้อง helm upgrade เปิด egressGateway.enabled=true ก่อน (ถ้ายังไม่เปิดตอน Module 0)",
+        steps:[
+          {i:"เปิด feature egress gateway บน Cilium ที่ติดตั้งไว้แล้ว", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --reuse-values --set egressGateway.enabled=true\nkubectl -n kube-system rollout status ds/cilium", e:"DaemonSet cilium restart แล้วขึ้น Ready ครบทุก node", tr:"ถ้า pod cilium ติด CrashLoopBackOff หลังเปิด feature นี้ ตรวจว่า kernel ของ node รองรับ eBPF feature ที่จำเป็น (บน kind มักไม่มีปัญหาเพราะใช้ kernel ของ host)"},
+          {i:"สร้าง label ให้ node หนึ่งตัวเป็น egress gateway", c:"kubectl label node ckne-worker2 egress-gateway=true", e:"node ckne-worker2 มี label egress-gateway=true เพิ่มขึ้นมา", tr:"ตรวจสอบด้วย kubectl get node --show-labels | grep egress-gateway"},
+          {i:"สร้าง CiliumEgressGatewayPolicy ให้ namespace default ออกผ่าน node นั้นด้วย SNAT IP คงที่", c:"cat <<EOF | kubectl apply -f -\napiVersion: cilium.io/v2\nkind: CiliumEgressGatewayPolicy\nmetadata:\n  name: egress-sample\nspec:\n  selectors:\n  - podSelector:\n      matchLabels:\n        run: netcheck\n  destinationCIDRs:\n  - \"0.0.0.0/0\"\n  egressGateway:\n    nodeSelector:\n      matchLabels:\n        egress-gateway: \"true\"\nEOF", e:"kubectl get ciliumegressgatewaypolicy แสดง policy สร้างสำเร็จ", tr:"ถ้า apply ไม่ผ่าน ตรวจ apiVersion ให้ตรงกับ version ของ Cilium CRD ที่ติดตั้งจริง (kubectl get crd | grep egress)"},
+          {i:"ยิง request ออกไปยังปลายทางทดสอบเพื่อดู source IP ที่ปลายทางเห็น", c:"kubectl exec netcheck -- curl -s ifconfig.me", e:"ได้ IP กลับมาเป็น IP ของ node ckne-worker2 (egress gateway) ไม่ใช่ IP เดิมของ pod", tr:"ถ้าเครื่อง lab ไม่มี internet ออก ให้จำลองปลายทางด้วย pod อีกตัวที่รัน netshoot แล้วดูจาก log ของมันแทนว่า source IP เปลี่ยนเป็น IP ของ node gateway"}
+        ],
+        challenge:{ task:"ถ้ามี pod สองตัวใน namespace เดียวกัน ตัวหนึ่งตรงกับ podSelector ของ policy อีกตัวไม่ตรง จะเกิดอะไรขึ้นกับ traffic ขาออกของแต่ละตัว", reveal:"เฉพาะ pod ที่ label ตรงกับ podSelector ของ CiliumEgressGatewayPolicy เท่านั้นที่ traffic ขาออกจะถูกบังคับผ่าน egress gateway node และ SNAT ด้วย IP คงที่ ส่วน pod ที่ label ไม่ตรงจะออกผ่านเส้นทางปกติ (SNAT ด้วย IP ของ node ตัวเองตามปกติ) — เพราะ policy นี้ scope แคบระดับ pod ไม่ใช่ทั้ง namespace เว้นแต่จะเขียน podSelector ให้ครอบคลุมทุก pod"}
+      }
+    },
+    { id:"m3-t3", title:"Cross-Cluster Service Discovery (ClusterMesh)", summary:"ให้ Service ของสองคลัสเตอร์มองเห็นและเรียกกันได้เหมือนอยู่คลัสเตอร์เดียวกัน",
+      concept:`<p><strong>ClusterMesh</strong> (ฟีเจอร์ของ Cilium) เชื่อมหลายคลัสเตอร์เข้าด้วยกันในระดับ network ทำให้ pod ของคลัสเตอร์ A เรียก Service ของคลัสเตอร์ B ได้ตรงๆ ผ่าน DNS โดยไม่ต้องผ่าน external LB หรือ VPN gateway แยกต่างหาก</p>
+      <ul>
+        <li>แต่ละคลัสเตอร์ต้องมี <strong>unique cluster name</strong> และ <strong>unique cluster ID</strong> (1-255) ห้ามชนกัน</li>
+        <li>Service ที่ต้องการแชร์ข้ามคลัสเตอร์ต้อง annotate ด้วย <code>service.cilium.io/global: "true"</code></li>
+        <li>DNS จะ resolve ชื่อ global service ให้คืน IP จากทุกคลัสเตอร์ที่มี backend Ready รวมกัน — โหลดบาลานซ์ข้ามคลัสเตอร์ได้เลย</li>
+        <li>Pod CIDR ของแต่ละคลัสเตอร์ <strong>ห้ามทับกัน</strong> ไม่งั้น routing จะสับสน — ต้อง plan ตั้งแต่ตอนสร้างคลัสเตอร์</li>
+      </ul>`,
+      lab:{ title:"จำลอง ClusterMesh ด้วย kind สองคลัสเตอร์ (แล็บขั้นสูง — ใช้เวลานานกว่าแล็บอื่น)",
+        prereqs:"ต้องมี Cilium CLI เวอร์ชันที่รองรับ clustermesh subcommand และเครื่องมี RAM เหลือพอสำหรับ cluster ที่สอง",
+        steps:[
+          {i:"สร้างคลัสเตอร์ที่สองด้วย pod CIDR ที่ไม่ทับกับคลัสเตอร์แรก แล้วติดตั้ง Cilium พร้อมตั้งชื่อ/ID ให้ชัดเจน", c:"cat <<EOF > kind-config2.yaml\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnetworking:\n  disableDefaultCNI: true\n  kubeProxyMode: \"none\"\n  podSubnet: \"10.245.0.0/16\"\nnodes:\n  - role: control-plane\n  - role: worker\nEOF\nkind create cluster --config kind-config2.yaml --name ckne2\nhelm install cilium cilium/cilium --version 1.15.6 --namespace kube-system \\\n  --kube-context kind-ckne2 \\\n  --set cluster.name=ckne2 --set cluster.id=2 \\\n  --set kubeProxyReplacement=true \\\n  --set k8sServiceHost=ckne2-control-plane \\\n  --set k8sServicePort=6443", e:"คลัสเตอร์ ckne2 พร้อมและ Cilium ขึ้น Running (cilium status --context kind-ckne2)", tr:"ถ้า RAM เครื่องไม่พอ ให้ลดจำนวน worker ของคลัสเตอร์แรกลงชั่วคราว"},
+          {i:"ตั้งชื่อ/ID ให้คลัสเตอร์แรกด้วย (ถ้ายังไม่ตั้งตอน Module 0) แล้วเปิด ClusterMesh บนทั้งสองฝั่ง", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --kube-context kind-ckne --reuse-values \\\n  --set cluster.name=ckne1 --set cluster.id=1\ncilium clustermesh enable --context kind-ckne\ncilium clustermesh enable --context kind-ckne2", e:"ทั้งสองคำสั่ง clustermesh enable รันจนจบไม่มี error, สร้าง Service แบบ LoadBalancer/NodePort สำหรับ clustermesh-apiserver", tr:"บน kind ที่ไม่มี real LoadBalancer อาจต้องรอ service ค้าง pending — ใช้ NodePort แทนผ่าน flag --service-type NodePort"},
+          {i:"เชื่อมสองคลัสเตอร์เข้าด้วยกันแล้วตรวจสถานะ", c:"cilium clustermesh connect --context kind-ckne --destination-context kind-ckne2\ncilium clustermesh status --context kind-ckne --wait", e:"เห็น \"✅ Cluster connections: ckne2\" และ endpoint ที่ sync ข้ามคลัสเตอร์มากกว่า 0", tr:"ถ้าเชื่อมไม่สำเร็จ มักเป็นปัญหา network ระหว่าง Docker network ของสองคลัสเตอร์ — ตรวจว่าทั้งคู่อยู่ docker network เดียวกันด้วย docker network inspect kind"},
+          {i:"ประกาศ Service ในคลัสเตอร์ 2 เป็น global แล้วเรียกจาก pod ในคลัสเตอร์ 1", c:"kubectl --context kind-ckne2 annotate service web-clusterip service.cilium.io/global=\"true\"\nkubectl --context kind-ckne annotate service web-clusterip service.cilium.io/global=\"true\"\nkubectl --context kind-ckne exec netcheck -- curl -s web-clusterip.default.svc.cluster.local", e:"ได้ response กลับมาแม้ pod backend อาจอยู่คนละคลัสเตอร์กับ client", tr:"ถ้า resolve ไม่เจอ ตรวจว่า Service ชื่อเดียวกันมีอยู่ทั้งสอง namespace/คลัสเตอร์จริง และ annotate ครบทั้งสองฝั่ง"}
+        ],
+        challenge:{ task:"อธิบายว่าทำไม pod CIDR ของสองคลัสเตอร์ต้องไม่ทับกันใน ClusterMesh ทั้งที่แต่ละคลัสเตอร์มี etcd/apiserver แยกกันเป็นอิสระ", reveal:"ClusterMesh route traffic ข้ามคลัสเตอร์โดยตรงระดับ pod IP (ไม่ผ่าน NAT) ผ่าน tunnel ระหว่าง node ของสองคลัสเตอร์ ถ้า pod CIDR ทับกัน routing table จะไม่รู้ว่า IP ปลายทางอยู่คลัสเตอร์ไหนกันแน่ ทำให้ traffic หลงทางหรือชนกัน จึงต้อง plan CIDR ให้ไม่ overlap ตั้งแต่ต้นเหมือนการเชื่อม VPC สองใบเข้าด้วยกัน"}
+      }
+    },
+    { id:"m3-t4", title:"Service Mesh Basics และ AI/LLM Traffic Routing", summary:"sidecar vs sidecar-less mesh และการ route traffic ไปยัง inference backend หลายตัว",
+      concept:`<p>Service mesh เพิ่มชั้น traffic management/observability/mTLS เหนือ Service ปกติ มี 2 สถาปัตยกรรมหลัก</p>
+      <ul>
+        <li><strong>Sidecar mesh</strong> (เช่น Istio แบบดั้งเดิม) — ฉีด proxy container (Envoy) เข้าทุก pod ควบคุม traffic ได้ละเอียดมากแต่เพิ่ม resource overhead ต่อ pod</li>
+        <li><strong>Sidecar-less / ambient mesh</strong> (Cilium mesh, Istio Ambient) — ใช้ eBPF หรือ per-node proxy แทนการฉีด sidecar ทุก pod ลด overhead แต่บาง feature ละเอียดน้อยกว่า sidecar</li>
+        <li><strong>mTLS</strong> — mesh ส่วนใหญ่เข้ารหัส + พิสูจน์ตัวตน traffic ระหว่าง pod อัตโนมัติโดย workload ไม่ต้องรู้ตัว</li>
+        <li><strong>AI/LLM inference routing</strong> — เทรนด์ใหม่ใน CKNE blueprint: route request ไปยัง model backend ที่เหมาะสม (ตาม path, header เช่น model version, หรือ load ปัจจุบันของ GPU) ใช้หลักการเดียวกับ HTTPRoute path/header matching แต่ backend เป็น inference server แทน web service ธรรมดา</li>
+      </ul>`,
+      lab:{ title:"จำลอง inference routing ด้วย HTTPRoute แบบ header-based matching",
+        prereqs:"ใช้ Gateway web-gw เดิมจาก Module 2",
+        steps:[
+          {i:"สร้าง Service สองตัวจำลอง model backend คนละเวอร์ชัน (ใช้ web ธรรมดาแทน inference server จริงเพื่อความง่ายของแล็บ)", c:"kubectl create deployment model-small --image=nginxdemos/hello --replicas=1\nkubectl create deployment model-large --image=nginx --replicas=1\nkubectl expose deployment model-small --port=80\nkubectl expose deployment model-large --port=80", e:"ได้ Service model-small และ model-large พร้อม pod Running", tr:"ถ้า pod ค้าง Pending ตรวจ resource ของ node ว่าพอสำหรับ pod เพิ่มหรือไม่"},
+          {i:"สร้าง HTTPRoute ที่ route ตาม header x-model-tier ไปยัง backend ต่างกัน", c:"cat <<EOF | kubectl apply -f -\napiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: model-route\nspec:\n  parentRefs:\n  - name: web-gw\n  rules:\n  - matches:\n    - path: {type: PathPrefix, value: /infer}\n      headers:\n      - name: x-model-tier\n        value: large\n    backendRefs:\n    - name: model-large\n      port: 80\n  - matches:\n    - path: {type: PathPrefix, value: /infer}\n    backendRefs:\n    - name: model-small\n      port: 80\nEOF", e:"kubectl get httproute model-route แสดง Accepted: True และมี 2 rules", tr:"Gateway API รุ่นเก่าบาง controller ยังไม่รองรับ header matching เต็มรูปแบบ ตรวจ Cilium version ให้เป็น 1.15+ ก่อน"},
+          {i:"ยิง request สองแบบเทียบกัน: มี header กับไม่มี header", c:"curl -s http://localhost:8080/infer -H 'x-model-tier: large' | grep -o nginx\ncurl -s http://localhost:8080/infer | grep -o Hello", e:"คำขอที่มี header x-model-tier: large ตกไปที่ model-large (เจอ nginx) ส่วนที่ไม่มี header ตกไปที่ model-small (เจอ Hello)", tr:"ถ้าทั้งสองไปที่เดียวกัน ตรวจลำดับ rules ใน HTTPRoute — rule ที่เจาะจงกว่า (มี header) ต้องมาก่อน rule ทั่วไป"}
+        ],
+        challenge:{ task:"ออกแบบว่าจะปรับ routing นี้อย่างไรถ้าต้องการ route ตาม \"GPU queue ปัจจุบันต่ำสุด\" แทนที่จะ route ตาม header คงที่ — HTTPRoute พื้นฐานทำสิ่งนี้ได้เองหรือไม่", reveal:"HTTPRoute มาตรฐานทำ static routing (ตาม path/header/weight ที่กำหนดล่วงหน้า) เท่านั้น ไม่มี field สำหรับอ่าน real-time metric อย่าง GPU queue ได้เอง — การ route แบบ dynamic ตาม load จริงต้องอาศัยชั้นเพิ่มเติม เช่น custom inference gateway/controller ที่ reconcile weight ของ HTTPRoute อัตโนมัติตาม metric (คล้าย autoscaler แต่ปรับ weight แทนจำนวน replica) ซึ่งเป็นทิศทางที่ inference gateway โปรเจกต์ใหม่ๆ ใน ecosystem กำลังพัฒนา"}
+      }
+    }
+  ],
+  quiz:[
+    {q:"ในการทำ canary ผ่าน weighted HTTPRoute ค่า weight มีความหมายอย่างไร?", options:["เป็น percentage ที่แม่นยำ 100% ต่อ request ทุกครั้ง","เป็นค่าสัดส่วนสัมพัทธ์ระหว่าง backend ไม่ใช่ percentage ตรงตัว","เป็นลำดับความสำคัญของ backend","ใช้กำหนดจำนวน replica ของ pod"], correct:1, explain:"weight เป็นค่าสัมพัทธ์ระหว่าง backendRefs เช่น 80 กับ 20 ให้สัดส่วนเดียวกับ 4 กับ 1 การกระจาย request เป็นไปตามสัดส่วนโดยประมาณ ไม่ใช่แม่นยำเป๊ะทุก request เดี่ยว"},
+    {q:"ข้อดีของการ rollback ด้วยการปรับ weight เทียบกับการลบ Deployment ทิ้งคืออะไร?", options:["ปรับ weight เร็วกว่าและ pod เวอร์ชันใหม่ยังพร้อม roll-forward ทันที","ปรับ weight ทำให้ pod ถูกลบอัตโนมัติ","ทั้งสองวิธีให้ผลเหมือนกันทุกประการ","การลบ Deployment ปลอดภัยกว่าเสมอ"], correct:0, explain:"การปรับ weight เป็น 100/0 หยุด traffic ไปเวอร์ชันใหม่ทันทีโดย pod ยังรันอยู่ พร้อม roll-forward ใหม่ได้เร็ว ต่างจากการลบ Deployment ที่ต้องสร้าง/pull image/start ใหม่ทั้งหมด"},
+    {q:"Egress Gateway ของ Cilium แก้ปัญหาอะไรเป็นหลัก?", options:["เข้ารหัส traffic ขาเข้า","ทำให้ traffic ขาออกจาก pod ที่กำหนดมี source IP คงที่ตัวเดียวเพื่อให้ปลายทาง whitelist ได้","เพิ่มความเร็วในการ resolve DNS","ทำ load balancing ขาเข้า"], correct:1, explain:"เพราะ pod IP เปลี่ยนตาม scheduling ตลอดเวลา Egress Gateway บังคับ traffic ขาออกผ่าน node ที่กำหนดแล้ว SNAT ด้วย IP คงที่ ทำให้บริการภายนอก whitelist ได้ง่าย"},
+    {q:"ข้อกำหนดสำคัญที่สุดข้อหนึ่งก่อนตั้ง ClusterMesh ระหว่างสองคลัสเตอร์คืออะไร?", options:["ทั้งสองคลัสเตอร์ต้องใช้ cloud provider เดียวกัน","Pod CIDR ของแต่ละคลัสเตอร์ต้องไม่ทับกัน","ต้องปิด NetworkPolicy ทั้งสองฝั่ง","ต้องใช้ Kubernetes เวอร์ชันเดียวกันเป๊ะ"], correct:1, explain:"ClusterMesh route traffic ข้ามคลัสเตอร์ระดับ pod IP โดยตรง ถ้า pod CIDR ทับกันจะทำให้ routing สับสนว่า IP ปลายทางอยู่คลัสเตอร์ไหน จึงต้อง plan CIDR ไม่ให้ overlap ตั้งแต่ต้น"},
+    {q:"annotation ใดที่ใช้ประกาศให้ Service มองเห็นได้ข้ามคลัสเตอร์ใน Cilium ClusterMesh?", options:["service.cilium.io/global: \"true\"","kubernetes.io/ingress-class","cilium.io/policy","networking.k8s.io/cross-cluster"], correct:0, explain:"annotation service.cilium.io/global=\"true\" บอก Cilium ให้ sync Service นี้ข้ามคลัสเตอร์ใน mesh ทำให้ DNS คืน backend จากทุกคลัสเตอร์ที่มี Service ชื่อเดียวกันและ annotate เหมือนกัน"},
+    {q:"ความแตกต่างหลักระหว่าง sidecar mesh กับ sidecar-less (ambient) mesh คืออะไร?", options:["sidecar-less ไม่รองรับ mTLS เลย","sidecar mesh ฉีด proxy container เข้าทุก pod เพิ่ม overhead ส่วน sidecar-less ใช้ eBPF/per-node proxy แทน","sidecar mesh ใช้ได้เฉพาะ cloud เท่านั้น","ทั้งสองแบบไม่มีความแตกต่างด้าน performance"], correct:1, explain:"sidecar mesh ฉีด Envoy proxy เข้าทุก pod ให้ควบคุมละเอียดแต่เพิ่ม resource overhead ต่อ pod ส่วน sidecar-less/ambient ใช้ eBPF หรือ proxy ระดับ node ลด overhead โดยแลกกับความละเอียดบาง feature"},
+    {q:"HTTPRoute มาตรฐานสามารถ route แบบ dynamic ตาม real-time metric (เช่น GPU queue) ได้เองหรือไม่?", options:["ได้ทันทีโดยไม่ต้องเพิ่มอะไร","ไม่ได้ — ต้องอาศัย controller/gateway เพิ่มเติมที่ reconcile weight ตาม metric","ได้เฉพาะกับ Ingress เท่านั้น","HTTPRoute ไม่รองรับ header matching เลย"], correct:1, explain:"HTTPRoute ทำ static routing ตาม path/header/weight ที่กำหนดไว้ล่วงหน้าเท่านั้น การ route แบบ dynamic ตาม metric จริงต้องมีชั้นเพิ่มเติม เช่น inference gateway controller ที่ปรับ weight อัตโนมัติ"},
+    {q:"ในแล็บ header-based routing ของโมดูลนี้ ทำไม rule ที่มี header matching ต้องเขียนไว้ก่อน rule ทั่วไปใน HTTPRoute?", options:["ลำดับไม่มีผลอะไรเลย","Gateway ปฏิเสธ rule ที่ไม่มี header","controller จับคู่ rule ตามลำดับ rule ที่เจาะจงกว่าควรมาก่อนไม่งั้น rule ทั่วไปจะ match ก่อนเสมอ","HTTPRoute อนุญาตแค่ 1 rule ต่อ path"], correct:2, explain:"ถ้า rule ทั่วไป (ไม่มี header condition) ถูกวางไว้ก่อน มันจะ match ทุก request ที่ path ตรงกันตั้งแต่ rule แรก ทำให้ rule ที่มีเงื่อนไข header ไม่มีโอกาสถูกใช้เลย จึงต้องเรียง rule เฉพาะเจาะจงไว้ก่อน"}
+  ]
+},
+{
+  id:"m4", short:"Security & Policy", title:"Module 4 · Network Security & Policy", weight:25,
+  blurb:"อีกโดเมนที่หนัก 25% — ล็อกดาวน์ traffic ด้วย NetworkPolicy, ทำ L7/DNS-aware policy เฉพาะ CNI, เข้ารหัสข้อมูลระหว่างทาง และจัดการ TLS cert",
+  topics:[
+    { id:"m4-t1", title:"NetworkPolicy พื้นฐาน: Default-Deny และ Selectors", summary:"กติกาพื้นฐานที่สุดของ network security ใน k8s",
+      diagram:"netpolDeny",
+      concept:`<p>โดยปริยาย k8s อนุญาตให้ทุก pod คุยกับทุก pod ได้หมด (flat network) — <strong>NetworkPolicy</strong> เป็นทรัพยากรที่เปลี่ยนพฤติกรรมนี้ แต่มีกติกาสำคัญที่ต้องจำให้แม่น</p>
+      <ul>
+        <li>ทันทีที่มี NetworkPolicy อย่างน้อยหนึ่งตัวเลือก pod ใด (ผ่าน podSelector) namespace/pod นั้นเข้าสู่โหมด <strong>default-deny</strong> สำหรับทิศทางที่ policy นั้นระบุ (ingress และ/หรือ egress)</li>
+        <li>Policy หลายตัวที่เลือก pod เดียวกันจะถูก <strong>รวมกันแบบ OR</strong> (union) ไม่ใช่ AND — traffic ผ่านได้ถ้ามี rule ใดอนุญาต ไม่จำเป็นต้องผ่านทุก policy</li>
+        <li><strong>podSelector</strong> เลือก pod ปลายทาง, <strong>namespaceSelector</strong> เลือก traffic จาก namespace อื่น, ใช้ร่วมกันได้เพื่อความละเอียด</li>
+        <li>ถ้าไม่มี NetworkPolicy เลือก pod ตัวใดเลย pod นั้นยัง allow-all ตามปกติ (deny-by-default เกิดเฉพาะเมื่อ "ถูกเลือก" เท่านั้น)</li>
+      </ul>`,
+      lab:{ title:"ล็อกดาวน์ namespace แบบ default-deny แล้วเปิดเฉพาะที่จำเป็น",
+        steps:[
+          {i:"สร้าง namespace ทดสอบพร้อม pod frontend/backend", c:"kubectl create ns secdemo\nkubectl -n secdemo run frontend --image=nicolaka/netshoot --labels=role=frontend --command -- sleep 3600\nkubectl -n secdemo create deployment backend --image=nginx\nkubectl -n secdemo expose deployment backend --port=80", e:"pod frontend และ backend ขึ้น Running ใน namespace secdemo", tr:"ถ้า pod ค้าง Pending ตรวจว่า resource เหลือพอสำหรับ namespace ใหม่"},
+          {i:"ยืนยันว่าก่อนมี policy ใดๆ frontend เรียก backend ได้ปกติ (allow-all โดย default)", c:"kubectl -n secdemo exec frontend -- curl -s -o /dev/null -w '%{http_code}\\n' backend", e:"ได้ 200 กลับมา", tr:"ถ้าได้ error connection refused ตรวจว่า Service backend สร้างสำเร็จและ label ตรงกับ Deployment"},
+          {i:"ใส่ default-deny ingress ทั้ง namespace", c:"cat <<EOF | kubectl apply -f -\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: default-deny-ingress\n  namespace: secdemo\nspec:\n  podSelector: {}\n  policyTypes: [\"Ingress\"]\nEOF\nkubectl -n secdemo exec frontend -- curl -s -o /dev/null -w '%{http_code}\\n' backend --max-time 3", e:"curl ครั้งนี้ timeout หรือ error เพราะทุก pod ถูกเลือกโดย podSelector: {} และไม่มี rule อนุญาตเลย", tr:"ถ้ายังเชื่อมได้ ตรวจว่า policyTypes ระบุ Ingress ถูกต้อง และ CNI ที่ใช้รองรับ NetworkPolicy (Cilium รองรับเต็มรูปแบบ)"},
+          {i:"เพิ่ม rule อนุญาตเฉพาะ frontend เรียก backend ได้ (ที่เหลือยังถูกบล็อก)", c:"cat <<EOF | kubectl apply -f -\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: allow-frontend-to-backend\n  namespace: secdemo\nspec:\n  podSelector:\n    matchLabels: {app: backend}\n  policyTypes: [\"Ingress\"]\n  ingress:\n  - from:\n    - podSelector:\n        matchLabels: {role: frontend}\nEOF\nkubectl -n secdemo exec frontend -- curl -s -o /dev/null -w '%{http_code}\\n' backend", e:"ได้ 200 กลับมาอีกครั้ง เพราะ frontend ตรงกับ rule ที่อนุญาตแล้ว", tr:"ถ้ายัง fail ตรวจ label บน pod backend จริงด้วย kubectl -n secdemo get pods --show-labels ว่าตรงกับ podSelector ของ NetworkPolicy"}
+        ],
+        challenge:{ task:"สร้าง pod ที่สามชื่อ intruder ใน namespace เดียวกันไม่มี label role=frontend แล้วพิสูจน์ว่ามันเรียก backend ไม่ได้ทั้งที่อยู่ namespace เดียวกัน", reveal:"kubectl -n secdemo run intruder --image=nicolaka/netshoot --command -- sleep 3600 แล้ว exec curl backend จาก pod นี้จะ timeout ทันที เพราะ NetworkPolicy พิจารณาจาก label ไม่ใช่ namespace เพียงอย่างเดียว — พิสูจน์หลักการสำคัญว่า 'อยู่ namespace เดียวกัน' ไม่ได้แปลว่า 'คุยกันได้' เมื่อมี default-deny ทำงานอยู่"}
+      }
+    },
+    { id:"m4-t2", title:"CNI-specific Policy Extensions: L7 และ DNS-aware", summary:"NetworkPolicy มาตรฐานทำได้แค่ L3/L4 — ถ้าต้องการ L7 ต้องพึ่ง CRD เฉพาะ CNI",
+      concept:`<p>NetworkPolicy มาตรฐานของ k8s ทำงานที่ L3/L4 เท่านั้น (IP, port, protocol) — ถ้าต้องการควบคุมระดับ L7 (HTTP method, path) หรือจำกัด egress ตามชื่อโดเมน ต้องใช้ CRD เฉพาะของแต่ละ CNI</p>
+      <ul>
+        <li><strong>CiliumNetworkPolicy</strong> — เพิ่ม field <code>toPorts[].rules.http</code> ให้ระบุ method/path ที่อนุญาตได้ เช่น อนุญาตเฉพาะ GET /health แต่บล็อก DELETE /admin</li>
+        <li><strong>toFQDNs</strong> — Cilium เฉพาะ อนุญาต egress ตามชื่อโดเมน (เช่น เฉพาะ api.stripe.com) โดยไม่ต้องรู้ IP ล่วงหน้า ระบบ resolve DNS แล้วอัปเดต allow-list อัตโนมัติ</li>
+        <li><strong>Calico GlobalNetworkPolicy</strong> — คล้าย NetworkPolicy แต่ scope ครอบคลุมทั้งคลัสเตอร์ ไม่ผูกกับ namespace เดียว เหมาะกับ policy ระดับองค์กร (เช่น "ห้าม namespace ไหนคุยกับ metadata service ของ cloud")</li>
+        <li>ข้อสำคัญ: policy พวกนี้ <strong>portable ข้าม CNI ไม่ได้</strong> — ย้าย CNI ต้องเขียน policy ใหม่ทั้งหมด</li>
+      </ul>`,
+      lab:{ title:"เขียน L7 policy จำกัด HTTP method และ DNS-aware egress policy",
+        prereqs:"ใช้ pod frontend/backend จาก topic ก่อนหน้าใน namespace secdemo",
+        steps:[
+          {i:"ลบ NetworkPolicy มาตรฐานตัวเดิมออกก่อน แล้วเขียน CiliumNetworkPolicy ที่อนุญาตเฉพาะ HTTP GET ไปยัง backend", c:"kubectl -n secdemo delete networkpolicy allow-frontend-to-backend default-deny-ingress\ncat <<EOF | kubectl apply -f -\napiVersion: cilium.io/v2\nkind: CiliumNetworkPolicy\nmetadata:\n  name: l7-allow-get\n  namespace: secdemo\nspec:\n  endpointSelector:\n    matchLabels: {app: backend}\n  ingress:\n  - fromEndpoints:\n    - matchLabels: {role: frontend}\n    toPorts:\n    - ports: [{port: \"80\", protocol: TCP}]\n      rules:\n        http:\n        - method: \"GET\"\nEOF", e:"kubectl -n secdemo get ciliumnetworkpolicy แสดง policy สร้างสำเร็จ", tr:"ถ้า apply ไม่ผ่านตรวจว่า apiVersion cilium.io/v2 ตรงกับ CRD ที่ Cilium version นี้ติดตั้งจริง"},
+          {i:"ทดสอบว่า GET ผ่านได้ แต่ POST ถูกบล็อกที่ระดับ L7", c:"kubectl -n secdemo exec frontend -- curl -s -o /dev/null -w 'GET: %{http_code}\\n' backend\nkubectl -n secdemo exec frontend -- curl -s -o /dev/null -w 'POST: %{http_code}\\n' -X POST backend --max-time 3", e:"GET ได้ 200 ส่วน POST ถูกบล็อกที่ระดับ connection (timeout หรือ 403 ขึ้นกับ mode) แม้เป็น TCP port เดียวกัน", tr:"L7 policy ต้องพึ่ง Envoy proxy ภายในของ Cilium ถ้าเพิ่งเปิด feature อาจต้องรอ proxy container ขึ้นก่อน ตรวจ kubectl -n kube-system get pods | grep cilium"},
+          {i:"เขียน DNS-aware egress policy อนุญาตเฉพาะ pod frontend เรียกออกไปยัง one.one.one.one เท่านั้น — สังเกต rules.dns ใต้ port 53 ซึ่งจำเป็นเสมอ", c:"cat <<EOF | kubectl apply -f -\napiVersion: cilium.io/v2\nkind: CiliumNetworkPolicy\nmetadata:\n  name: fqdn-egress\n  namespace: secdemo\nspec:\n  endpointSelector:\n    matchLabels: {role: frontend}\n  egress:\n  - toFQDNs:\n    - matchName: \"one.one.one.one\"\n    toPorts:\n    - ports: [{port: \"443\", protocol: TCP}]\n  - toEndpoints:\n    - matchLabels:\n        \"k8s:io.kubernetes.pod.namespace\": kube-system\n        \"k8s:k8s-app\": kube-dns\n    toPorts:\n    - ports:\n      - port: \"53\"\n        protocol: ANY\n      rules:\n        dns:\n        - matchPattern: \"*\"\nEOF", e:"policy สร้างสำเร็จ — block rules.dns ทำให้ query DNS ถูกส่งผ่าน DNS proxy ของ Cilium ซึ่งเป็นกลไกที่ toFQDNs ใช้เรียนรู้ IP ของโดเมนที่อนุญาต", tr:"ถ้าลืม rules.dns (เขียนแค่ allow port 53 เฉยๆ) toFQDNs จะไม่ทำงานเลย เพราะ Cilium ไม่ได้ดัก DNS response จึงไม่รู้ว่าโดเมนนั้น resolve เป็น IP อะไร — อาการคือ curl ไปยังโดเมนที่อนุญาตแล้วยัง timeout"},
+          {i:"ยืนยันว่าโดเมนที่อนุญาตเรียกได้ แต่โดเมนอื่นถูกบล็อก", c:"kubectl -n secdemo exec frontend -- curl -s -o /dev/null -w 'allowed: %{http_code}\\n' https://one.one.one.one --max-time 3\nkubectl -n secdemo exec frontend -- curl -s -o /dev/null -w 'blocked: %{http_code}\\n' https://example.com --max-time 3", e:"บรรทัดแรกได้ 200 หรือ 30x ปกติ ส่วนบรรทัดสอง timeout เพราะไม่อยู่ใน toFQDNs allow-list", tr:"ถ้าทั้งสอง fail ตรวจว่า egress DNS rule (port 53) apply สำเร็จจริงก่อน"}
+        ],
+        challenge:{ task:"อธิบายว่าทำไม toFQDNs ถึงต้องพึ่งการดักฟัง DNS query (DNS snooping) แทนการเขียน IP ตรงๆ ใน policy", reveal:"โดเมนอย่าง api.stripe.com อาจ resolve เป็น IP หลายตัวและเปลี่ยนได้ตลอดเวลา (โดยเฉพาะบริการที่อยู่หลัง CDN/anycast) ถ้าเขียน IP ตรงๆ ใน policy จะพังทันทีที่ IP เปลี่ยน Cilium จึงดัก DNS response ที่ pod ได้รับ (ผ่าน DNS proxy ภายใน) แล้วอัปเดต allow-list ของ eBPF แบบ dynamic ตาม IP ที่ resolve ได้จริงในขณะนั้น ทำให้ policy อิงชื่อโดเมนได้โดยไม่ต้องรู้ IP ล่วงหน้า"}
+      }
+    },
+    { id:"m4-t3", title:"Encryption in Transit: mTLS และ WireGuard", summary:"เข้ารหัส traffic ระหว่าง node แบบโปร่งใส โดย workload ไม่ต้องรู้ตัว",
+      concept:`<p>การเข้ารหัส traffic ระหว่างทางทำได้หลายชั้น แต่ละชั้นมี trade-off ต่างกัน</p>
+      <ul>
+        <li><strong>mTLS ผ่าน service mesh</strong> — เข้ารหัสและพิสูจน์ตัวตนระดับ application (L7) แต่ละ workload มี certificate ของตัวเอง (มักผูกกับแนวคิด SPIFFE identity) เหมาะกับ zero-trust ระดับละเอียด</li>
+        <li><strong>Node-to-node transparent encryption (WireGuard/IPsec)</strong> — เข้ารหัสทุก traffic ที่วิ่งระหว่าง node โดยอัตโนมัติที่ระดับ kernel ไม่ต้องแก้ application เลย เหมาะเป็น baseline encryption ทั้งคลัสเตอร์</li>
+        <li>Cilium รองรับทั้งสองแบบ: transparent encryption ผ่าน <code>encryption.type: wireguard</code> (หรือ ipsec) และยังผสานกับ mTLS ระดับ mesh ได้ในเวอร์ชันใหม่</li>
+        <li>WireGuard เบากว่า IPsec เพราะ codebase เล็กกว่ามาก และ integrate เข้า Linux kernel โดยตรงตั้งแต่ 5.6</li>
+      </ul>`,
+      lab:{ title:"เปิด transparent encryption ด้วย WireGuard แล้วยืนยันว่า traffic ถูกเข้ารหัสจริง",
+        steps:[
+          {i:"เปิด WireGuard encryption บน Cilium ที่ติดตั้งไว้", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --reuse-values \\\n  --set encryption.enabled=true --set encryption.type=wireguard\nkubectl -n kube-system rollout status ds/cilium", e:"DaemonSet cilium restart แล้วขึ้น Ready ครบทุก node ไม่มี error", tr:"ถ้า pod ค้าง CrashLoopBackOff ตรวจว่า kernel รองรับ WireGuard module (modprobe wireguard บน host)"},
+          {i:"ตรวจสถานะ encryption ผ่าน cilium CLI ว่าทุก node เชื่อมกันด้วย WireGuard แล้ว", c:"cilium encrypt status", e:"เห็นสถานะ encryption: Wireguard และจำนวน peer ที่เชื่อมสำเร็จเท่ากับจำนวน node ลบหนึ่ง (peer กับ node อื่นทุกตัว)", tr:"ถ้า peer ไม่ครบ ให้รอสักครู่ให้ key exchange เสร็จ หรือตรวจ firewall ระหว่าง Docker network ของ node ไม่ได้บล็อก UDP port ที่ WireGuard ใช้"},
+          {i:"ยิง traffic ข้าม node แล้วจับ packet บน physical interface เพื่อยืนยันว่า payload ถูกเข้ารหัส (อ่านไม่ออก)", c:"docker exec -it ckne-worker tcpdump -i any -n udp -c 5 -X", e:"เห็น packet UDP (WireGuard tunnel) ที่ payload เป็นข้อมูลไม่มีความหมาย (encrypted bytes) ต่างจากตอนไม่เข้ารหัสที่เห็น ICMP/HTTP payload อ่านได้ตรงๆ", tr:"ต้องสร้าง traffic ข้าม node ระหว่างจับ packet (เช่น ping จาก netcheck ไป netcheck2) ไม่งั้นจะไม่เห็น packet เลย"}
+        ],
+        challenge:{ task:"เปรียบเทียบว่า WireGuard transparent encryption กับ mTLS ระดับ service mesh ปกป้องอะไรต่างกัน — ถ้ามีแค่ WireGuard อย่างเดียว ยังมีช่องโหว่อะไรเหลืออยู่", reveal:"WireGuard เข้ารหัสเฉพาะ traffic ระหว่าง node (L3) ป้องกันคนดักฟังบน network ระหว่างทาง (เช่น switch ที่ถูก compromise) แต่ไม่ตรวจสอบ 'ตัวตน' ของ workload ที่คุยกัน — pod ไหนก็คุยกับ pod ไหนได้ถ้า NetworkPolicy อนุญาต โดยไม่มีการพิสูจน์ identity ระดับ application ส่วน mTLS ระดับ mesh พิสูจน์ตัวตนของแต่ละ workload ด้วย certificate ทำให้มั่นใจได้ว่าคู่สนทนาคือ service ที่อ้างว่าเป็นจริงๆ ทั้งสองชั้นจึงเสริมกัน ไม่ใช่แทนกัน"}
+      }
+    },
+    { id:"m4-t4", title:"TLS Termination และ cert-manager", summary:"ออกใบรับรองอัตโนมัติแล้วเสียบเข้า Gateway",
+      concept:`<p><strong>cert-manager</strong> เป็น controller มาตรฐานของ ecosystem k8s สำหรับออกและต่ออายุ TLS certificate อัตโนมัติ ผูกกับ Gateway API ได้ตรงๆ</p>
+      <ul>
+        <li><strong>Issuer / ClusterIssuer</strong> — นิยามแหล่งออก cert (self-signed, Let's Encrypt ผ่าน ACME, หรือ private CA ภายในองค์กร)</li>
+        <li><strong>Certificate</strong> — ทรัพยากรที่ขอ cert จริงตาม Issuer ที่กำหนด แล้วเก็บผลลัพธ์ (cert + key) ไว้ใน Secret อัตโนมัติ</li>
+        <li>cert-manager <strong>ต่ออายุอัตโนมัติ</strong> ก่อนหมดอายุ ลดปัญหา cert หมดอายุแบบไม่รู้ตัวซึ่งเป็นสาเหตุ outage ที่พบบ่อยมาก</li>
+        <li>Gateway listener อ้างถึง Secret ที่ cert-manager สร้างไว้ผ่าน <code>tls.certificateRefs</code> เพื่อ terminate TLS ตรงที่ Gateway</li>
+      </ul>`,
+      lab:{ title:"ออก self-signed certificate ด้วย cert-manager แล้ว terminate TLS ที่ Gateway",
+        steps:[
+          {i:"ติดตั้ง cert-manager", c:"kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.yaml\nkubectl -n cert-manager rollout status deployment/cert-manager-webhook", e:"ทุก Deployment ใน namespace cert-manager (controller, webhook, cainjector) ขึ้น Running", tr:"ถ้า webhook ยังไม่พร้อมให้รอ 30-60 วินาทีก่อนสร้าง resource ถัดไป เพราะ webhook validate CRD ใหม่"},
+          {i:"สร้าง ClusterIssuer แบบ self-signed (เพียงพอสำหรับแล็บ ไม่ต้องมี domain จริง)", c:"cat <<EOF | kubectl apply -f -\napiVersion: cert-manager.io/v1\nkind: ClusterIssuer\nmetadata:\n  name: selfsigned\nspec:\n  selfSigned: {}\nEOF", e:"kubectl get clusterissuer selfsigned แสดง status Ready: True", tr:"ถ้า Ready: False ตรวจ kubectl describe clusterissuer selfsigned ดู event error"},
+          {i:"ขอ Certificate สำหรับโดเมนทดสอบ web.ckne.local", c:"cat <<EOF | kubectl apply -f -\napiVersion: cert-manager.io/v1\nkind: Certificate\nmetadata:\n  name: web-tls\n  namespace: default\nspec:\n  secretName: web-tls-secret\n  issuerRef:\n    name: selfsigned\n    kind: ClusterIssuer\n  dnsNames:\n  - web.ckne.local\nEOF\nkubectl get certificate web-tls -w", e:"status เปลี่ยนเป็น Ready: True ภายในไม่กี่วินาที และเกิด Secret ชื่อ web-tls-secret ชนิด kubernetes.io/tls", tr:"ถ้าค้างที่ False นาน ตรวจ kubectl describe certificate web-tls ดู event จาก cert-manager controller"},
+          {i:"แก้ Gateway ให้เปิด listener HTTPS แล้วอ้างถึง Secret นี้เพื่อ terminate TLS", c:"kubectl patch gateway web-gw --type merge -p '{\"spec\":{\"listeners\":[{\"name\":\"https\",\"protocol\":\"HTTPS\",\"port\":443,\"tls\":{\"mode\":\"Terminate\",\"certificateRefs\":[{\"name\":\"web-tls-secret\"}]}},{\"name\":\"http\",\"protocol\":\"HTTP\",\"port\":80}]}}'\nkubectl get gateway web-gw -o yaml | grep -A3 tls", e:"listener https ปรากฏใน spec พร้อม certificateRefs ชี้ไปที่ web-tls-secret", tr:"Gateway อาจต้องมี RBAC/ReferenceGrant ถ้า Secret อยู่คนละ namespace — ในแล็บนี้อยู่ namespace เดียวกันจึงไม่ต้องเพิ่ม"}
+        ],
+        challenge:{ task:"อธิบายว่าทำไมการใช้ ACME/Let's Encrypt ใน production ต้องมี HTTP-01 หรือ DNS-01 challenge ในขณะที่แล็บนี้ใช้ selfSigned issuer แทนได้เลยโดยไม่ต้อง challenge อะไร", reveal:"selfSigned issuer ออก cert จากตัวเองโดยไม่ต้องพิสูจน์ความเป็นเจ้าของโดเมนกับใคร (เหมาะกับ internal/lab เท่านั้น เพราะ browser จะไม่เชื่อถือ) ส่วน Let's Encrypt เป็น public CA ต้องมั่นใจว่าเราเป็นเจ้าของโดเมนจริงก่อนออก cert ที่ browser เชื่อถือทั่วโลก จึงบังคับให้พิสูจน์ผ่าน HTTP-01 (วาง token ให้ดึงผ่าน HTTP) หรือ DNS-01 (สร้าง TXT record) — cert-manager จัดการขั้นตอนพิสูจน์ตัวตนนี้ให้อัตโนมัติเมื่อใช้ ACME issuer"}
+      }
+    }
+  ],
+  quiz:[
+    {q:"เมื่อไหร่ pod ใน k8s จะเข้าสู่โหมด default-deny?", options:["ทันทีที่สร้างคลัสเตอร์","ทันทีที่มี NetworkPolicy อย่างน้อยหนึ่งตัวเลือก pod นั้นด้วย podSelector","เฉพาะเมื่อเปิด flag พิเศษใน kube-apiserver","ไม่มีทางเข้าโหมด default-deny ได้เลย"], correct:1, explain:"pod จะเข้าสู่ deny-by-default สำหรับทิศทางที่ระบุ (ingress/egress) ก็ต่อเมื่อมี NetworkPolicy อย่างน้อยหนึ่งตัว podSelector ตรงกับมัน ถ้าไม่มี policy ใดเลือกมัน มันยัง allow-all ตามปกติ"},
+    {q:"ถ้า pod ถูกเลือกโดย NetworkPolicy สองตัวพร้อมกัน ผลลัพธ์การอนุญาต traffic เป็นแบบใด?", options:["ต้องผ่านทุก policy (AND)","ผ่านได้ถ้ามี policy ใดอนุญาต (OR / union)","ใช้แค่ policy ที่สร้างล่าสุด","ต้อง merge เป็น policy เดียวก่อนเสมอ"], correct:1, explain:"NetworkPolicy หลายตัวที่เลือก pod เดียวกันถูกรวมกันแบบ union — traffic ผ่านได้ถ้ามี rule จาก policy ใดก็ได้ที่อนุญาต ไม่จำเป็นต้องผ่านเงื่อนไขของทุก policy"},
+    {q:"ข้อจำกัดสำคัญของ NetworkPolicy มาตรฐานของ k8s คืออะไร?", options:["ทำงานได้แค่ L3/L4 (IP, port) ไม่รองรับ L7 (HTTP method/path) โดยตรง","ใช้ได้เฉพาะกับ ClusterIP Service เท่านั้น","ต้องพึ่ง cloud provider เสมอ","ไม่รองรับ namespaceSelector"], correct:0, explain:"NetworkPolicy มาตรฐานควบคุมได้แค่ระดับ L3/L4 การควบคุม L7 เช่น จำกัด HTTP method/path ต้องใช้ CRD เฉพาะ CNI เช่น CiliumNetworkPolicy"},
+    {q:"toFQDNs ใน CiliumNetworkPolicy ทำงานอย่างไรเพื่อรองรับโดเมนที่ IP เปลี่ยนได้ตลอดเวลา?", options:["บล็อก DNS query ทั้งหมด","ดัก (snoop) DNS response ที่ pod ได้รับแล้วอัปเดต allow-list ของ eBPF แบบ dynamic","แปลงโดเมนเป็น IP คงที่ตอน apply policy ครั้งเดียว","ใช้ได้เฉพาะกับ IP address ตรงๆ เท่านั้น"], correct:1, explain:"Cilium ดัก DNS response ผ่าน DNS proxy ภายใน แล้วอัปเดต eBPF allow-list ตาม IP ที่ resolve ได้จริงในขณะนั้น ทำให้ policy อิงชื่อโดเมนได้แม้ IP จะเปลี่ยนบ่อย"},
+    {q:"Calico GlobalNetworkPolicy ต่างจาก NetworkPolicy มาตรฐานตรงไหน?", options:["ใช้ syntax YAML แบบเดียวกันทุกประการ","scope ครอบคลุมทั้งคลัสเตอร์ ไม่ผูกกับ namespace เดียว เหมาะกับ policy ระดับองค์กร","ทำงานเฉพาะ L7","ไม่รองรับ egress rule"], correct:1, explain:"GlobalNetworkPolicy ของ Calico ไม่ผูกกับ namespace ใด namespace หนึ่ง เหมาะกับกติกาที่ต้องบังคับใช้ทั้งคลัสเตอร์ เช่น ห้าม namespace ไหนเข้าถึง cloud metadata service"},
+    {q:"WireGuard transparent encryption ของ Cilium เข้ารหัส traffic ที่ระดับใด?", options:["ระดับ application (L7) เท่านั้น","ระดับ node-to-node (L3) โดยอัตโนมัติไม่ต้องแก้ application","เฉพาะ traffic ที่ออกอินเทอร์เน็ตเท่านั้น","เฉพาะ DNS query เท่านั้น"], correct:1, explain:"WireGuard เข้ารหัส traffic ทั้งหมดที่วิ่งระหว่าง node โดยอัตโนมัติที่ระดับ kernel/network โดย workload หรือ application ไม่ต้องรับรู้หรือแก้ไขอะไรเลย"},
+    {q:"ทำไม WireGuard encryption อย่างเดียวยังไม่เพียงพอสำหรับ zero-trust เต็มรูปแบบ?", options:["WireGuard ช้าเกินไปสำหรับ production","มันเข้ารหัส traffic ระหว่าง node แต่ไม่พิสูจน์ 'ตัวตน' ของ workload ที่คุยกัน ต้องพึ่ง mTLS ระดับ mesh เพิ่ม","WireGuard ใช้ได้เฉพาะ IPv6","WireGuard ไม่รองรับ Kubernetes"], correct:1, explain:"WireGuard ป้องกันการดักฟังระหว่างทางที่ L3 แต่ไม่ตรวจสอบตัวตนของ service ที่คุยกัน mTLS ระดับ mesh เสริมด้วยการพิสูจน์ identity ของแต่ละ workload ด้วย certificate ทั้งสองชั้นเสริมกันไม่ใช่แทนกัน"},
+    {q:"cert-manager ใช้ทรัพยากรใดเพื่อนิยามแหล่งที่มาของ certificate (เช่น self-signed หรือ Let's Encrypt)?", options:["Certificate","Secret","Issuer / ClusterIssuer","Gateway"], correct:2, explain:"Issuer (namespace-scoped) หรือ ClusterIssuer (cluster-wide) นิยามว่า cert จะถูกออกจากแหล่งไหน ส่วนทรัพยากร Certificate ใช้ขอ cert จริงตาม Issuer ที่อ้างถึง"},
+    {q:"ทำไม production ที่ใช้ Let's Encrypt ต้องผ่าน HTTP-01 หรือ DNS-01 challenge ก่อนออก cert?", options:["เพื่อพิสูจน์ความเป็นเจ้าของโดเมนจริงก่อนออก certificate ที่ browser ทั่วโลกเชื่อถือ","เพราะเป็นข้อบังคับทางกฎหมายของแต่ละประเทศ","เพื่อลดค่าใช้จ่ายของ cert-manager","challenge ใช้แค่ตอน renew เท่านั้นไม่ใช่ตอนออกครั้งแรก"], correct:0, explain:"Let's Encrypt เป็น public CA ต้องมั่นใจว่าผู้ขอเป็นเจ้าของโดเมนจริงก่อนออก cert ที่ browser เชื่อถือทั่วโลก จึงบังคับพิสูจน์ผ่าน HTTP-01 หรือ DNS-01 ต่างจาก self-signed issuer ที่ไม่ต้องพิสูจน์อะไรแต่ browser ก็ไม่เชื่อถือเช่นกัน"},
+    {q:"ในแล็บ default-deny ของโมดูลนี้ ทำไม pod ชื่อ intruder ที่อยู่ namespace เดียวกับ backend ถึงยังเรียก backend ไม่ได้?", options:["เพราะ namespace ถูกลบไปแล้ว","เพราะ NetworkPolicy พิจารณาจาก label selector ไม่ใช่การอยู่ namespace เดียวกันเพียงอย่างเดียว","เพราะ intruder ไม่มี IP address","เพราะ CoreDNS บล็อก pod ชื่อนี้โดยเฉพาะ"], correct:1, explain:"NetworkPolicy ตัดสินด้วย podSelector/namespaceSelector ตาม label ไม่ใช่ตำแหน่ง namespace เพียงอย่างเดียว pod ที่ label ไม่ตรงกับ rule ที่อนุญาต จะยังถูกบล็อกแม้อยู่ namespace เดียวกับปลายทาง"}
+  ]
+},
+{
+  id:"m5", short:"Observability", title:"Module 5 · Observability", weight:15,
+  blurb:"ถ้า debug ไม่เป็นก็ fix ไม่ได้ — เก็บ metric, สังเกต flow แบบ real-time ด้วย Hubble, และไล่ connection ระดับ packet",
+  topics:[
+    { id:"m5-t1", title:"Prometheus และ CNI Metrics", summary:"metric อะไรบ้างที่บอกสุขภาพของ network layer และดึงมาดูยังไง",
+      concept:`<p>Cilium expose metric แบบ Prometheus format ในตัว ครอบคลุมทั้ง datapath, policy, และ service — เป็น metric ชุดแรกที่ควรรู้จักก่อนไปตั้ง dashboard เต็มรูปแบบ</p>
+      <ul>
+        <li><strong>cilium_drop_count_total</strong> — จำนวน packet ที่ถูก drop พร้อม label เหตุผล (เช่น POLICY_DENIED) — metric สำคัญที่สุดตัวหนึ่งสำหรับ debug NetworkPolicy</li>
+        <li><strong>cilium_forward_count_total</strong> — จำนวน packet ที่ผ่านสำเร็จ ใช้เทียบสัดส่วนกับ drop เพื่อดู error rate</li>
+        <li><strong>cilium_policy_l7_total</strong> — จำนวน request ระดับ L7 ที่ถูกประเมินโดย policy (allowed/denied)</li>
+        <li>ทุก metric เหล่านี้ scrape ได้ผ่าน endpoint <code>:9962/metrics</code> ของแต่ละ Cilium agent pod — ตั้งแบบ ServiceMonitor ให้ Prometheus ดึงอัตโนมัติได้</li>
+      </ul>`,
+      lab:{ title:"Scrape metric ของ Cilium ด้วยมือแล้วหา drop count จริง",
+        prereqs:"ต้องติดตั้ง Cilium ด้วย --set prometheus.enabled=true (ตั้งไว้แล้วใน Module 0) ไม่งั้น port 9962 จะไม่เปิดให้ scrape — ถ้าติดตั้งไปก่อนหน้าโดยไม่มี flag นี้ ให้ helm upgrade --reuse-values เพิ่มเข้าไปก่อน",
+        steps:[
+          {i:"เปิด port-forward ไปยัง metrics endpoint ของ Cilium agent pod ใดตัวหนึ่ง", c:"kubectl -n kube-system get pods -l k8s-app=cilium -o name | head -1\nkubectl -n kube-system port-forward <cilium-pod-name> 9962:9962", e:"terminal ค้างแสดง \"Forwarding from 127.0.0.1:9962 -> 9962\"", tr:"ถ้า port ชนกับ process อื่นในเครื่อง local ให้เปลี่ยนเป็น port อื่น เช่น 19962:9962"},
+          {i:"เปิด terminal ใหม่ แล้วดึง metric ทั้งหมดมากรองหา drop count", c:"curl -s localhost:9962/metrics | grep cilium_drop_count_total", e:"เห็นบรรทัด metric พร้อม label reason=\"...\" และตัวเลขจำนวน packet ที่ถูก drop สะสม", tr:"ถ้าค่าเป็น 0 ทั้งหมด ให้ไปสร้าง traffic ที่ถูกบล็อกจริงก่อน เช่น เรียก endpoint ที่ NetworkPolicy ปฏิเสธจาก topic ก่อนหน้า"},
+          {i:"generate traffic ที่ถูกบล็อกจริง (ใช้ policy จาก Module 4) แล้ว scrape metric อีกครั้งเทียบตัวเลข", c:"kubectl -n secdemo exec frontend -- curl -s -X POST backend --max-time 2 || true\ncurl -s localhost:9962/metrics | grep cilium_drop_count_total", e:"ตัวเลขของ label ที่เกี่ยวกับ POLICY_DENIED เพิ่มขึ้นจากรอบก่อนหน้า ยืนยันว่า metric สะท้อน event จริงแบบ near real-time", tr:"metric เป็น counter สะสม ไม่ reset เอง ต้องเทียบค่าก่อน/หลังเพื่อดูการเปลี่ยนแปลง ไม่ใช่ดูค่าตรงๆ"}
+        ],
+        challenge:{ task:"ออกแบบ alert rule แบบ PromQL อย่างง่ายที่แจ้งเตือนเมื่อ drop rate เพิ่มขึ้นผิดปกติในช่วง 5 นาทีล่าสุด", reveal:"ตัวอย่างแนวคิด: rate(cilium_drop_count_total[5m]) > 10 — คำนวณอัตราการ drop ต่อวินาทีเฉลี่ยในช่วง 5 นาที ถ้าเกิน threshold ที่ยอมรับได้ (ปรับตามปริมาณ traffic ปกติของระบบ) ให้ยิง alert เพื่อสืบสวนว่าเป็น NetworkPolicy ใหม่ที่เข้มเกินไป, bug ใน policy, หรือมีการโจมตีจริงเกิดขึ้น"}
+      }
+    },
+    { id:"m5-t2", title:"Hubble: สังเกต Flow แบบ Real-Time", summary:"เครื่องมือที่ทรงพลังที่สุดสำหรับ debug NetworkPolicy และ connectivity ใน Cilium",
+      diagram:"hubbleFlow",
+      concept:`<p><strong>Hubble</strong> คือ observability layer ของ Cilium ที่แสดง flow (การเชื่อมต่อ) ทุกเส้นในคลัสเตอร์แบบ near real-time พร้อมบอกว่าแต่ละ flow ถูก <strong>allow</strong> หรือ <strong>drop</strong> โดย policy ตัวไหน</p>
+      <ul>
+        <li><strong>Hubble (per-node)</strong> — เก็บ flow log จาก eBPF datapath ของ node ตัวเอง</li>
+        <li><strong>Hubble Relay</strong> — รวม flow จากทุก node เข้าเป็น cluster-wide view เดียว</li>
+        <li><strong>hubble observe</strong> — CLI หลักที่ filter flow ได้ตาม namespace, pod, verdict (FORWARDED/DROPPED), protocol</li>
+        <li>เป็นเครื่องมือ debug NetworkPolicy ที่เร็วที่สุด — เห็นได้ทันทีว่า traffic ถูกบล็อกโดย policy ชื่ออะไร ไม่ต้องเดาจาก log ของ application</li>
+      </ul>`,
+      lab:{ title:"เปิด Hubble แล้วไล่หา flow ที่ถูกบล็อกโดย NetworkPolicy",
+        prereqs:"Hubble relay/UI ถูกเปิดไว้แล้วตั้งแต่ Module 0 — แต่ต้องติดตั้ง hubble CLI เพิ่มด้วย (คนละ binary กับ cilium CLI): ดาวน์โหลดจาก github.com/cilium/hubble/releases แล้ววางไว้ใน PATH",
+        steps:[
+          {i:"เปิด hubble CLI ให้ port-forward ไปยัง Hubble Relay", c:"cilium hubble port-forward &", e:"terminal แสดงว่า port-forward ไปยัง hubble-relay สำเร็จ (background job)", tr:"ถ้า job ค้าง ใช้ jobs แล้ว kill %1 เพื่อยกเลิกก่อนลองใหม่"},
+          {i:"ดู flow ทั้งหมดใน namespace secdemo แบบ live ระหว่างสร้าง traffic คู่ขนาน", c:"hubble observe --namespace secdemo --follow", e:"เห็น log ไหลต่อเนื่อง แต่ละบรรทัดมี SOURCE, DESTINATION, VERDICT (FORWARDED/DROPPED), และ TYPE ของ packet", tr:"ถ้าไม่เห็นอะไรเลยเพราะไม่มี traffic ใหม่ ให้เปิด terminal อีกอันยิง curl ตามขั้นตอนถัดไปพร้อมกัน"},
+          {i:"เปิด terminal ใหม่ ยิง request ทั้งที่ควรผ่านและควรถูกบล็อกพร้อมกัน", c:"kubectl -n secdemo exec frontend -- curl -s backend --max-time 2\nkubectl -n secdemo exec frontend -- curl -s -X POST backend --max-time 2", e:"กลับไปดู terminal hubble observe จะเห็นทั้งสอง flow นี้ปรากฏขึ้นทันที", tr:"ถ้า hubble ไม่จับ flow ใหม่เลย ตรวจว่า Hubble ถูกเปิดที่ node ที่ pod frontend/backend รันอยู่จริง (Hubble ทำงานระดับ node)"},
+          {i:"filter เฉพาะ flow ที่ถูก DROP เพื่อดูว่า policy ไหนเป็นคนบล็อก", c:"hubble observe --namespace secdemo --verdict DROPPED -o json | grep -o '\"policy_match_type\":[^,]*\\|\"drop_reason_desc\":\"[^\"]*\"' | head -5", e:"เห็น drop_reason_desc เช่น POLICY_DENIED ยืนยันว่า flow ถูกบล็อกโดย L7 policy จาก Module 4 ไม่ใช่ปัญหา network อื่น", tr:"ถ้า output JSON ซับซ้อนเกินไป ตัด grep ออกแล้วอ่าน raw JSON ทีละบรรทัดแทนเพื่อความชัดเจน"}
+        ],
+        challenge:{ task:"ใช้ hubble observe เปรียบเทียบ latency คร่าวๆ ระหว่าง flow ที่ผ่าน L7 policy (ต้องผ่าน Envoy proxy) กับ flow ที่ไม่มี L7 policy เลย — คาดว่าต่างกันอย่างไรและทำไม", reveal:"flow ที่ต้องผ่าน L7 policy (HTTP method/path matching) จะมี latency เพิ่มขึ้นเล็กน้อยเพราะ packet ต้องถูกส่งผ่าน Envoy proxy ภายในของ Cilium เพื่อตรวจสอบเนื้อหาระดับ application ก่อนตัดสินใจ ต่างจาก flow ที่ควบคุมแค่ L3/L4 ซึ่งตัดสินใจได้ทั้งหมดใน eBPF datapath โดยไม่ต้อง proxy เลย จึงเร็วกว่า — เป็น trade-off ระหว่างความละเอียดของ policy กับ performance"}
+      }
+    },
+    { id:"m5-t3", title:"Packet และ Connection-Level Tooling", summary:"tcpdump, conntrack, ss — เครื่องมือ Linux มาตรฐานที่ยังจำเป็นแม้มี Hubble แล้ว",
+      concept:`<p>Hubble เก่งเรื่อง policy verdict แต่บางครั้งต้องลงลึกกว่านั้นถึงระดับ packet/connection จริง — นี่คือเครื่องมือ Linux มาตรฐานที่ CKNE คาดหวังให้ใช้คล่อง</p>
+      <ul>
+        <li><strong>tcpdump</strong> — จับ packet ดิบบน interface ที่ระบุ ใช้ debug เมื่อสงสัยว่าปัญหาอยู่ต่ำกว่าระดับที่ Hubble มองเห็น (เช่น malformed packet, MTU issue)</li>
+        <li><strong>conntrack -L</strong> — list connection tracking table ของ kernel บอกว่า connection ไหนกำลัง active, state อะไร (ESTABLISHED, TIME_WAIT) — สำคัญมากสำหรับ debug NAT/DNAT ของ Service</li>
+        <li><strong>ss -tnp</strong> — list TCP socket ที่เปิดอยู่บน host/container พร้อม process ที่เป็นเจ้าของ ใช้หา process ที่ค้าง connection ผิดปกติ</li>
+        <li>ลำดับการ debug ที่แนะนำ: <strong>Hubble ก่อน</strong> (เห็นภาพรวม verdict เร็วสุด) → <strong>conntrack</strong> (ยืนยันสถานะ connection) → <strong>tcpdump</strong> (ดู payload จริงเมื่อจำเป็น)</li>
+      </ul>`,
+      lab:{ title:"ไล่ connection จาก conntrack กลับไปหา pod เจ้าของ",
+        steps:[
+          {i:"สร้าง long-lived connection ค้างไว้เพื่อให้มีอะไรให้ไล่", c:"kubectl -n secdemo exec frontend -- sh -c 'while true; do curl -s backend -o /dev/null; sleep 1; done' &", e:"background job ยิง curl ทุกวินาทีต่อเนื่อง (รันฝั่ง client ผ่าน kubectl exec ค้างไว้)", tr:"ถ้า kubectl exec หลุดเพราะ timeout ให้เปิด terminal แยกไว้เฉพาะสำหรับ job นี้"},
+          {i:"เข้าไปที่ node ที่ pod backend รันอยู่ แล้วดู conntrack table กรองเฉพาะ IP ของ backend", c:"kubectl -n secdemo get pod -l app=backend -o jsonpath='{.items[0].status.hostIP}'\ndocker exec -it ckne-worker conntrack -L | grep <backend-pod-ip>", e:"เห็นบรรทัด connection state ESTABLISHED ระหว่าง IP ของ frontend กับ backend พร้อม source/destination port", tr:"ถ้า conntrack ไม่มีในเครื่อง node ให้ apt-get install -y conntrack ก่อน (kind node เป็น container ที่ install เพิ่มได้)"},
+          {i:"ใช้ ss ดู socket ฝั่ง backend ว่า process ไหนถือ connection นี้อยู่", c:"kubectl -n secdemo exec deploy/backend -- ss -tnp | grep ESTAB", e:"เห็นบรรทัด ESTAB พร้อม local/peer address:port และ process nginx ที่ถือ socket นั้นอยู่", tr:"ถ้า image nginx ไม่มี ss ในตัว ให้ kubectl debug หรือใช้ nicolaka/netshoot เป็น ephemeral container แนบเข้าไปแทน"},
+          {i:"หยุด background job เพื่อความสะอาดของ lab environment", c:"kill %1", e:"background curl loop หยุดทำงาน", tr:"ถ้าจำ job number ไม่ได้ ใช้ jobs ดูลิสต์ก่อน kill"}
+        ],
+        challenge:{ task:"สมมติมี Service ที่ traffic บางส่วนหายไปเป็นระยะ (intermittent packet loss) จะใช้ conntrack, ss, tcpdump ไล่หาสาเหตุตามลำดับอย่างไร", reveal:"เริ่มจาก ss -tnp ฝั่ง client/server ดูว่ามี connection ที่ค้าง state ผิดปกติ (เช่น SYN-SENT ค้างนาน) หรือไม่ ตามด้วย conntrack -L กรองตาม 5-tuple ของ connection ที่มีปัญหา ดูว่า entry หายไปจาก table กลางทาง (อาจเกิดจาก conntrack table เต็มทำให้ kernel drop entry ใหม่) สุดท้ายใช้ tcpdump จับที่ทั้งสองฝั่งพร้อมกันเปรียบเทียบว่า packet ที่ client ส่งไปถึง server จริงหรือไม่ ถ้าถึงแต่ server ไม่ตอบ ปัญหาน่าจะอยู่ที่ application ไม่ใช่ network"}
+      }
+    }
+  ],
+  quiz:[
+    {q:"metric cilium_drop_count_total ใช้ debug เรื่องอะไรเป็นหลัก?", options:["ความเร็วของ DNS resolution","จำนวน packet ที่ถูก drop พร้อมเหตุผล เช่น ถูก policy ปฏิเสธ","จำนวน certificate ที่ใกล้หมดอายุ","จำนวน pod ที่ restart"], correct:1, explain:"cilium_drop_count_total เป็น counter metric ที่บอกจำนวน packet ที่ถูก drop พร้อม label เหตุผล เช่น POLICY_DENIED เป็นจุดเริ่มต้นที่ดีที่สุดเวลาสงสัยว่า NetworkPolicy บล็อกอะไรอยู่"},
+    {q:"Prometheus metric ของ Cilium agent เปิด endpoint ให้ scrape ที่ port ใดโดย default?", options:["80","443","9962","53"], correct:2, explain:"Cilium agent expose Prometheus metrics ที่ port 9962 ของแต่ละ pod โดย default สามารถ scrape ตรงหรือผ่าน ServiceMonitor ก็ได้"},
+    {q:"Hubble Relay มีหน้าที่อะไร?", options:["เข้ารหัส traffic ระหว่าง node","รวม flow log จากทุก node เข้าเป็น cluster-wide view เดียว","ทำ DNS resolution แทน CoreDNS","ออก TLS certificate อัตโนมัติ"], correct:1, explain:"Hubble ที่ระดับ node เก็บ flow log จาก eBPF datapath ของตัวเอง ส่วน Hubble Relay รวมข้อมูลจากทุก node เข้าด้วยกันให้ดูเป็นภาพรวมทั้งคลัสเตอร์ผ่าน CLI/UI เดียว"},
+    {q:"ข้อมูลสำคัญที่สุดที่ hubble observe --verdict DROPPED ช่วยตอบได้เร็วกว่าการอ่าน log ของ application คืออะไร?", options:["ความเร็วในการ compile application","ว่า flow ถูกบล็อกโดย policy ตัวไหนและเหตุผลอะไร โดยไม่ต้องเดาจากฝั่ง application","จำนวน CPU ที่ pod ใช้","เวอร์ชันของ container image"], correct:1, explain:"Hubble เห็น verdict และเหตุผลการ drop โดยตรงจาก eBPF datapath (เช่น POLICY_DENIED) ทำให้ debug NetworkPolicy ได้เร็วกว่าการอ่าน log ฝั่ง application ที่มักบอกแค่ 'connection refused/timeout' โดยไม่รู้สาเหตุ"},
+    {q:"ลำดับการ debug connectivity ที่แนะนำในโมดูลนี้คืออะไร?", options:["tcpdump ก่อนเสมอ ตามด้วย conntrack และ Hubble","Hubble ก่อน (เห็นภาพรวม verdict เร็วสุด) → conntrack (ยืนยันสถานะ connection) → tcpdump (ดู payload จริงเมื่อจำเป็น)","conntrack เพียงอย่างเดียวเพียงพอเสมอ","ต้องใช้ทั้งสามเครื่องมือพร้อมกันทุกครั้ง"], correct:1, explain:"Hubble ให้ภาพรวม verdict เร็วที่สุดโดยไม่ต้อง SSH เข้า node เลย ถ้ายังไม่พอจึงไล่ลึกลงไปที่ conntrack เพื่อยืนยันสถานะ connection และสุดท้าย tcpdump เมื่อต้องดู payload ระดับ packet จริงๆ"},
+    {q:"conntrack -L แสดงข้อมูลอะไรเป็นหลัก?", options:["รายชื่อ image ที่ pull มาแล้วบน node","connection tracking table ของ kernel บอกสถานะ connection เช่น ESTABLISHED, TIME_WAIT","รายการ certificate ที่ cert-manager ออก","รายการ NetworkPolicy ทั้งหมดในคลัสเตอร์"], correct:1, explain:"conntrack -L list ตาราง connection tracking ของ kernel ซึ่งสำคัญมากสำหรับ debug NAT/DNAT ของ Service เพราะบอกว่า connection แต่ละคู่กำลังอยู่ state ใด"},
+    {q:"ss -tnp ต่างจาก conntrack -L อย่างไร?", options:["ss แสดง TCP socket ที่เปิดอยู่บน host/container พร้อม process เจ้าของ ส่วน conntrack แสดง connection state ระดับ kernel NAT table","ทั้งสองคำสั่งแสดงผลเหมือนกันทุกประการ","ss ใช้ได้เฉพาะ UDP เท่านั้น","conntrack ใช้ debug DNS โดยเฉพาะ"], correct:0, explain:"ss มองจากมุม socket ของ process บนเครื่องนั้นๆ (ใครถือ connection อยู่) ส่วน conntrack มองจากมุม kernel-level NAT/connection-tracking table ซึ่งเห็นภาพ DNAT ของ Service ได้ชัดกว่า"},
+    {q:"เพราะเหตุใด flow ที่ผ่าน L7 policy (HTTP method matching) จึงมักมี latency สูงกว่า flow ที่ควบคุมแค่ L3/L4?", options:["L7 policy ใช้ CPU ของ apiserver มากกว่า","packet ต้องถูกส่งผ่าน Envoy proxy ภายในของ Cilium เพื่อตรวจสอบเนื้อหาระดับ application ก่อนตัดสินใจ","L7 policy ทำงานช้าเพราะบั๊กของ Cilium","ไม่มีความต่างด้าน latency เลย"], correct:1, explain:"การตรวจสอบ L7 (เช่น HTTP method/path) ต้องอาศัย Envoy proxy ที่ฝังอยู่ใน Cilium เพื่ออ่านเนื้อหาระดับ application ทำให้มี hop เพิ่มเทียบกับ L3/L4 ที่ตัดสินใจได้หมดใน eBPF datapath โดยตรง"}
+  ]
+}
+];
+const MOCK_EXAM = { questions: [
+  {q:"[Core/CNI] kubelet เรียก CNI plugin ผ่านช่องทางใดเมื่อสร้าง pod ใหม่?", options:["REST API ของ apiserver โดยตรง","binary ใน /opt/cni/bin ตาม config ใน /etc/cni/net.d","gRPC ไปยัง CoreDNS","SSH เข้า node อื่น"], correct:1, explain:"kubelet เรียก CNI plugin binary ที่ /opt/cni/bin พร้อม config จาก /etc/cni/net.d ตาม CNI spec ทุกครั้งที่ pod ถูกสร้าง/ลบ"},
+  {q:"[Core/CNI] อะไรคือข้อดีหลักของ native routing (BGP) เทียบกับ overlay?", options:["ตั้งค่าง่ายกว่าเสมอ","ไม่มี encapsulation overhead และ debug ด้วย tool มาตรฐานอย่าง traceroute ได้ตรงไปตรงมากว่า","ไม่ต้องมี CNI plugin เลย","รองรับเฉพาะ IPv4"], correct:1, explain:"native routing ส่ง packet ตรงแบบ L3 ไม่ต้องห่อ header ใหม่ ลด overhead และเห็น hop จริงเวลา troubleshoot ต่างจาก overlay ที่ traceroute จะเห็นแค่ tunnel endpoint"},
+  {q:"[Core/CNI] IPAM แบบ cluster-pool ของ Cilium เก็บการจอง IP ต่อ node ไว้ที่ CRD ใด?", options:["ConfigMap","CiliumNode","Secret","NetworkPolicy"], correct:1, explain:"โหมด cluster-pool IPAM ใช้ CiliumNode CRD เก็บ pod CIDR block ที่จองให้แต่ละ node"},
+  {q:"[Service/DNS] EndpointSlice ถูกออกแบบมาแทน Endpoints เพื่อแก้ปัญหาอะไร?", options:["ปัญหาความปลอดภัย","load ต่อ apiserver/etcd ตอน scale ใหญ่ เพราะแบ่งเป็นชิ้นย่อยแทนก้อนเดียว","ปัญหา DNS caching","ปัญหา TLS handshake"], correct:1, explain:"EndpointSlice แบ่ง endpoint เป็นชิ้นย่อย (สูงสุด 100 ต่อ slice) ลด load การ sync ตอนมี pod เปลี่ยนแปลงบ่อยที่ scale ใหญ่"},
+  {q:"[Service/DNS] Headless Service ต่างจาก ClusterIP Service อย่างไร?", options:["Headless ไม่มี VIP, DNS คืน IP ของทุก pod ตรงๆ","Headless เร็วกว่าเสมอเพราะไม่ผ่าน kube-proxy","ClusterIP ใช้ได้แค่ TCP","Headless ต้องใช้กับ NodePort เท่านั้น"], correct:0, explain:"Headless (clusterIP: None) ไม่มี VIP ให้ DNAT ดังนั้น DNS query คืนค่า IP ของ pod backend ทุกตัวโดยตรง"},
+  {q:"[Service/DNS] iptables mode ของ kube-proxy มีข้อเสียอย่างไรเมื่อ Service มีจำนวนมาก?", options:["ไม่รองรับ UDP","การ match กฎแบบ linear scan ทำให้ latency เพิ่มขึ้นเชิงเส้นตามจำนวน Service","ไม่รองรับ headless service","ใช้ RAM มากกว่า eBPF ในทุกกรณี"], correct:1, explain:"iptables evaluate chain แบบ linear scan ต่างจาก IPVS/eBPF ที่ใช้ hash table lookup แบบ O(1) ทำให้ที่ scale สูง iptables ช้ากว่าชัดเจน"},
+  {q:"[Service/DNS] Gateway API แยก concern ระหว่างทีม platform กับทีม dev ผ่านทรัพยากรใดเป็นหลัก?", options:["Gateway (infra) กับ HTTPRoute (application)","Ingress กับ Service","ConfigMap กับ Secret","Pod กับ Deployment"], correct:0, explain:"Gateway ควบคุมระดับ listener/TLS ที่ทีม platform ดูแล ส่วน HTTPRoute ควบคุม routing rule ระดับ application ที่ทีม dev แก้ไขได้เอง"},
+  {q:"[Service/DNS] plugin ใดใน CoreDNS ทำหน้าที่ตอบ query สำหรับโดเมนภายในคลัสเตอร์ (*.svc.cluster.local)?", options:["forward","cache","kubernetes","log"], correct:2, explain:"plugin kubernetes อ่านข้อมูลจาก apiserver โดยตรงเพื่อตอบ query โดเมนภายในคลัสเตอร์"},
+  {q:"[Traffic] ค่า weight ใน backendRefs ของ HTTPRoute มีความหมายอย่างไร?", options:["สัดส่วนสัมพัทธ์ระหว่าง backend ไม่ใช่ percentage ตรงตัว","ลำดับความสำคัญของการประมวลผล","จำนวน replica สูงสุดที่อนุญาต","ระยะเวลา timeout ของ backend นั้น"], correct:0, explain:"weight เป็นค่าสัดส่วนสัมพัทธ์ เช่น 80/20 ให้สัดส่วนเดียวกับ 4/1 traffic กระจายตามสัดส่วนโดยประมาณ"},
+  {q:"[Traffic] Egress Gateway แก้ปัญหาอะไรเป็นหลัก?", options:["ทำให้ traffic ขาเข้าเร็วขึ้น","ทำให้ traffic ขาออกจาก pod ที่กำหนดมี source IP คงที่เพื่อให้ปลายทาง whitelist ได้","เข้ารหัส traffic อัตโนมัติ","ลดขนาด image ของ pod"], correct:1, explain:"เพราะ pod IP เปลี่ยนตาม scheduling Egress Gateway บังคับ traffic ออกผ่าน node ที่กำหนดแล้ว SNAT ด้วย IP คงที่"},
+  {q:"[Traffic] ข้อกำหนดสำคัญก่อนตั้ง ClusterMesh ระหว่างสองคลัสเตอร์คืออะไร?", options:["ต้องใช้ cloud provider เดียวกัน","Pod CIDR ของแต่ละคลัสเตอร์ต้องไม่ทับกัน","ต้องปิด RBAC ทั้งสองฝั่ง","ต้อง disable CoreDNS ฝั่งใดฝั่งหนึ่ง"], correct:1, explain:"ClusterMesh route traffic ข้ามคลัสเตอร์ระดับ pod IP โดยตรง ถ้า CIDR ทับกันจะ routing สับสนว่าปลายทางอยู่คลัสเตอร์ไหน"},
+  {q:"[Traffic] ความต่างหลักระหว่าง sidecar mesh กับ sidecar-less (ambient) mesh คืออะไร?", options:["sidecar mesh ฉีด proxy เข้าทุก pod เพิ่ม overhead ส่วน sidecar-less ใช้ eBPF/per-node proxy แทน","sidecar-less ไม่รองรับ mTLS เลย","sidecar mesh ใช้ได้เฉพาะ on-prem","ทั้งสองแบบไม่มีความต่างด้าน resource"], correct:0, explain:"sidecar mesh ฉีด Envoy เข้าทุก pod ให้ควบคุมละเอียดแต่เพิ่ม overhead ส่วน ambient/sidecar-less ใช้ eBPF หรือ node-level proxy ลด overhead"},
+  {q:"[Traffic] HTTPRoute มาตรฐานรองรับการ route แบบ dynamic ตาม real-time metric (เช่น GPU queue) ได้เองหรือไม่?", options:["ได้ทันทีในตัว","ไม่ได้ — ต้องพึ่ง controller เพิ่มเติมที่ปรับ weight ตาม metric","ได้เฉพาะกับ Ingress","ไม่รองรับ weight เลย"], correct:1, explain:"HTTPRoute ทำ static routing ตามค่าที่กำหนดล่วงหน้าเท่านั้น การ route ตาม metric จริงต้องมีชั้นควบคุมเพิ่มเติม"},
+  {q:"[Security] เมื่อไหร่ pod จะเข้าสู่โหมด default-deny?", options:["ทันทีที่สร้างคลัสเตอร์","เมื่อมี NetworkPolicy อย่างน้อยหนึ่งตัว podSelector ตรงกับมัน","เมื่อเปิด flag พิเศษที่ kube-apiserver","ไม่มีทางเกิดขึ้นได้"], correct:1, explain:"pod เข้าสู่ deny-by-default เฉพาะทิศทางที่ policy ระบุ ก็ต่อเมื่อมี NetworkPolicy อย่างน้อยหนึ่งตัวเลือกมันด้วย podSelector"},
+  {q:"[Security] NetworkPolicy หลายตัวที่เลือก pod เดียวกันรวมผลกันแบบใด?", options:["AND ต้องผ่านทุก policy","OR/union ผ่านได้ถ้ามี policy ใดอนุญาต","ใช้ policy ล่าสุดเท่านั้น","ต้อง merge เป็นไฟล์เดียวก่อน"], correct:1, explain:"policy หลายตัวรวมกันแบบ union ไม่ใช่ intersection — traffic ผ่านได้ถ้ามี rule ใดอนุญาต"},
+  {q:"[Security] toFQDNs ของ CiliumNetworkPolicy ทำงานอย่างไรกับโดเมนที่ IP เปลี่ยนบ่อย?", options:["บล็อกโดเมนนั้นทั้งหมด","ดัก DNS response แล้วอัปเดต allow-list ของ eBPF แบบ dynamic","แปลงเป็น IP คงที่ตอน apply ครั้งเดียว","ใช้ไม่ได้กับโดเมนที่มีหลาย IP"], correct:1, explain:"Cilium ดัก DNS response ผ่าน DNS proxy ภายในแล้วอัปเดต allow-list ตาม IP ที่ resolve ได้จริง"},
+  {q:"[Security] WireGuard transparent encryption เข้ารหัส traffic ที่ระดับใด?", options:["Application (L7)","Node-to-node (L3) อัตโนมัติโดย workload ไม่ต้องรับรู้","เฉพาะ DNS เท่านั้น","เฉพาะ ingress traffic จากภายนอก"], correct:1, explain:"WireGuard เข้ารหัสทุก traffic ระหว่าง node โดยอัตโนมัติที่ระดับ kernel โดย application ไม่ต้องแก้ไขอะไรเลย"},
+  {q:"[Security] ทำไม production ที่ใช้ Let's Encrypt ต้องผ่าน HTTP-01/DNS-01 challenge?", options:["เพื่อพิสูจน์ความเป็นเจ้าของโดเมนก่อนออก cert ที่ browser เชื่อถือทั่วโลก","เป็นขั้นตอนเสริมที่ข้ามได้เสมอ","เพื่อเพิ่มความเร็วในการออก cert","ใช้เฉพาะตอน renew เท่านั้น"], correct:0, explain:"Let's Encrypt เป็น public CA ต้องพิสูจน์ความเป็นเจ้าของโดเมนจริงก่อนออก cert สาธารณะ ต่างจาก self-signed ที่ไม่ต้องพิสูจน์แต่ก็ไม่ถูกเชื่อถือ"},
+  {q:"[Observability] cilium_drop_count_total ช่วยตอบคำถามอะไรได้ดีที่สุด?", options:["ความเร็วของ DNS","จำนวน packet ที่ถูก drop พร้อมเหตุผล เช่น policy ปฏิเสธ","อายุของ TLS certificate","จำนวน pod ที่กำลัง scale"], correct:1, explain:"เป็น counter metric ที่บอกจำนวนและเหตุผลของ packet ที่ถูก drop เหมาะเป็นจุดเริ่ม debug NetworkPolicy"},
+  {q:"[Observability] Hubble Relay ทำหน้าที่อะไร?", options:["ออก TLS certificate","รวม flow log จากทุก node เป็น cluster-wide view เดียว","ทำ DNS caching","ทำ load balancing ของ Service"], correct:1, explain:"Hubble เก็บ flow ระดับ node ส่วน Hubble Relay รวมข้อมูลจากทุก node เข้าเป็นภาพเดียวให้ query ผ่าน CLI/UI"},
+  {q:"[Observability] ลำดับการ debug connectivity ที่แนะนำคืออะไร?", options:["tcpdump ก่อนเสมอ","Hubble → conntrack → tcpdump ตามลำดับความลึก","conntrack เพียงอย่างเดียวพอเสมอ","ss ก่อนเสมอโดยไม่ต้องดูอย่างอื่น"], correct:1, explain:"Hubble ให้ภาพรวม verdict เร็วที่สุด ตามด้วย conntrack ยืนยันสถานะ connection และ tcpdump เมื่อต้องดู payload จริง"}
+] };
+
+/* ============ STATE ============ */
+const STORE_KEY = "ckne-course-progress-v2";
+function defaultState(){ return { completedTopics:{}, labSteps:{}, quizScores:{}, lastRoute:null, theme:null }; }
+function loadState(){
+  const def = defaultState();
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){
+      const p = JSON.parse(raw);
+      if(p && typeof p === "object"){
+        const obj = (v)=> (v && typeof v === "object" && !Array.isArray(v)) ? v : {};
+        return Object.assign(def, p, {
+          completedTopics: obj(p.completedTopics),
+          labSteps: obj(p.labSteps),
+          quizScores: obj(p.quizScores)
+        });
+      }
+    }
+  }catch(e){}
+  return def;
+}
+function saveState(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+}
+let state = loadState();
+
+/* ============ THEME ============ */
+function applyTheme(){
+  const root = document.documentElement;
+  if(state.theme === "light"){ root.setAttribute("data-theme","light"); }
+  else if(state.theme === "dark"){ root.setAttribute("data-theme","dark"); }
+  else { root.removeAttribute("data-theme"); }
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  const order = [null,"dark","light"];
+  const cur = order.indexOf(state.theme);
+  state.theme = order[(cur+1)%order.length];
+  applyTheme(); saveState();
+});
+applyTheme();
+
+/* ============ HELPERS ============ */
+/* escapes for both text and attribute contexts (lab commands contain " and ') */
+function esc(s){ return (s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function findTopic(topicId){
+  for(const m of MODULES){
+    const t = m.topics.find(x=>x.id===topicId);
+    if(t) return {m,t};
+  }
+  return null;
+}
+function labStepCount(t){ return t.lab ? t.lab.steps.length : 0; }
+function labStepsDone(topicId){ return (state.labSteps[topicId]||[]).filter(Boolean).length; }
+function topicFraction(t){
+  const total = 1 + labStepCount(t);
+  let done = state.completedTopics[t.id] ? 1 : 0;
+  done += labStepsDone(t.id);
+  return done/total;
+}
+function moduleFraction(m){
+  if(!m.topics.length) return 0;
+  const sum = m.topics.reduce((a,t)=>a+topicFraction(t),0);
+  return sum/m.topics.length;
+}
+function overallFraction(){
+  const examModules = MODULES.filter(m=>m.weight>0);
+  const totalW = examModules.reduce((a,m)=>a+m.weight,0);
+  if(!totalW) return 0;
+  return examModules.reduce((a,m)=>a+moduleFraction(m)*m.weight,0)/totalW;
+}
+function updateTopProgress(){
+  const pct = Math.round(overallFraction()*100);
+  document.getElementById("topProgressFill").style.width = pct+"%";
+  document.getElementById("topProgressLabel").textContent = pct+"% พร้อมสอบ";
+}
+
+/* ============ ROUTER ============ */
+function go(route){ location.hash = route; }
+window.addEventListener("hashchange", render);
+document.getElementById("brandBtn").addEventListener("click", ()=>go("#/dashboard"));
+document.getElementById("menuBtn").addEventListener("click", ()=>{
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+/* ============ SIDEBAR ============ */
+function renderSidebar(){
+  const side = document.getElementById("sidebar");
+  const hash = location.hash;
+  let html = `<button class="side-mod" onclick="go('#/dashboard')" style="margin-bottom:10px"><span class="num">::</span>ภาพรวม / Dashboard</button>`;
+  MODULES.forEach((m,mi)=>{
+    html += `<div class="side-group"><button class="side-mod" onclick="go('#/module/${m.id}')"><span class="num">${mi===0?'00':('0'+mi)}</span>${esc(m.short)}${m.weight>0?`<span class="w">${m.weight}%</span>`:''}</button>`;
+    html += `<div class="side-topics">`;
+    m.topics.forEach(t=>{
+      const frac = topicFraction(t);
+      const cls = frac>=0.999?"done":(frac>0?"partial":"");
+      const active = hash.includes(`/topic/${t.id}`) ? "active":"";
+      html += `<button class="side-topic ${cls} ${active}" onclick="go('#/module/${m.id}/topic/${t.id}')"><span class="dot"></span>${esc(t.title)}</button>`;
+    });
+    if(m.quiz && m.quiz.length){
+      const active = hash.includes(`/quiz/${m.id}`) ? "active":"";
+      html += `<button class="side-topic ${active}" onclick="go('#/quiz/${m.id}')"><span class="dot"></span>แบบทดสอบท้ายบท</button>`;
+    }
+    html += `</div></div>`;
+  });
+  html += `<button class="side-mod" onclick="go('#/mock-exam')" style="margin-top:10px"><span class="num">FN</span>Mock Exam</button>`;
+  side.innerHTML = html;
+}
+
+/* ============ SVG DIAGRAMS ============ */
+const DIAGRAMS = {
+
+cniPath: ()=>`<figure><svg viewBox="0 0 640 235" role="img" aria-label="Pod A บน Node 1 ส่ง packet ผ่าน veth เข้า Cilium eBPF datapath แล้วออกทาง VXLAN tunnel ไปยัง Pod B บน Node 2">
+  <g style="color:var(--text-dim)" font-size="11">
+    <rect x="20" y="30" width="250" height="185" rx="10" fill="none" stroke="currentColor"/>
+    <text x="34" y="50">Node 1</text>
+    <rect x="370" y="30" width="250" height="185" rx="10" fill="none" stroke="currentColor"/>
+    <text x="384" y="50">Node 2</text>
+  </g>
+  <g font-size="11">
+    <rect x="38" y="70" width="88" height="50" rx="6" fill="none" style="stroke:var(--flow)"/>
+    <text x="52" y="94" style="fill:var(--flow)">Pod A</text>
+    <text x="52" y="110" font-size="9" style="fill:var(--text-dim)">netns</text>
+    <line x1="126" y1="95" x2="162" y2="95" stroke="currentColor" marker-end="url(#arrCni)"/>
+    <text x="130" y="88" font-size="9" style="fill:var(--text-dim)">veth</text>
+    <rect x="164" y="60" width="90" height="110" rx="6" fill="none" stroke="currentColor"/>
+    <text x="176" y="88">eBPF</text>
+    <text x="176" y="104" font-size="9" style="fill:var(--text-dim)">Cilium</text>
+    <text x="176" y="118" font-size="9" style="fill:var(--text-dim)">datapath</text>
+
+    <line x1="254" y1="150" x2="384" y2="150" stroke="currentColor" stroke-dasharray="4 3" marker-end="url(#arrCni)"/>
+    <text x="320" y="142" font-size="9" style="fill:var(--accent)" text-anchor="middle">VXLAN tunnel</text>
+
+    <rect x="386" y="60" width="90" height="110" rx="6" fill="none" stroke="currentColor"/>
+    <text x="398" y="88">eBPF</text>
+    <text x="398" y="104" font-size="9" style="fill:var(--text-dim)">Cilium</text>
+    <line x1="476" y1="95" x2="512" y2="95" stroke="currentColor" marker-end="url(#arrCni)"/>
+    <text x="480" y="88" font-size="9" style="fill:var(--text-dim)">veth</text>
+    <rect x="514" y="70" width="88" height="50" rx="6" fill="none" style="stroke:var(--flow)"/>
+    <text x="528" y="94" style="fill:var(--flow)">Pod B</text>
+    <text x="528" y="110" font-size="9" style="fill:var(--text-dim)">netns</text>
+  </g>
+  <defs><marker id="arrCni" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/></marker></defs>
+</svg><figcaption>Pod A ส่งแพ็กเก็ตผ่าน veth เข้าสู่ eBPF datapath ของ Cilium บน Node 1 ซึ่งค้นหาเส้นทางแล้วห่อแพ็กเก็ตส่งผ่าน VXLAN tunnel ข้าม node ไปยัง eBPF datapath และ veth ของ Pod B — นี่คืองานของ CNI plugin</figcaption></figure>`,
+
+kubeProxy: ()=>`<figure><svg viewBox="0 0 640 235" role="img" aria-label="Client เรียก Service ClusterIP แล้ว kube-proxy หรือ eBPF ทำ DNAT ไปยัง Pod backend หนึ่งตัวในรายชื่อ EndpointSlice">
+  <g font-size="11">
+    <rect x="20" y="71" width="80" height="46" rx="6" fill="none" stroke="currentColor"/>
+    <text x="36" y="99">Client</text>
+    <line x1="100" y1="94" x2="166" y2="94" stroke="currentColor" marker-end="url(#arrKp)"/>
+    <rect x="168" y="71" width="150" height="46" rx="6" fill="none" style="stroke:var(--flow)"/>
+    <text x="182" y="91" style="fill:var(--flow)">Service ClusterIP</text>
+    <text x="182" y="107" font-size="9" style="fill:var(--text-dim)">10.96.x.x:80</text>
+    <text x="182" y="133" font-size="8" style="fill:var(--text-dim)">via iptables / IPVS / eBPF</text>
+    <line x1="318" y1="94" x2="386" y2="94" stroke="currentColor" marker-end="url(#arrKp)"/>
+    <text x="330" y="86" font-size="9" style="fill:var(--accent)">DNAT</text>
+    <rect x="376" y="62" width="152" height="160" rx="10" fill="none" stroke="currentColor" stroke-dasharray="5 4" opacity=".55"/>
+    <text x="376" y="55" font-size="9" style="fill:var(--text-dim)">EndpointSlice (ready endpoints)</text>
+    <rect x="392" y="76" width="120" height="36" rx="6" fill="none" stroke="currentColor"/>
+    <text x="414" y="99">Pod 1</text>
+    <rect x="392" y="126" width="120" height="36" rx="6" fill="none" stroke="currentColor"/>
+    <text x="414" y="149">Pod 2</text>
+    <rect x="392" y="176" width="120" height="36" rx="6" fill="none" stroke="currentColor"/>
+    <text x="414" y="199">Pod 3</text>
+  </g>
+  <defs><marker id="arrKp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/></marker></defs>
+</svg><figcaption>kube-proxy (หรือ eBPF ของ Cilium ในโหมด kube-proxy replacement) เขียนกติกา DNAT จาก ClusterIP ไปยัง backend Pod หนึ่งตัวที่ยังพร้อม (Ready) ตามรายชื่อใน EndpointSlice</figcaption></figure>`,
+
+coreDns: ()=>`<figure><svg viewBox="0 0 640 210" role="img" aria-label="Pod สอบถาม CoreDNS ผ่าน Corefile pipeline ที่ผ่าน plugin kubernetes แล้ว forward ออก upstream ถ้าไม่ใช่โดเมนภายในคลัสเตอร์">
+  <g font-size="11">
+    <rect x="20" y="75" width="80" height="46" rx="6" fill="none" stroke="currentColor"/>
+    <text x="34" y="103">Pod</text>
+    <line x1="100" y1="98" x2="160" y2="98" stroke="currentColor" marker-end="url(#arrDns)"/>
+    <text x="104" y="90" font-size="9" style="fill:var(--text-dim)">kube-dns</text>
+    <rect x="160" y="40" width="220" height="120" rx="8" fill="none" style="stroke:var(--flow)"/>
+    <text x="174" y="58" style="fill:var(--flow)">CoreDNS · Corefile</text>
+    <rect x="176" y="70" width="188" height="26" rx="4" fill="none" stroke="currentColor"/>
+    <text x="184" y="87" font-size="9">kubernetes plugin (*.svc.cluster.local)</text>
+    <rect x="176" y="104" width="188" height="26" rx="4" fill="none" stroke="currentColor"/>
+    <text x="184" y="121" font-size="9">cache / log</text>
+    <line x1="380" y1="98" x2="440" y2="98" stroke="currentColor" marker-end="url(#arrDns)"/>
+    <text x="384" y="90" font-size="9" style="fill:var(--text-dim)">forward (miss)</text>
+    <rect x="440" y="75" width="150" height="46" rx="6" fill="none" style="stroke:var(--accent)"/>
+    <text x="452" y="98" style="fill:var(--accent)">Upstream DNS</text>
+    <text x="452" y="112" font-size="9" style="fill:var(--text-dim)">/etc/resolv.conf</text>
+  </g>
+  <defs><marker id="arrDns" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/></marker></defs>
+</svg><figcaption>คำขอ DNS จาก Pod วิ่งเข้า CoreDNS ผ่าน Corefile pipeline — ถ้าเป็นชื่อในคลัสเตอร์ (*.svc.cluster.local) ตอบจาก plugin kubernetes ทันที ถ้าไม่ใช่จะ forward ต่อไปยัง upstream DNS</figcaption></figure>`,
+
+gatewayApi: ()=>`<figure><svg viewBox="0 0 640 230" role="img" aria-label="Client เรียก Gateway แล้ว HTTPRoute จับคู่ path และแบ่งน้ำหนักทราฟฟิกไปสอง backend Service ต่างจาก Ingress ที่เป็น object เดียวรวมทุกกติกา">
+  <g font-size="11">
+    <rect x="20" y="90" width="80" height="40" rx="6" fill="none" stroke="currentColor"/>
+    <text x="34" y="115">Client</text>
+    <line x1="100" y1="110" x2="160" y2="110" stroke="currentColor" marker-end="url(#arrGw)"/>
+    <rect x="160" y="70" width="120" height="80" rx="8" fill="none" style="stroke:var(--flow)"/>
+    <text x="172" y="92" style="fill:var(--flow)">Gateway</text>
+    <text x="172" y="106" font-size="9" style="fill:var(--text-dim)">listener :443</text>
+    <text x="172" y="120" font-size="9" style="fill:var(--text-dim)">GatewayClass: cilium</text>
+    <line x1="280" y1="110" x2="330" y2="110" stroke="currentColor" marker-end="url(#arrGw)"/>
+    <rect x="330" y="60" width="140" height="100" rx="8" fill="none" stroke="currentColor"/>
+    <text x="342" y="82">HTTPRoute</text>
+    <text x="342" y="100" font-size="9" style="fill:var(--text-dim)">match: /api</text>
+    <text x="342" y="116" font-size="9" style="fill:var(--text-dim)">split by weight</text>
+    <line x1="470" y1="90" x2="528" y2="70" stroke="currentColor" marker-end="url(#arrGw)"/>
+    <line x1="470" y1="120" x2="528" y2="140" stroke="currentColor" stroke-dasharray="3 3" marker-end="url(#arrGw)"/>
+    <rect x="530" y="48" width="90" height="38" rx="6" fill="none" style="stroke:var(--accent)"/>
+    <text x="542" y="66" style="fill:var(--accent)" font-size="10">Svc v1</text>
+    <text x="542" y="79" font-size="9" style="fill:var(--text-dim)">weight 80</text>
+    <rect x="530" y="122" width="90" height="38" rx="6" fill="none" style="stroke:var(--accent)"/>
+    <text x="542" y="140" style="fill:var(--accent)" font-size="10">Svc v2</text>
+    <text x="542" y="153" font-size="9" style="fill:var(--text-dim)">weight 20</text>
+  </g>
+  <defs><marker id="arrGw" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/></marker></defs>
+</svg><figcaption>Gateway API แยก concern: Gateway ควบคุม listener/TLS ระดับ infra, HTTPRoute ควบคุมกติกา routing/traffic-split ระดับ application — ต่าง namespace/ทีมกันได้ ซึ่ง Ingress แบบเดิมรวมทุกอย่างไว้ใน object เดียว</figcaption></figure>`,
+
+netpolDeny: ()=>`<figure><svg viewBox="0 0 640 220" role="img" aria-label="Namespace มี default-deny NetworkPolicy อนุญาตเฉพาะ Pod ที่มี label ตรงกับ policy เท่านั้น Pod อื่นถูกบล็อก">
+  <g font-size="11">
+    <rect x="20" y="20" width="600" height="180" rx="10" fill="none" stroke="currentColor" stroke-dasharray="5 4"/>
+    <text x="34" y="40" style="fill:var(--text-dim)">Namespace: payments (default-deny)</text>
+    <rect x="60" y="70" width="100" height="46" rx="6" fill="none" style="stroke:var(--flow)"/>
+    <text x="76" y="98" style="fill:var(--flow)">Pod A</text>
+    <text x="70" y="112" font-size="8" style="fill:var(--text-dim)">role=frontend</text>
+    <rect x="270" y="70" width="110" height="46" rx="6" fill="none" stroke="currentColor"/>
+    <text x="290" y="98">Pod B</text>
+    <text x="280" y="112" font-size="8" style="fill:var(--text-dim)">role=api (allowed)</text>
+    <line x1="160" y1="93" x2="270" y2="93" style="stroke:var(--good)" marker-end="url(#arrNp)"/>
+    <text x="168" y="86" font-size="9" style="fill:var(--good)">allow: role=frontend</text>
+    <rect x="270" y="150" width="110" height="46" rx="6" fill="none" stroke="currentColor" opacity=".5"/>
+    <text x="290" y="178" opacity=".6">Pod C</text>
+    <text x="278" y="192" font-size="8" style="fill:var(--text-dim)">role=admin</text>
+    <line x1="160" y1="100" x2="270" y2="170" style="stroke:var(--bad)" stroke-dasharray="4 3" marker-end="url(#arrNpX)"/>
+    <text x="120" y="160" font-size="9" style="fill:var(--bad)">deny (no rule matches)</text>
+  </g>
+  <defs>
+    <marker id="arrNp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--good)"/></marker>
+    <marker id="arrNpX" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--bad)"/></marker>
+  </defs>
+</svg><figcaption>เมื่อมี NetworkPolicy อย่างน้อยหนึ่งตัวเลือก Pod ใด namespace นั้นเข้าสู่โหมด default-deny ทันที — traffic จะผ่านได้เฉพาะที่มี rule อนุญาตตรงกับ podSelector/namespaceSelector เท่านั้น ที่เหลือถูกบล็อกโดยปริยาย</figcaption></figure>`,
+
+egressGw: ()=>`<figure><svg viewBox="0 0 640 200" role="img" aria-label="Pod หลายตัวส่ง traffic ออกผ่าน egress gateway node ทำให้ปลายทางภายนอกเห็น source IP เดียวที่ถูก whitelist ไว้">
+  <g font-size="11">
+    <rect x="20" y="30" width="180" height="140" rx="10" fill="none" stroke="currentColor" stroke-dasharray="5 4"/>
+    <text x="32" y="48" style="fill:var(--text-dim)">Namespace: reporting</text>
+    <rect x="40" y="65" width="70" height="34" rx="6" fill="none" style="stroke:var(--flow)"/><text x="52" y="86" style="fill:var(--flow)" font-size="10">Pod 1</text>
+    <rect x="40" y="110" width="70" height="34" rx="6" fill="none" style="stroke:var(--flow)"/><text x="52" y="131" style="fill:var(--flow)" font-size="10">Pod 2</text>
+    <line x1="110" y1="82" x2="230" y2="100" stroke="currentColor" marker-end="url(#arrEg)"/>
+    <line x1="110" y1="127" x2="230" y2="105" stroke="currentColor" marker-end="url(#arrEg)"/>
+    <rect x="230" y="70" width="140" height="60" rx="8" fill="none" style="stroke:var(--accent)"/>
+    <text x="244" y="94" style="fill:var(--accent)">Egress Gateway</text>
+    <text x="244" y="108" font-size="9" style="fill:var(--text-dim)">CiliumEgressGatewayPolicy</text>
+    <text x="244" y="120" font-size="9" style="fill:var(--text-dim)">SNAT → 203.0.113.9</text>
+    <line x1="370" y1="100" x2="450" y2="100" stroke="currentColor" marker-end="url(#arrEg)"/>
+    <rect x="450" y="75" width="150" height="50" rx="6" fill="none" stroke="currentColor"/>
+    <text x="464" y="97">External API</text>
+    <text x="464" y="111" font-size="9" style="fill:var(--text-dim)">sees 1 fixed source IP</text>
+  </g>
+  <defs><marker id="arrEg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/></marker></defs>
+</svg><figcaption>CiliumEgressGatewayPolicy บังคับให้ traffic ขาออกจาก namespace ที่กำหนด เดินทางผ่าน node ที่ถูกเลือกเป็น egress gateway แล้ว SNAT ด้วย IP คงที่ ทำให้ปลายทางภายนอก whitelist ได้เพียง IP เดียว</figcaption></figure>`,
+
+hubbleFlow: ()=>`<figure><svg viewBox="0 0 640 210" role="img" aria-label="eBPF datapath ส่งข้อมูล flow ให้ Hubble ซึ่งรวบรวมผ่าน Relay ให้ CLI หรือ UI สังเกตการอนุญาตและการบล็อกของ traffic แบบ real time">
+  <g font-size="11">
+    <rect x="20" y="80" width="100" height="44" rx="6" fill="none" style="stroke:var(--flow)"/>
+    <text x="34" y="106" style="fill:var(--flow)">Pod A → B</text>
+    <line x1="120" y1="102" x2="180" y2="102" stroke="currentColor" marker-end="url(#arrHb)"/>
+    <rect x="180" y="70" width="120" height="64" rx="6" fill="none" stroke="currentColor"/>
+    <text x="192" y="92">eBPF datapath</text>
+    <text x="192" y="106" font-size="9" style="fill:var(--text-dim)">allow / drop decision</text>
+    <line x1="240" y1="134" x2="240" y2="160" stroke="currentColor" marker-end="url(#arrHb)"/>
+    <rect x="170" y="160" width="140" height="34" rx="6" fill="none" style="stroke:var(--accent)"/>
+    <text x="184" y="181" style="fill:var(--accent)" font-size="10">Hubble (per-node)</text>
+    <line x1="310" y1="177" x2="380" y2="140" stroke="currentColor" marker-end="url(#arrHb)"/>
+    <rect x="380" y="90" width="120" height="60" rx="6" fill="none" stroke="currentColor"/>
+    <text x="392" y="112">Hubble Relay</text>
+    <text x="392" y="126" font-size="9" style="fill:var(--text-dim)">cluster-wide view</text>
+    <line x1="500" y1="120" x2="560" y2="120" stroke="currentColor" marker-end="url(#arrHb)"/>
+    <rect x="560" y="95" width="60" height="50" rx="6" fill="none" stroke="currentColor"/>
+    <text x="570" y="124" font-size="10">CLI / UI</text>
+  </g>
+  <defs><marker id="arrHb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/></marker></defs>
+</svg><figcaption>ทุก flow ที่ eBPF datapath ตัดสินใจ (อนุญาตหรือบล็อกโดย NetworkPolicy) ถูกส่งให้ Hubble บันทึกที่ node แล้วรวมศูนย์ผ่าน Hubble Relay ให้ตรวจสอบผ่าน CLI/UI แบบ near real-time</figcaption></figure>`,
+
+};
+
+/* ============ RENDER: DASHBOARD ============ */
+function renderDashboard(){
+  const pct = Math.round(overallFraction()*100);
+  let rows = MODULES.filter(m=>m.weight>0).map(m=>{
+    const p = Math.round(moduleFraction(m)*100);
+    return `<div class="bp-row"><span class="lbl">${esc(m.short)}</span><span class="bp-bar"><i style="width:${p}%"></i></span><span class="pct">${m.weight}%</span></div>`;
+  }).join("");
+  let tiles = MODULES.map((m,mi)=>{
+    const p = Math.round(moduleFraction(m)*100);
+    const q = state.quizScores[m.id];
+    const quizLine = q ? ` · quiz ${q.score}/${q.total}` : (m.quiz && m.quiz.length ? " · ยังไม่ได้ทำ quiz" : "");
+    return `<button class="tile" onclick="go('#/module/${m.id}')">
+      <div class="tile-top"><h3>${mi===0?'Setup':'Module '+mi+' · '+esc(m.short)}</h3>${m.weight>0?`<span class="badge">${m.weight}%</span>`:''}</div>
+      <p>${esc(m.blurb)}</p>
+      <span class="stat">${p}% complete · ${m.topics.length} topics${quizLine}</span>
+    </button>`;
+  }).join("");
+
+  const resume = state.lastRoute && findTopic((state.lastRoute.split("/topic/")[1]||""));
+  const resumeBtn = resume
+    ? `<button class="nav-btn" onclick="go('${state.lastRoute}')" style="border-color:var(--accent)">เรียนต่อ: ${esc(resume.t.title)} →</button>`
+    : `<button class="nav-btn" onclick="go('#/module/m0')" style="border-color:var(--accent)">เริ่มที่ Module 0 · เตรียม Lab →</button>`;
+
+  const mock = state.quizScores["mock"];
+  const mockLine = mock
+    ? `Mock exam ล่าสุด: <strong>${mock.score}/${mock.total}</strong>`
+    : `ยังไม่ได้ลอง mock exam`;
+
+  document.getElementById("main").innerHTML = `
+    <div class="eyebrow">CKNE · Certified Kubernetes Network Engineer</div>
+    <h1 class="h1">แผนการเตรียมสอบของคุณ</h1>
+    <p class="lede">คอร์สนี้เรียงตาม official blueprint 5 domain ของ CKNE (BETA, 2 ชั่วโมง, performance-based) แต่ละหัวข้อมี concept สั้นๆ ตามด้วย hands-on lab ที่รันบน cluster จริง เพราะข้อสอบจริงคือการลงมือทำ ไม่ใช่ข้อสอบปรนัย</p>
+    <div class="dash-hero">
+      <div class="dash-stat"><div class="n">${pct}%</div><div class="l">Overall Readiness</div></div>
+      <div class="bp-chart">${rows}</div>
+    </div>
+    <div class="section" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      ${resumeBtn}
+      <button class="nav-btn" onclick="go('#/mock-exam')">Mock Exam</button>
+      <span class="progress-label">${mockLine}</span>
+    </div>
+    <div class="section"><h2>โมดูล</h2><div class="grid-tiles">${tiles}</div></div>
+    <div class="footer-note">Progress ถูกบันทึกไว้ใน browser นี้เท่านั้น (localStorage) — เปิดคอร์สนี้จากเครื่อง/เบราว์เซอร์เดิมเพื่อดำเนินการต่อ</div>
+  `;
+}
+
+/* ============ RENDER: MODULE OVERVIEW ============ */
+function renderModule(modId){
+  const m = MODULES.find(x=>x.id===modId);
+  if(!m){ go("#/dashboard"); return; }
+  let list = m.topics.map((t,ti)=>{
+    const p = Math.round(topicFraction(t)*100);
+    return `<button class="tile" onclick="go('#/module/${m.id}/topic/${t.id}')">
+      <div class="tile-top"><h3>${ti+1}. ${esc(t.title)}</h3></div>
+      <p>${esc(t.summary)}</p>
+      <span class="stat">${p}% · ${labStepCount(t)} lab steps</span>
+    </button>`;
+  }).join("");
+  document.getElementById("main").innerHTML = `
+    <div class="eyebrow">Module${m.weight>0?` · น้ำหนักข้อสอบ ${m.weight}%`:''}</div>
+    <h1 class="h1">${esc(m.title)}</h1>
+    <p class="lede">${esc(m.blurb)}</p>
+    <div class="grid-tiles">${list}</div>
+    ${m.quiz && m.quiz.length? `<div class="section" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="nav-btn" onclick="go('#/quiz/${m.id}')">${state.quizScores[m.id]?'ทำแบบทดสอบอีกครั้ง':'ทำแบบทดสอบท้ายบท'} (${m.quiz.length} ข้อ) →</button>
+      ${state.quizScores[m.id]?`<span class="progress-label">คะแนนล่าสุด: ${state.quizScores[m.id].score}/${state.quizScores[m.id].total}</span>`:''}
+    </div>`:''}
+  `;
+}
+
+/* ============ RENDER: TOPIC ============ */
+function renderTopic(modId, topId){
+  const m = MODULES.find(x=>x.id===modId);
+  const ti = m ? m.topics.findIndex(x=>x.id===topId) : -1;
+  if(!m || ti===-1){ go("#/dashboard"); return; }
+  const t = m.topics[ti];
+  state.lastRoute = `#/module/${m.id}/topic/${t.id}`; saveState();
+
+  let diagramHtml = "";
+  if(t.diagram && DIAGRAMS[t.diagram]) diagramHtml = `<div class="section">${DIAGRAMS[t.diagram]()}</div>`;
+
+  let labHtml = "";
+  if(t.lab){
+    const doneArr = state.labSteps[t.id] || [];
+    const steps = t.lab.steps.map((s,si)=>{
+      const checked = doneArr[si] ? "checked" : "";
+      return `<div class="step">
+        <div class="step-head">
+          <input type="checkbox" class="step-check" ${checked} onchange="toggleStep('${t.id}',${si},this.checked)">
+          <span class="step-num">${String(si+1).padStart(2,'0')}</span>
+          <div class="step-body">
+            <div class="step-instr">${esc(s.i)}</div>
+            <div class="cmd-block"><pre>${esc(s.c)}</pre><button class="copy-btn" onclick="copyCmd(this)" data-cmd="${esc(s.c)}">คัดลอก</button></div>
+            <details class="disclose expect"><summary>ผลลัพธ์ที่ควรเห็น</summary><div class="box">${esc(s.e)}</div></details>
+            <details class="disclose trouble"><summary>ถ้าไม่สำเร็จ</summary><div class="box">${esc(s.tr)}</div></details>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+    const challenge = t.lab.challenge ? `<div class="challenge">
+        <h4>Challenge</h4>
+        <div>${esc(t.lab.challenge.task)}</div>
+        <button class="reveal-btn" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">เฉลยแนวทาง</button>
+        <div style="display:none;margin-top:10px;font-size:.85rem;color:var(--text-dim)">${esc(t.lab.challenge.reveal)}</div>
+      </div>` : "";
+    labHtml = `<div class="section lab">
+      <div class="lab-head"><span class="tag">Hands-on Lab</span><h3>${esc(t.lab.title||'ลงมือทำ')}</h3></div>
+      ${t.lab.prereqs?`<div class="lab-prereq"><strong>ก่อนเริ่ม:</strong> ${esc(t.lab.prereqs)}</div>`:''}
+      ${steps}
+      ${challenge}
+    </div>`;
+  }
+
+  const done = !!state.completedTopics[t.id];
+  const prevTopic = ti>0 ? m.topics[ti-1] : null;
+  const nextTopic = ti<m.topics.length-1 ? m.topics[ti+1] : null;
+
+  document.getElementById("main").innerHTML = `
+    <div class="eyebrow">${esc(m.title)}</div>
+    <h1 class="h1">${esc(t.title)}</h1>
+    <div class="section card concept">${t.concept}</div>
+    ${diagramHtml}
+    ${labHtml}
+    <div class="mark-row">
+      <button class="mark-btn ${done?'done':''}" onclick="toggleTopic('${t.id}')">${done? '✓ อ่านจบแล้ว' : 'ทำเครื่องหมายว่าอ่านจบ'}</button>
+      <div class="nav-btns">
+        ${prevTopic?`<button class="nav-btn" onclick="go('#/module/${m.id}/topic/${prevTopic.id}')">← ${esc(prevTopic.title)}</button>`:`<button class="nav-btn" onclick="go('#/module/${m.id}')">← ภาพรวมโมดูล</button>`}
+        ${nextTopic?`<button class="nav-btn" onclick="go('#/module/${m.id}/topic/${nextTopic.id}')">${esc(nextTopic.title)} →</button>`:(m.quiz&&m.quiz.length?`<button class="nav-btn" onclick="go('#/quiz/${m.id}')">ทำแบบทดสอบ →</button>`:`<button class="nav-btn" onclick="go('#/dashboard')">กลับ Dashboard →</button>`)}
+      </div>
+    </div>
+  `;
+}
+function toggleTopic(topicId){
+  state.completedTopics[topicId] = !state.completedTopics[topicId];
+  saveState(); render();
+}
+function toggleStep(topicId, idx, val){
+  if(!Array.isArray(state.labSteps[topicId])) state.labSteps[topicId]=[];
+  state.labSteps[topicId][idx]=val;
+  saveState(); renderSidebar(); updateTopProgress();
+}
+function copyCmd(btn){
+  const txt = btn.getAttribute("data-cmd");
+  const flash = (msg,ms)=>{ btn.textContent=msg; setTimeout(()=>btn.textContent="คัดลอก",ms); };
+  try{
+    navigator.clipboard.writeText(txt).then(()=>flash("คัดลอกแล้ว",1200), ()=>flash("คัดลอกไม่ได้",1600));
+  }catch(e){ flash("คัดลอกไม่ได้",1600); }
+}
+
+/* ============ RENDER: QUIZ ============ */
+function renderQuizGeneric(title, questions, onFinish){
+  let qs = questions.map((q,qi)=>{
+    let opts = q.options.map((o,oi)=>`<label class="opt" data-qi="${qi}" data-oi="${oi}"><input type="radio" name="q${qi}" value="${oi}">${esc(o)}</label>`).join("");
+    return `<div class="quiz-q" id="qwrap-${qi}"><p class="qtext">${qi+1}. ${esc(q.q)}</p>${opts}<div class="qexplain" id="explain-${qi}">${esc(q.explain)}</div></div>`;
+  }).join("");
+  document.getElementById("main").innerHTML = `
+    <div class="eyebrow">Quiz</div>
+    <h1 class="h1">${esc(title)}</h1>
+    <div class="card">${qs}<button class="quiz-submit" id="quizSubmit">ส่งคำตอบ</button><div class="quiz-result" id="quizResult"></div></div>
+    <div class="mark-row"><button class="nav-btn" onclick="history.back()">← กลับ</button><span></span></div>
+  `;
+  document.getElementById("quizSubmit").addEventListener("click", ()=>{
+    let score=0;
+    questions.forEach((q,qi)=>{
+      const picked = document.querySelector(`input[name="q${qi}"]:checked`);
+      const pickedVal = picked ? parseInt(picked.value) : -1;
+      if(pickedVal===q.correct) score++;
+      document.querySelectorAll(`[data-qi="${qi}"]`).forEach(lab=>{
+        const oi = parseInt(lab.getAttribute("data-oi"));
+        if(oi===q.correct) lab.classList.add("correct");
+        else if(oi===pickedVal) lab.classList.add("wrong");
+      });
+      document.getElementById(`explain-${qi}`).classList.add("show");
+    });
+    document.getElementById("quizResult").textContent = `คะแนน: ${score} / ${questions.length}`;
+    document.getElementById("quizSubmit").disabled = true;
+    onFinish(score, questions.length);
+  });
+}
+function renderQuiz(modId){
+  const m = MODULES.find(x=>x.id===modId);
+  if(!m || !m.quiz){ go("#/dashboard"); return; }
+  renderQuizGeneric(`แบบทดสอบ: ${m.short}`, m.quiz, (score,total)=>{
+    state.quizScores[m.id] = {score,total,ts:Date.now()};
+    saveState();
+  });
+}
+function renderMockExam(){
+  renderQuizGeneric("Mock Exam (คละทุก domain)", MOCK_EXAM.questions, (score,total)=>{
+    state.quizScores["mock"] = {score,total,ts:Date.now()};
+    saveState();
+  });
+}
+
+/* ============ MAIN RENDER ============ */
+function render(){
+  renderSidebar();
+  updateTopProgress();
+  document.getElementById("sidebar").classList.remove("open");
+  const hash = location.hash;
+  let mm;
+  if(hash==="" || hash==="#/dashboard"){ renderDashboard(); }
+  else if((mm=hash.match(/^#\/module\/([^\/]+)\/topic\/([^\/]+)$/))){ renderTopic(mm[1], mm[2]); }
+  else if((mm=hash.match(/^#\/module\/([^\/]+)$/))){ renderModule(mm[1]); }
+  else if((mm=hash.match(/^#\/quiz\/([^\/]+)$/))){ renderQuiz(mm[1]); }
+  else if(hash==="#/mock-exam"){ renderMockExam(); }
+  else { renderDashboard(); }
+  window.scrollTo(0,0);
+}
+render();
+</script>
