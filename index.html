@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="คอร์สเตรียมสอบ CKNE (Certified Kubernetes Network Engineer) แบบ hands-on ครบทั้ง 5 domain พร้อมแล็บรันบน cluster จริง 73 ขั้นตอน และแบบทดสอบ 65 ข้อ">
+<meta name="description" content="คอร์สเตรียมสอบ CKNE (Certified Kubernetes Network Engineer) แบบ hands-on ครบทั้ง 5 domain พร้อมแล็บรันบน cluster จริง และกล่องปูพื้นฐานสำหรับผู้เริ่มต้นในทุกหัวข้อ">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="CKNE Lab Manual">
-<meta property="og:description" content="คอร์สเตรียมสอบ CKNE แบบ hands-on ครบทั้ง 5 domain พร้อมแล็บบน cluster จริง">
+<meta property="og:description" content="คอร์สเตรียมสอบ CKNE แบบ hands-on ครบทั้ง 5 domain เริ่มจากศูนย์ได้ มีกล่องปูพื้นฐานทุกหัวข้อ">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128752;</text></svg>">
 <style>:root{color-scheme:light dark}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -121,11 +121,34 @@ figcaption{font-size:.82rem;color:var(--text-dim);margin-top:8px;padding-top:8px
 .challenge{margin:0;padding:16px 18px;background:var(--accent-soft)}
 .challenge h4{margin:0 0 6px;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;font-family:"IBM Plex Mono"}
 .challenge .reveal-btn{margin-top:10px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 12px;font-size:.8rem;cursor:pointer;color:var(--text)}
-.mark-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.primer{margin-top:18px;border:1px solid var(--flow);border-left-width:3px;border-radius:12px;background:var(--flow-soft);overflow:hidden}
+.primer>summary{list-style:none;cursor:pointer;padding:13px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.primer>summary::-webkit-details-marker{display:none}
+.primer>summary::before{content:"▸";font-family:"IBM Plex Mono";color:var(--flow);flex:none}
+.primer[open]>summary::before{content:"▾"}
+.primer .p-tag{font-family:"IBM Plex Mono";font-size:.66rem;letter-spacing:.07em;text-transform:uppercase;background:var(--flow);color:var(--bg);border-radius:5px;padding:3px 8px;font-weight:600;flex:none}
+.primer .p-need{font-size:.87rem;flex:1;min-width:180px}
+.primer .p-count{font-family:"IBM Plex Mono";font-size:.7rem;color:var(--text-dim);flex:none}
+.primer-body{padding:0 16px 16px;border-top:1px solid var(--border)}
+.primer-body>p:first-child{margin-top:14px}
+.primer-body p{margin:.6em 0;font-size:.93rem}
+.primer-body ul{margin:.5em 0;padding-left:1.3em;font-size:.93rem}
+.primer-body li{margin:.35em 0}
+.primer-body code{background:var(--surface);border-radius:4px;padding:.1em .4em;font-size:.88em}
+.primer-body figure{margin:14px 0;background:var(--surface)}
+.p-try{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.p-try-head{font-family:"IBM Plex Mono";font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim);padding:9px 13px;border-bottom:1px solid var(--border)}
+.p-step{display:flex;align-items:flex-start;gap:9px;padding:12px 13px;border-bottom:1px solid var(--border)}
+.p-step:last-child{border-bottom:none}
+.p-step input{margin-top:3px;width:17px;height:17px;flex:none;accent-color:var(--flow);cursor:pointer}
+.p-step-body{flex:1;min-width:0}
+.p-step-instr{font-size:.88rem;margin-bottom:7px}
+.p-step-expect{font-size:.8rem;color:var(--text-dim);margin-top:7px}
+.mark-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
 .mark-btn{background:var(--good);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer;font-size:.88rem}
 .mark-btn.done{background:var(--surface-2);color:var(--text-dim)}
-.nav-btns{display:flex;gap:8px}
-.nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;cursor:pointer;color:var(--text);font-size:.85rem}
+.nav-btns{display:flex;gap:8px;flex-wrap:wrap;min-width:0}
+.nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;cursor:pointer;color:var(--text);font-size:.85rem;min-width:0;text-align:left}
 .badge{display:inline-flex;align-items:center;gap:5px;font-family:"IBM Plex Mono";font-size:.68rem;border-radius:99px;padding:3px 9px;background:var(--surface-2);color:var(--text-dim)}
 .grid-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:18px}
 .tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px}
@@ -186,6 +209,35 @@ const MODULES = [
   topics:[
     {
       id:"m0-t1", title:"ติดตั้ง kind cluster + Cilium", summary:"สร้าง multi-node cluster ด้วย kind แล้วติดตั้ง Cilium แทน CNI default",
+      primer:{
+        need:"ยังไม่เคยใช้ Kubernetes มาก่อน หรือไม่ชัดเรื่อง IP / port / DNS? เริ่มอ่านตรงนี้ก่อน",
+        diagram:"k8sObjects",
+        body:`<p><strong>Kubernetes (k8s)</strong> คือระบบที่คอยรันและดูแล container ให้เราแทนการ ssh เข้าไปสั่งเองทีละเครื่อง — เราบอกว่า "อยากได้ nginx 3 ตัว" แล้วมันจัดการหาที่วาง เปิดใหม่เมื่อตาย และกระจายโหลดให้เอง</p>
+        <p><strong>ศัพท์ที่ต้องรู้ก่อน (เรียงจากเล็กไปใหญ่)</strong></p>
+        <ul>
+          <li><strong>container</strong> — แอปหนึ่งตัวพร้อมของที่มันต้องใช้ ห่อมาเป็นก้อนเดียว</li>
+          <li><strong>pod</strong> — หน่วยเล็กที่สุดที่ k8s จัดการ ข้างในมี container 1 ตัว (หรือมากกว่า) <strong>pod หนึ่งตัวได้ IP หนึ่งเบอร์</strong> — จุดนี้สำคัญมากกับทั้งคอร์สนี้</li>
+          <li><strong>node</strong> — เครื่อง (VM หรือ server จริง) ที่ pod ไปรันอยู่</li>
+          <li><strong>cluster</strong> — node หลายตัวรวมกัน คือทั้งระบบที่เราคุยด้วยผ่าน kubectl</li>
+          <li><strong>namespace</strong> — โฟลเดอร์เสมือนไว้แบ่งกลุ่มของในคลัสเตอร์ ไม่ให้ชื่อชนกัน</li>
+          <li><strong>Deployment</strong> — ตัวสั่งว่า "ขอ pod แบบนี้ n ตัว" และคอยสร้างใหม่ให้เมื่อมีตัวตาย</li>
+          <li><strong>Service</strong> — ชื่อ/IP คงที่ที่ชี้ไปยังกลุ่ม pod (Module 2 จะเจาะลึกตัวนี้)</li>
+        </ul>
+        <p><strong>kubectl</strong> คือคำสั่งที่ใช้คุยกับคลัสเตอร์ รูปแบบที่เจอบ่อยสุดคือ <code>kubectl &lt;กริยา&gt; &lt;ชนิดของ&gt; &lt;ชื่อ&gt;</code> เช่น <code>kubectl get pod web</code>, <code>kubectl describe node</code>, <code>kubectl delete svc web</code> — เติม <code>-n &lt;namespace&gt;</code> เพื่อระบุ namespace และ <code>-o wide</code> เพื่อขอรายละเอียดเพิ่ม (เช่น IP)</p>
+        <p><strong>YAML manifest</strong> ที่เห็นในแล็บทุกอันมีโครงเดียวกัน 4 ส่วน: <code>apiVersion</code> (เวอร์ชันของ API), <code>kind</code> (ชนิดของที่จะสร้าง), <code>metadata</code> (ชื่อ/namespace/label), <code>spec</code> (รายละเอียดว่าต้องการอะไร) — อ่านจากบนลงล่างตามนี้แล้วจะไม่หลง</p>
+        <p><strong>ฝั่ง network ที่ต้องรู้ 4 อย่าง</strong></p>
+        <ul>
+          <li><strong>IP</strong> — เลขประจำตัวของเครื่อง/pod ใช้ระบุว่าจะส่งข้อมูลไปหาใคร</li>
+          <li><strong>port</strong> — เลขช่องบนเครื่องนั้น บอกว่าจะคุยกับโปรแกรมตัวไหน (เว็บมักอยู่ 80/443)</li>
+          <li><strong>DNS</strong> — ระบบแปลงชื่อเป็น IP เพราะคนจำชื่อง่ายกว่าจำเลข</li>
+          <li><strong>TCP vs UDP</strong> — TCP ต่อสายก่อนคุยและรับประกันว่าข้อมูลถึงครบ (เว็บ/API ใช้ตัวนี้) ส่วน UDP ยิงทิ้งไม่รับประกัน แต่เร็วกว่า (DNS ใช้ตัวนี้)</li>
+        </ul>`,
+        try:[
+          {i:"เช็คว่า Docker ทำงานอยู่ (kind รัน node เป็น container จึงต้องมี Docker ก่อน)", c:"docker version --format '{{.Server.Version}}'", e:"ได้เลขเวอร์ชันกลับมา ถ้าขึ้น error ว่าต่อ daemon ไม่ได้ ให้เปิด Docker ก่อน"},
+          {i:"เช็คว่ามี kubectl และ kind แล้ว", c:"kubectl version --client --output=yaml | head -3\nkind version", e:"เห็นเวอร์ชันของทั้งคู่ ถ้ายังไม่มีให้ติดตั้งตามคู่มือทางการก่อนเริ่มแล็บข้างล่าง"},
+          {i:"ดูว่าตอนนี้ kubectl ชี้ไปที่คลัสเตอร์ไหนอยู่ (ยังไม่มีก็ไม่เป็นไร เดี๋ยวแล็บจะสร้างให้)", c:"kubectl config current-context", e:"ถ้ายังไม่เคยสร้างคลัสเตอร์จะขึ้น error ว่าไม่มี context — ปกติ ข้ามไปทำแล็บข้างล่างได้เลย"}
+        ]
+      },
       concept:`<p>ข้อสอบ CKNE เป็น performance-based เต็มรูปแบบ ดังนั้นการมี <strong>cluster จริง</strong> ให้ฝึกสำคัญกว่าอ่านทฤษฎี คอร์สนี้ใช้ <code>kind</code> (Kubernetes IN Docker) เพราะสร้าง multi-node cluster บนเครื่องเดียวได้ฟรี และปิด default CNI ได้เพื่อติดตั้ง Cilium เอง</p>
       <ul>
         <li><strong>kind</strong> — รัน node เป็น container, เหมาะกับแล็บ networking เพราะควบคุม topology ได้เต็มที่</li>
@@ -212,6 +264,20 @@ const MODULES = [
   blurb:"พื้นฐานที่สุดของ networking ใน k8s: CNI ทำงานอย่างไร, IP มาจากไหน, และ Linux ใช้กลไกอะไรต่อ pod เข้ากับ network จริง — โดเมนนี้คือฐานของทุกโดเมนที่เหลือ",
   topics:[
     { id:"m1-t1", title:"CNI Spec และสถาปัตยกรรม Plugin", summary:"CNI คือ spec ไม่ใช่ product — kubelet เรียก plugin ตาม spec นี้ทุกครั้งที่ pod ถูกสร้าง/ลบ",
+      primer:{
+        need:"\"plugin\" คืออะไร แล้วทำไม Kubernetes ถึงไม่ทำเรื่อง network เอง?",
+        body:`<p>Kubernetes ตั้งใจ<strong>ไม่</strong>ทำเรื่อง network เอง แต่ประกาศเป็น "ข้อตกลง" ไว้ว่า ใครจะมาทำก็ได้ ขอแค่ทำตามกติกานี้ — ข้อตกลงนั้นคือ <strong>CNI</strong> ส่วนโปรแกรมที่มาทำจริงเรียกว่า <strong>plugin</strong> (Cilium, Calico, Flannel ต่างก็เป็น plugin คนละยี่ห้อ)</p>
+        <p>เทียบง่ายๆ: k8s เป็นเหมือนปลั๊กไฟมาตรฐาน ส่วน plugin คือเครื่องใช้ไฟฟ้ายี่ห้อไหนก็เสียบได้ ขอแค่หัวปลั๊กตรงสเปก</p>
+        <ul>
+          <li><strong>kubelet</strong> — โปรแกรมที่รันอยู่บนทุก node คอยรับคำสั่งว่าต้องสร้าง pod อะไร แล้วลงมือทำจริงบนเครื่องนั้น เป็นตัวที่เรียก CNI plugin</li>
+          <li><strong>daemonset</strong> — วิธีบอก k8s ว่า "ขอ pod ตัวนี้รันบนทุก node หนึ่งตัว" ซึ่งเป็นวิธีที่ CNI plugin ติดตั้งตัวเองลงทุกเครื่อง</li>
+          <li>ถ้าไม่มี CNI plugin เลย pod จะสร้างไม่ได้ และ node จะค้างสถานะ <code>NotReady</code> — ไม่ใช่เพราะเครื่องพัง แต่เพราะยังไม่มีใครรับหน้าที่ต่อสาย network ให้ pod</li>
+        </ul>`,
+        try:[
+          {i:"ดูว่า CNI plugin ในคลัสเตอร์นี้ติดตั้งตัวเองมาเป็น daemonset จริง — มีกี่ตัว เท่ากับจำนวน node ไหม", c:"kubectl -n kube-system get daemonset cilium\nkubectl get nodes", e:"จำนวน DESIRED/READY ของ daemonset เท่ากับจำนวน node พอดี เพราะทุก node ต้องมีตัวแทนของ CNI"},
+          {i:"ดูว่า pod ของ CNI รันอยู่ node ไหนบ้าง", c:"kubectl -n kube-system get pods -l k8s-app=cilium -o wide", e:"เห็น pod กระจายอยู่ครบทุก node ตัวละหนึ่ง"}
+        ]
+      },
       concept:`<p><strong>CNI (Container Network Interface)</strong> เป็น spec กลางที่กำหนดว่า container runtime ต้องเรียก plugin อย่างไรเพื่อตั้งค่า network ให้ pod — ไม่ใช่ software ตัวเดียว ดังนั้น Calico, Cilium, Flannel ล้วนเป็น "CNI plugin" ที่ implement spec เดียวกันคนละแบบ</p>
       <ul>
         <li><strong>ADD/DEL</strong> — kubelet เรียก binary ของ plugin ผ่าน <code>/opt/cni/bin</code> พร้อม config จาก <code>/etc/cni/net.d</code> ทุกครั้งที่ pod ถูกสร้างหรือลบ</li>
@@ -230,6 +296,23 @@ const MODULES = [
       }
     },
     { id:"m1-t2", title:"IPAM และ Pod / Service / Cluster CIDR", summary:"ใครเป็นคนแจก IP ให้ pod และช่วง CIDR แต่ละชั้นต่างกันอย่างไร",
+      primer:{
+        need:"อ่าน 10.244.0.0/16 ไม่ออก? ตัวเลขหลัง / คืออะไร",
+        diagram:"cidrRuler",
+        body:`<p>เวลาเขียน IP แบบมี <code>/</code> ต่อท้าย เช่น <code>10.244.0.0/16</code> เราไม่ได้พูดถึง IP เบอร์เดียว แต่พูดถึง <strong>ช่วงของ IP</strong> — รูปแบบนี้เรียกว่า <strong>CIDR</strong></p>
+        <ul>
+          <li>IP หนึ่งเบอร์มี 32 บิต เขียนเป็น 4 ท่อน ท่อนละ 0-255 (เช่น 10.244.1.7)</li>
+          <li>เลขหลัง <code>/</code> บอกว่า <strong>กี่บิตแรกถูกล็อกไว้</strong> ส่วนบิตที่เหลือเปลี่ยนได้อิสระ = จำนวนเบอร์ในช่วงนั้น</li>
+          <li><code>/24</code> ล็อก 24 บิต เหลือ 8 บิต → 2⁸ = <strong>256 เบอร์</strong> (10.244.1.0 ถึง 10.244.1.255)</li>
+          <li><code>/16</code> ล็อก 16 บิต เหลือ 16 บิต → 2¹⁶ = <strong>65,536 เบอร์</strong></li>
+          <li>จำง่ายๆ: <strong>ตัวเลขยิ่งมาก ช่วงยิ่งแคบ</strong> — /32 คือเบอร์เดียวเป๊ะ</li>
+        </ul>
+        <p>k8s ใช้หลักนี้แบ่งงาน: ให้ช่วงใหญ่ (/16) กับทั้งคลัสเตอร์ แล้วซอยเป็นก้อนเล็ก (/24) แจกให้แต่ละ node ไปแจกต่อให้ pod ของตัวเอง — วิธีนี้ทำให้ node แต่ละตัวแจก IP ได้เองโดยไม่ต้องถามใคร และรับประกันว่าไม่ชนกัน</p>`,
+        try:[
+          {i:"ดูว่าคลัสเตอร์นี้ให้ช่วงไหนกับทั้งระบบ และซอยให้ node ละก้อนเท่าไร", c:"kubectl get ciliumnodes -o jsonpath='{range .items[*]}{.metadata.name}{\"  \"}{.spec.ipam.podCIDRs}{\"\\n\"}{end}'", e:"แต่ละ node ได้คนละช่วง /24 ที่ไม่ทับกัน เช่น 10.244.0.0/24 กับ 10.244.1.0/24"},
+          {i:"สร้าง pod แล้วดูว่า IP ที่ได้ตกอยู่ในช่วงของ node ที่มันไปอยู่จริงไหม", c:"kubectl run cidrtest --image=nginx\nkubectl get pod cidrtest -o wide", e:"คอลัมน์ IP ของ pod อยู่ในช่วง /24 ของ node ที่แสดงในคอลัมน์ NODE"}
+        ]
+      },
       concept:`<p><strong>IPAM (IP Address Management)</strong> คือกลไกที่ CNI plugin ใช้แจก IP ให้ pod แต่ละตัวโดยไม่ชนกัน มี 3 ช่วง CIDR ที่ต้องแยกให้ออกเพราะข้อสอบชอบถามสลับกัน</p>
       <ul>
         <li><strong>Pod CIDR</strong> — ช่วง IP ของ pod ทั้งคลัสเตอร์ (เช่น 10.244.0.0/16) มักถูกแบ่งย่อยเป็น per-node block (เช่น /24 ต่อ node)</li>
@@ -247,6 +330,21 @@ const MODULES = [
       }
     },
     { id:"m1-t3", title:"Linux Networking Primitives", summary:"netns, veth, bridge, iptables/nftables คือชิ้นส่วนที่ CNI ประกอบขึ้นมาเป็น pod network",
+      primer:{
+        need:"interface คืออะไร แล้ว \"network namespace\" ต่างจากเครื่องธรรมดายังไง",
+        body:`<p><strong>network interface</strong> คือ "ช่องต่อสาย" ของเครื่อง — การ์ดแลนจริงชื่อมักเป็น <code>eth0</code>, ส่วน <code>lo</code> (loopback) คือช่องที่วนกลับหาตัวเอง ทุก interface ถือ IP ได้</p>
+        <p>ลองอ่านผลของ <code>ip addr</code> แบบย่อ: บรรทัดที่ขึ้นต้นด้วยเลขคือชื่อ interface, คำว่า <code>UP</code> แปลว่าเปิดใช้งานอยู่, บรรทัด <code>inet</code> ข้างใต้คือ IP ที่ interface นั้นถืออยู่</p>
+        <p><strong>network namespace (netns)</strong> คือลูกเล่นของ Linux ที่ทำให้เครื่องเดียวมี "ชุด network แยกกัน" ได้หลายชุด — แต่ละชุดมี interface, IP, routing table และกฎ firewall เป็นของตัวเอง มองไม่เห็นกัน</p>
+        <ul>
+          <li>นี่คือเหตุผลที่ <strong>pod แต่ละตัวมี IP ของตัวเองและมี eth0 ของตัวเอง</strong> ทั้งที่อยู่เครื่องเดียวกัน — เพราะแต่ละ pod ถูกใส่ไว้คนละ netns</li>
+          <li>ข้อดีที่ตามมาคือ pod สองตัวบนเครื่องเดียวกันเปิด port 80 พร้อมกันได้ ไม่ชนกัน เพราะเป็นคนละชุด network</li>
+          <li><strong>veth pair</strong> คือสายเสมือนที่มีสองหัว ใช้ต่อ netns ของ pod เข้ากับ network ของเครื่องหลัก (เนื้อหาหลักด้านล่างจะพาไปดูของจริง)</li>
+        </ul>`,
+        try:[
+          {i:"ดู interface ของเครื่องตัวเอง (root namespace) — จะเห็นทั้ง lo และการ์ดแลนจริง", c:"ip addr | grep -E '^[0-9]+:|inet '", e:"เห็นอย่างน้อย lo (127.0.0.1) และ interface หลักที่ถือ IP ของเครื่อง"},
+          {i:"ดู interface ที่ pod มองเห็น — สังเกตว่ามันเห็นแค่ eth0 ของตัวเอง ไม่เห็นของเครื่องเลย", c:"kubectl run nstest --image=nicolaka/netshoot --command -- sleep 600\nkubectl exec nstest -- ip addr | grep -E '^[0-9]+:|inet '", e:"เห็นแค่ lo กับ eth0 ที่ถือ IP ของ pod เอง — นี่คือผลของการอยู่คนละ netns"}
+        ]
+      },
       concept:`<p>ไม่ว่า CNI plugin ไหนก็ยืนอยู่บนกลไก Linux kernel ชุดเดียวกัน เข้าใจสิ่งเหล่านี้แล้วจะ debug ปัญหา networking ได้ไม่ว่าใช้ CNI ตัวไหน</p>
       <ul>
         <li><strong>Network namespace (netns)</strong> — sandbox แยก network stack ต่อ pod มี interface/routing table/iptables ของตัวเอง</li>
@@ -265,6 +363,20 @@ const MODULES = [
     },
     { id:"m1-t4", title:"Pod-to-Pod Connectivity: Overlay vs Native Routing", summary:"สอง pod คุยกันข้าม node ได้อย่างไร — ผ่าน tunnel (overlay) หรือ route ตรง (BGP)",
       diagram:"cniPath",
+      primer:{
+        need:"\"routing\" กับ \"encapsulation\" คืออะไร เอาไปใช้ทำอะไร",
+        body:`<p><strong>routing</strong> คือการตัดสินใจว่า "ข้อมูลก้อนนี้ต้องส่งออกทางไหนต่อ" ทุกเครื่องมีตารางเส้นทาง (routing table) ไว้เทียบว่า IP ปลายทางตรงกับกติกาข้อไหน แล้วส่งออกตามนั้น ถ้าไม่ตรงข้อไหนเลยก็ส่งไป <strong>default gateway</strong> (ทางออกเริ่มต้น)</p>
+        <p><strong>encapsulation</strong> แปลตรงตัวว่า "ห่อ" — คือเอาแพ็กเก็ตเดิมทั้งก้อนใส่ซองใหม่แล้วจ่าหน้าใหม่ไว้ข้างนอก เหมือนเอาจดหมายที่จ่าถึงเพื่อน ไปใส่ซองอีกใบที่จ่าถึงไปรษณีย์สาขาปลายทาง พอถึงแล้วค่อยแกะซองนอกออก จดหมายข้างในยังเหมือนเดิม</p>
+        <ul>
+          <li>ปัญหาที่ต้องแก้: เครือข่ายจริงขององค์กร<strong>ไม่รู้จัก IP ของ pod</strong> เพราะเป็นเลขที่ k8s สมมติขึ้นมาเอง ส่งตรงๆ ไปก็หลงทาง</li>
+          <li><strong>ทางแก้ที่ 1 — overlay</strong>: ห่อซองใหม่จ่าหน้าด้วย IP ของ node (ซึ่งเครือข่ายจริงรู้จัก) ส่งข้าม node แล้วค่อยแกะ — ไม่ต้องขออะไรจากทีม network เลย แลกกับงานตอนห่อ/แกะ</li>
+          <li><strong>ทางแก้ที่ 2 — native routing</strong>: ไปบอกอุปกรณ์เครือข่ายจริงให้รู้จัก IP ของ pod ซะเลย (ผ่าน BGP) แล้วส่งตรงได้ไม่ต้องห่อ — เร็วกว่า แต่ต้องคุยกับทีม network</li>
+        </ul>`,
+        try:[
+          {i:"ดูตารางเส้นทางของเครื่อง — บรรทัด default คือทางออกเมื่อไม่ตรงกติกาข้ออื่น", c:"ip route", e:"เห็นบรรทัดขึ้นต้นด้วย default ตามด้วยกติกาเฉพาะของแต่ละช่วง IP"},
+          {i:"ดูว่าคลัสเตอร์นี้เลือกวิธีไหนส่งข้าม node (tunnel = ห่อซอง, native = ส่งตรง)", c:"kubectl -n kube-system get cm cilium-config -o jsonpath='{.data.routing-mode}{\"\\n\"}'", e:"ได้คำว่า tunnel แปลว่าคลัสเตอร์นี้ใช้วิธีห่อซอง (VXLAN) ส่งข้าม node"}
+        ]
+      },
       concept:`<p>เมื่อ Pod A บน Node 1 คุยกับ Pod B บน Node 2 มี 2 แนวทางหลักที่ CNI plugin เลือกใช้</p>
       <ul>
         <li><strong>Overlay (encapsulation)</strong> — ห่อ packet เดิมด้วย header ใหม่ (VXLAN/GENEVE) แล้วส่งผ่าน node-to-node เหมือนอุโมงค์ ข้อดีคือไม่ต้องยุ่งกับ physical network routing เลย ข้อเสียคือมี overhead จากการ encap/decap</li>
@@ -299,6 +411,21 @@ const MODULES = [
   blurb:"โดเมนที่หนักที่สุดในข้อสอบ (25%) — ว่าด้วยวิธีที่ traffic หาทางไปถึง pod ที่ถูกต้อง ทั้งผ่าน Service, kube-proxy, CoreDNS และ Gateway API",
   topics:[
     { id:"m2-t1", title:"Service Types และ EndpointSlices", summary:"ClusterIP, NodePort, LoadBalancer, Headless ต่างกันตรงไหน และ EndpointSlice เก็บอะไร",
+      primer:{
+        need:"ในเมื่อ pod มี IP อยู่แล้ว ทำไมยังต้องมี Service อีก?",
+        body:`<p>คำตอบสั้นๆ: เพราะ <strong>IP ของ pod เชื่อถือไม่ได้</strong> — pod ตายแล้วเกิดใหม่จะได้ IP ใหม่เสมอ ถ้าแอปจดจำ IP ของ pod ไว้ตรงๆ พอ pod นั้นถูกแทนที่ (deploy ใหม่, node ล่ม, scale) การเชื่อมต่อก็พังทันที</p>
+        <p><strong>Service</strong> จึงเป็นชื่อและ IP <strong>คงที่</strong> ที่ยืนอยู่ข้างหน้ากลุ่ม pod คอยส่งต่อให้ตัวที่ยังมีชีวิตอยู่ — เหมือนเบอร์กลางของออฟฟิศที่ไม่เปลี่ยน ต่อให้พนักงานเข้าออกกี่คนก็ตาม</p>
+        <p><strong>label กับ selector</strong> คือกลไกที่ Service ใช้หาว่า pod ไหนเป็นพวกเดียวกัน</p>
+        <ul>
+          <li><strong>label</strong> — ป้ายชื่อแบบ key=value ที่แปะไว้บน object เช่น <code>app=web</code></li>
+          <li><strong>selector</strong> — เงื่อนไขที่บอกว่า "ฉันสนใจตัวที่มีป้ายแบบนี้" เช่น Service ที่มี selector <code>app=web</code> จะส่ง traffic ให้ pod ทุกตัวที่แปะป้าย <code>app=web</code></li>
+          <li>ความสัมพันธ์นี้<strong>ไม่ได้ผูกตายตัว</strong> — pod ใหม่ที่แปะป้ายตรงกันจะถูกนับเข้ากลุ่มอัตโนมัติ ไม่ต้องแก้ Service เลย</li>
+        </ul>`,
+        try:[
+          {i:"สร้าง pod แล้วจด IP ไว้ จากนั้นลบทิ้งแล้วสร้างใหม่ ดูว่า IP เปลี่ยนไหม", c:"kubectl run iptest --image=nginx\nsleep 5 && kubectl get pod iptest -o jsonpath='{.status.podIP}{\"\\n\"}'\nkubectl delete pod iptest && kubectl run iptest --image=nginx\nsleep 5 && kubectl get pod iptest -o jsonpath='{.status.podIP}{\"\\n\"}'", e:"IP รอบสองไม่เหมือนรอบแรก — นี่คือเหตุผลที่ต้องมี Service มายืนเป็นชื่อคงที่ให้"},
+          {i:"ดู label ที่ติดมากับ pod และลองหา pod ด้วย label", c:"kubectl get pods --show-labels\nkubectl get pods -l run=iptest", e:"คอลัมน์ LABELS แสดงป้ายที่แปะอยู่ และคำสั่งที่สองกรองเฉพาะ pod ที่ป้ายตรงเงื่อนไข — Service ใช้หลักเดียวกันนี้"}
+        ]
+      },
       concept:`<p>Service เป็น abstraction ที่ให้ชื่อ/IP คงที่กับกลุ่ม pod ที่ label ตรงกัน โดยไม่สนว่า pod จริงจะถูกสร้าง/ลบไปกี่ตัว</p>
       <ul>
         <li><strong>ClusterIP</strong> (default) — VIP ใช้ได้เฉพาะภายในคลัสเตอร์</li>
@@ -319,6 +446,20 @@ const MODULES = [
     },
     { id:"m2-t2", title:"kube-proxy Modes: iptables / IPVS / eBPF", summary:"3 วิธีที่ Service VIP ถูกแปลงเป็น backend pod จริง",
       diagram:"kubeProxy",
+      primer:{
+        need:"NAT / DNAT คืออะไร แล้ว \"load balancing\" ทำงานยังไง",
+        body:`<p><strong>NAT (Network Address Translation)</strong> คือการ<strong>แก้ที่อยู่บนซองจดหมายระหว่างทาง</strong> มีสองทิศที่ต้องแยกให้ออก</p>
+        <ul>
+          <li><strong>DNAT</strong> — แก้ที่อยู่<strong>ปลายทาง</strong> เช่น ของถูกส่งไปที่ 10.96.0.5 แต่ระหว่างทางถูกแก้เป็น 10.244.1.7 (IP ของ pod จริง) ผู้ส่งไม่รู้ตัวเลย</li>
+          <li><strong>SNAT</strong> — แก้ที่อยู่<strong>ต้นทาง</strong> ทำให้ปลายทางเห็นว่าของมาจากอีกที่หนึ่ง (Module 3 เรื่อง egress gateway จะใช้ตัวนี้)</li>
+        </ul>
+        <p><strong>load balancing</strong> คือการกระจายงานไปยังผู้รับหลายตัวไม่ให้กระจุกที่ตัวเดียว — วิธีเลือกที่พบบ่อยคือวนตามลำดับ (round robin) หรือเลือกตัวที่งานน้อยสุด (least connection)</p>
+        <p>เอาสองเรื่องนี้มารวมกันจะได้ภาพของ Service: มี IP กลางหนึ่งเบอร์ (ClusterIP) ที่ไม่มี pod ตัวไหนถืออยู่จริง พอมีคนส่งของไปเบอร์นั้น ระบบจะ <strong>DNAT</strong> เปลี่ยนปลายทางเป็น pod จริงตัวใดตัวหนึ่ง โดยเลือกแบบ <strong>load balancing</strong> — ส่วนหัวข้อนี้คือเรื่องที่ว่า "ระบบ" ที่ว่านั้นเขียนกฎเก็บไว้ยังไงได้บ้าง</p>`,
+        try:[
+          {i:"ดู ClusterIP ของ Service แล้วสังเกตว่าไม่มี pod ตัวไหนถือ IP เบอร์นี้เลย", c:"kubectl get svc web-clusterip -o jsonpath='{.spec.clusterIP}{\"\\n\"}'\nkubectl get pods -l app=web -o jsonpath='{range .items[*]}{.status.podIP}{\"\\n\"}{end}'", e:"IP ของ Service (ขึ้นต้น 10.96.x) คนละช่วงกับ IP ของ pod ทุกตัว (ขึ้นต้น 10.244.x) — เพราะเป็น IP สมมติที่รอให้ DNAT แปลงเป็น pod จริง"},
+          {i:"ยิงไปที่ ClusterIP ซ้ำๆ แล้วดูว่าตกที่ pod คนละตัวไหม (นี่คือ load balancing)", c:"kubectl exec dns-test -- sh -c 'for i in 1 2 3 4 5 6; do wget -qO- http://web-clusterip | grep -o \"<title>.*</title>\"; done'", e:"ได้ผลกลับมาทุกครั้ง แม้ pod ปลายทางจะสลับตัวกันไปเรื่อยๆ โดยผู้เรียกไม่ต้องรู้เลย"}
+        ]
+      },
       concept:`<p>kube-proxy (หรือ eBPF ของ Cilium ที่มาแทนมันได้) มีหน้าที่เดียว: ทำให้ traffic ที่ยิงไปยัง Service VIP ถูกส่งต่อไปยัง backend pod จริงตัวใดตัวหนึ่ง</p>
       <ul>
         <li><strong>iptables mode</strong> (default เดิม) — เขียนกฎ DNAT เป็นลูกโซ่ (chain) ต่อ Service หนึ่งตัว ที่ scale สูงๆ (Service หลักพัน) กฎจะยาวมากทำให้ lookup ช้าลงเชิงเส้น</li>
@@ -338,6 +479,23 @@ const MODULES = [
     },
     { id:"m2-t3", title:"CoreDNS: Corefile และ Service Discovery", summary:"ทุก pod หา Service เจอได้เพราะ CoreDNS — ปรับ Corefile อย่างไรให้ resolve โดเมนพิเศษได้",
       diagram:"coreDns",
+      primer:{
+        need:"DNS แปลงชื่อเป็น IP ได้ยังไง แล้ว FQDN คืออะไร",
+        body:`<p>คอมพิวเตอร์คุยกันด้วย IP แต่คนจำชื่อได้ง่ายกว่า <strong>DNS</strong> คือสมุดโทรศัพท์ที่แปลงชื่อเป็น IP ให้</p>
+        <p>ลำดับที่เกิดขึ้นเวลาโปรแกรมจะต่อไปที่ <code>web-clusterip</code>:</p>
+        <ul>
+          <li>โปรแกรมถามระบบว่า "ชื่อนี้ IP อะไร"</li>
+          <li>ระบบเปิดไฟล์ <code>/etc/resolv.conf</code> ดูว่าต้องไปถาม DNS server เครื่องไหน</li>
+          <li>ยิงคำถามไปหา DNS server นั้น (ปกติใช้ UDP port 53)</li>
+          <li>ได้ IP กลับมา แล้วค่อยเริ่มต่อจริง</li>
+        </ul>
+        <p><strong>FQDN (Fully Qualified Domain Name)</strong> คือชื่อเต็มที่ไม่กำกวม เช่น <code>web-clusterip.default.svc.cluster.local</code> — อ่านจากซ้ายไปขวาคือ ชื่อ Service → namespace → ประเภท → โดเมนของคลัสเตอร์</p>
+        <p>ใน pod เราพิมพ์แค่ชื่อสั้น <code>web-clusterip</code> ได้ เพราะใน <code>/etc/resolv.conf</code> มีบรรทัด <code>search</code> ที่ระบบจะเอาไปต่อท้ายให้อัตโนมัติจนกลายเป็นชื่อเต็ม — เป็นเหตุผลว่าทำไม pod ใน namespace เดียวกันเรียกกันด้วยชื่อสั้นได้ แต่ข้าม namespace ต้องเติมชื่อ namespace ด้วย</p>`,
+        try:[
+          {i:"เปิดดู resolv.conf ใน pod ว่าชี้ไป DNS server เครื่องไหน และมี search domain อะไรบ้าง", c:"kubectl exec dns-test -- cat /etc/resolv.conf", e:"บรรทัด nameserver คือ IP ของ CoreDNS และบรรทัด search คือชื่อที่ระบบจะเอาไปต่อท้ายชื่อสั้นให้อัตโนมัติ"},
+          {i:"เทียบผลของชื่อสั้นกับชื่อเต็ม — ได้ IP เดียวกันไหม", c:"kubectl exec dns-test -- nslookup web-clusterip | tail -3\nkubectl exec dns-test -- nslookup web-clusterip.default.svc.cluster.local | tail -3", e:"ได้ IP เดียวกันทั้งคู่ เพราะชื่อสั้นถูกเติม search domain จนกลายเป็นชื่อเต็มตัวเดียวกัน"}
+        ]
+      },
       concept:`<p>CoreDNS เป็น DNS server แบบ plugin-chain รันเป็น Deployment ใน kube-system ให้บริการผ่าน Service ชื่อ <code>kube-dns</code> ตั้งค่าทั้งหมดอยู่ใน <strong>Corefile</strong> (ConfigMap)</p>
       <ul>
         <li><strong>kubernetes plugin</strong> — ตอบ query สำหรับ <code>*.svc.cluster.local</code> โดยอ่านจาก Service/EndpointSlice ใน apiserver โดยตรง</li>
@@ -358,6 +516,20 @@ const MODULES = [
     },
     { id:"m2-t4", title:"Gateway API vs Ingress", summary:"มาตรฐานใหม่ที่แยก concern ระหว่างทีม infra กับทีม application ชัดเจนกว่า Ingress",
       diagram:"gatewayApi",
+      primer:{
+        need:"reverse proxy คืออะไร แล้ว \"routing ระดับ L7\" ต่างจากที่ผ่านมายังไง",
+        body:`<p><strong>reverse proxy</strong> คือตัวกลางที่ยืนอยู่หน้าสุด รับ request จากภายนอกแล้วตัดสินใจว่าจะส่งต่อให้บริการตัวไหนข้างใน — ผู้ใช้เห็นแค่ที่อยู่เดียว แต่ข้างหลังอาจมีหลายสิบบริการ</p>
+        <p>ความต่างที่สำคัญของหัวข้อนี้คือ <strong>ตัดสินใจโดยดูจากอะไร</strong></p>
+        <ul>
+          <li><strong>ระดับ L4</strong> (Service/kube-proxy ที่ผ่านมา) — เห็นแค่ IP กับ port เท่านั้น ตัดสินใจได้แค่ "ส่งไป pod ตัวไหนในกลุ่มนี้" มันไม่รู้ด้วยซ้ำว่าข้างในเป็น HTTP หรืออะไร</li>
+          <li><strong>ระดับ L7</strong> (Ingress/Gateway API หัวข้อนี้) — แกะดูเนื้อใน HTTP ได้ จึงตัดสินใจจาก <strong>path</strong> (<code>/api</code> ไปบริการหนึ่ง <code>/images</code> ไปอีกบริการ), จาก <strong>host</strong> (ชื่อโดเมนที่เรียกเข้ามา) หรือจาก <strong>header</strong> ได้</li>
+        </ul>
+        <p>คำที่จะเจอบ่อยในหัวข้อนี้: <strong>path</strong> คือส่วนหลังชื่อโดเมนใน URL (<code>https://example.com<strong>/api/v1</strong></code>), <strong>header</strong> คือข้อมูลกำกับที่แนบมากับ request ที่คนทั่วไปมองไม่เห็น และ <strong>TLS termination</strong> คือการที่ตัวกลางเป็นคนถอดรหัส HTTPS ให้ บริการข้างหลังจึงรับเป็น HTTP ธรรมดาได้</p>`,
+        try:[
+          {i:"ดูว่า path ของ URL คือส่วนไหน โดยยิงไปที่ path ต่างกันบน nginx ตัวเดิม", c:"kubectl exec dns-test -- wget -qO- http://web-clusterip/ | head -4\nkubectl exec dns-test -- wget -qO- http://web-clusterip/ไม่มีหน้านี้ 2>&1 | head -3", e:"path แรกได้หน้าเว็บ ส่วน path ที่สองได้ 404 — เพราะ path เป็นส่วนที่ระบุว่าขออะไรบนเซิร์ฟเวอร์นั้น ซึ่ง L7 routing ใช้ตัดสินใจได้"},
+          {i:"ดู header ที่แนบมากับ response (สิ่งที่ L7 อ่านได้แต่ L4 มองไม่เห็น)", c:"kubectl exec dns-test -- wget -qS -O /dev/null http://web-clusterip 2>&1 | head -6", e:"เห็นบรรทัด Server:, Content-Type: ฯลฯ — ข้อมูลระดับ L7 พวกนี้คือสิ่งที่ Gateway API เอามาใช้ตัดสินใจ routing ได้"}
+        ]
+      },
       concept:`<p><strong>Ingress</strong> เป็น API ดั้งเดิมของ k8s สำหรับ HTTP routing แต่มีข้อจำกัดสำคัญ: fields ที่ vendor-specific ต้องยัดใส่ annotation ทั้งหมด ทำให้พกพาข้าม implementation ไม่ได้ และไม่มีการแยกสิทธิ์ระหว่างทีม infra กับทีม dev ชัดเจน</p>
       <ul>
         <li><strong>GatewayClass</strong> — เทียบเท่า StorageClass บอกว่าใช้ controller ตัวไหน (เช่น cilium)</li>
@@ -396,6 +568,21 @@ const MODULES = [
   blurb:"เมื่อ traffic ซับซ้อนกว่า request-response ธรรมดา: canary release, egress control, multi-cluster และ traffic routing สำหรับ AI/inference workload",
   topics:[
     { id:"m3-t1", title:"Canary Release ด้วย Weighted HTTPRoute", summary:"ทำ progressive rollout โดยไม่ต้องพึ่ง service mesh เต็มรูปแบบ",
+      primer:{
+        need:"\"canary release\" คืออะไร ทำไมไม่ deploy ทีเดียวให้จบ",
+        body:`<p>ปัญหา: เวอร์ชันใหม่ที่ทดสอบผ่านหมดแล้ว ก็ยังพังได้ตอนเจอผู้ใช้จริง ถ้าสลับไปเวอร์ชันใหม่ทีเดียว 100% แล้วมันพัง = ผู้ใช้ทุกคนเจอพร้อมกัน</p>
+        <p><strong>canary release</strong> คือการปล่อยเวอร์ชันใหม่ให้ผู้ใช้<strong>ส่วนน้อย</strong>ก่อน (เช่น 5-20%) แล้วเฝ้าดูว่ามีอะไรผิดปกติไหม ถ้าปกติดีค่อยเพิ่มสัดส่วนขึ้นเรื่อยๆ ถ้าเจอปัญหาก็ดึงกลับทันทีโดยกระทบคนแค่ส่วนน้อย</p>
+        <p>ชื่อนี้มาจากธรรมเนียมเก่าของคนงานเหมืองที่เอานกคีรีบูน (canary) ลงไปด้วย ถ้านกเป็นอะไรก่อนแปลว่าอากาศมีพิษ ต้องรีบขึ้น</p>
+        <ul>
+          <li><strong>rollout</strong> — การทยอยเปลี่ยนไปเวอร์ชันใหม่</li>
+          <li><strong>rollback</strong> — การถอยกลับไปเวอร์ชันเดิมเมื่อพบปัญหา ยิ่งทำได้เร็วยิ่งดี</li>
+          <li>หัวใจของหัวข้อนี้คือ <strong>สัดส่วน traffic ควบคุมได้โดยไม่ต้องแตะตัวแอป</strong> — แค่ปรับตัวเลขที่ชั้น routing</li>
+        </ul>`,
+        try:[
+          {i:"ดูว่าตอนนี้มี Deployment อะไรอยู่บ้าง และแต่ละตัวมีกี่ replica (จำนวน pod)", c:"kubectl get deploy", e:"เห็นคอลัมน์ READY บอกว่ามี pod พร้อมใช้งานกี่ตัวจากที่ขอไว้"},
+          {i:"ลองสั่ง rollout แล้วดูประวัติ — k8s เก็บไว้ให้ถอยกลับได้", c:"kubectl rollout history deploy/web", e:"เห็นรายการ revision ที่ผ่านมา ซึ่งใช้สั่ง kubectl rollout undo เพื่อถอยกลับได้ (คนละกลไกกับการปรับสัดส่วน traffic ที่หัวข้อนี้จะสอน)"}
+        ]
+      },
       concept:`<p>Gateway API ทำ traffic splitting ระดับ weight ได้ในตัวผ่าน <code>backendRefs[].weight</code> — เพียงพอสำหรับ canary release พื้นฐานโดยไม่ต้องติดตั้ง service mesh เต็มรูปแบบ (sidecar) เลย</p>
       <ul>
         <li>Weight เป็นค่าสัมพัทธ์ (relative) ไม่ใช่ percentage ตรงตัว — ถ้าใส่ 80 กับ 20 ระบบคิดสัดส่วน 80:20 เหมือนกับใส่ 4 กับ 1</li>
@@ -414,6 +601,21 @@ const MODULES = [
     },
     { id:"m3-t2", title:"Egress Gateway", summary:"บังคับ traffic ขาออกจาก namespace ให้ผ่าน IP คงที่ตัวเดียว เพื่อให้ปลายทาง whitelist ได้",
       diagram:"egressGw",
+      primer:{
+        need:"ingress กับ egress ต่างกันยังไง แล้วทำไม \"source IP\" ถึงสำคัญ",
+        body:`<p>สองคำนี้คือ<strong>ทิศทางของ traffic</strong> เมื่อมองจากมุมของระบบเรา</p>
+        <ul>
+          <li><strong>ingress</strong> = ขาเข้า — คนข้างนอกเรียกเข้ามาหาบริการเรา (Module 2 เรื่อง Gateway คือเรื่องนี้)</li>
+          <li><strong>egress</strong> = ขาออก — บริการของเราเรียกออกไปหาข้างนอก เช่น ไปเรียก API ของธนาคาร หรือดึงข้อมูลจาก SaaS</li>
+        </ul>
+        <p><strong>source IP</strong> คือ "ที่อยู่ผู้ส่ง" บนซองจดหมาย ปลายทางใช้เลขนี้ตอบกลับ และ — ที่สำคัญกว่า — ใช้<strong>ตรวจว่าใครเป็นคนเรียกมา</strong></p>
+        <p>ธนาคารหรือ payment gateway หลายเจ้าบังคับให้แจ้ง IP ล่วงหน้าแล้วเขาจะอนุญาตเฉพาะเลขนั้น (เรียกว่า <strong>whitelist</strong> หรือ allow-list) ซึ่งชนกับธรรมชาติของ k8s ตรงที่ pod เกิดใหม่ได้ IP ใหม่ตลอดเวลา และเวลาออกเน็ตมันจะติด IP ของ node ที่บังเอิญไปอยู่ ซึ่งเปลี่ยนไปเรื่อยๆ</p>
+        <p>หัวข้อนี้คือวิธีบังคับให้ traffic ขาออกของ pod กลุ่มที่เรากำหนด ออกไปด้วย IP เดียวคงที่เสมอ (ทำโดย <strong>SNAT</strong> — แก้ที่อยู่ผู้ส่งระหว่างทาง)</p>`,
+        try:[
+          {i:"ดูว่าตอนนี้ pod ออกเน็ตด้วย source IP อะไร (ยังไม่ได้ตั้ง egress gateway)", c:"kubectl exec netcheck -- curl -s --max-time 5 ifconfig.me", e:"ได้ IP หนึ่งเบอร์ซึ่งเป็นของ node ที่ pod นั้นอยู่ ไม่ใช่ IP ของ pod เอง — เพราะ IP ของ pod ใช้ออกเน็ตจริงไม่ได้ ต้องถูก SNAT ก่อน (ถ้าเครื่องไม่มีเน็ตออก ข้ามข้อนี้ได้)"},
+          {i:"เทียบกับ IP ของ pod และของ node เพื่อดูว่าตรงกับตัวไหน", c:"kubectl get pod netcheck -o jsonpath='pod IP: {.status.podIP}{\"\\n\"}node: {.spec.nodeName}{\"\\n\"}'", e:"IP ที่ปลายทางเห็น ไม่ใช่ pod IP — ยืนยันว่ามีการแก้ที่อยู่ผู้ส่ง (SNAT) เกิดขึ้นระหว่างทางอยู่แล้วโดยปริยาย"}
+        ]
+      },
       concept:`<p>ปัญหาที่พบบ่อย: บริการภายนอก (เช่น payment gateway) ต้องการ whitelist source IP แต่ pod ใน k8s มี IP เปลี่ยนตลอดเวลาตาม scheduling — <strong>Egress Gateway</strong> แก้ปัญหานี้โดยบังคับ traffic ขาออกจาก namespace/pod ที่กำหนด ให้วิ่งผ่าน node ที่ถูกเลือกเป็น gateway แล้ว SNAT ด้วย IP คงที่ตัวเดียวเสมอ</p>
       <ul>
         <li><strong>CiliumEgressGatewayPolicy</strong> — เลือก source (namespace/podSelector), destination CIDR, และ egress node/IP ที่จะใช้</li>
@@ -432,6 +634,21 @@ const MODULES = [
       }
     },
     { id:"m3-t3", title:"Cross-Cluster Service Discovery (ClusterMesh)", summary:"ให้ Service ของสองคลัสเตอร์มองเห็นและเรียกกันได้เหมือนอยู่คลัสเตอร์เดียวกัน",
+      primer:{
+        need:"ทำไมเรียก service ข้ามคลัสเตอร์ถึงยาก ในเมื่อในคลัสเตอร์เดียวกันเรียกกันง่ายมาก",
+        body:`<p>ในคลัสเตอร์เดียวกัน pod เรียกกันด้วยชื่อสั้นได้เลย เพราะทุกอย่างใช้ของกลางชุดเดียวกัน — DNS ตัวเดียวกัน, ช่วง IP ที่จัดสรรมาไม่ให้ชนกัน, และตัวควบคุมกลาง (API server) ตัวเดียวกันที่รู้ว่ามี pod อะไรอยู่ที่ไหนบ้าง</p>
+        <p>พอเป็นคนละคลัสเตอร์ ของกลางพวกนั้น<strong>แยกกันคนละชุดโดยสิ้นเชิง</strong> คลัสเตอร์ A ไม่รู้จักด้วยซ้ำว่าคลัสเตอร์ B มีตัวตน จึงเกิดปัญหา 3 ข้อพร้อมกัน</p>
+        <ul>
+          <li><strong>DNS ไม่รู้จักกัน</strong> — ถาม CoreDNS ของ A ว่า service ใน B อยู่ IP ไหน มันตอบไม่ได้</li>
+          <li><strong>IP อาจซ้ำกัน</strong> — ทั้งสองคลัสเตอร์อาจแจก 10.244.x.x เหมือนกัน พอส่งของไปเลขนั้น ระบบไม่รู้ว่าหมายถึงเครื่องในคลัสเตอร์ไหน</li>
+          <li><strong>ไม่มีเส้นทางถึงกัน</strong> — IP ของ pod ใช้ได้เฉพาะภายในคลัสเตอร์ตัวเอง</li>
+        </ul>
+        <p>วิธีเดิมคือเปิด Service ออกสู่ภายนอกผ่าน LoadBalancer แล้วให้อีกฝั่งเรียกผ่าน IP สาธารณะ ซึ่งช้าและต้องจัดการความปลอดภัยเพิ่ม — หัวข้อนี้เป็นวิธีที่ทำให้ทั้งสองคลัสเตอร์<strong>มองเห็น service ของกันและกันเหมือนอยู่ที่เดียวกัน</strong></p>`,
+        try:[
+          {i:"ดูว่า kubectl ตอนนี้รู้จักคลัสเตอร์ไหนบ้าง (context = คลัสเตอร์ที่ตั้งค่าไว้หนึ่งชุด)", c:"kubectl config get-contexts", e:"มีเครื่องหมาย * หน้าอันที่ใช้อยู่ ถ้ายังมีแค่อันเดียวก็ถูกแล้ว แล็บข้างล่างจะสร้างคลัสเตอร์ที่สองเพิ่ม"},
+          {i:"ดูช่วง IP ที่คลัสเตอร์นี้ใช้ — จำเลขนี้ไว้ เพราะคลัสเตอร์ที่สองต้องใช้ช่วงที่ไม่ทับกัน", c:"kubectl get ciliumnodes -o jsonpath='{range .items[*]}{.spec.ipam.podCIDRs}{\" \"}{end}{\"\\n\"}'", e:"ได้ช่วงที่ขึ้นต้นด้วย 10.244 — แล็บข้างล่างจะตั้งคลัสเตอร์ที่สองเป็น 10.245 เพื่อไม่ให้ชนกัน"}
+        ]
+      },
       concept:`<p><strong>ClusterMesh</strong> (ฟีเจอร์ของ Cilium) เชื่อมหลายคลัสเตอร์เข้าด้วยกันในระดับ network ทำให้ pod ของคลัสเตอร์ A เรียก Service ของคลัสเตอร์ B ได้ตรงๆ ผ่าน DNS โดยไม่ต้องผ่าน external LB หรือ VPN gateway แยกต่างหาก</p>
       <ul>
         <li>แต่ละคลัสเตอร์ต้องมี <strong>unique cluster name</strong> และ <strong>unique cluster ID</strong> (1-255) ห้ามชนกัน</li>
@@ -451,6 +668,17 @@ const MODULES = [
       }
     },
     { id:"m3-t4", title:"Service Mesh Basics และ AI/LLM Traffic Routing", summary:"sidecar vs sidecar-less mesh และการ route traffic ไปยัง inference backend หลายตัว",
+      primer:{
+        need:"proxy / sidecar / mTLS สามคำนี้แปลว่าอะไร",
+        body:`<p><strong>proxy</strong> คือคนกลางที่รับ traffic แทนแล้วส่งต่อให้ — ข้อดีคือมันแทรกตัวอยู่ตรงกลางได้ จึงทำอะไรเพิ่มระหว่างทางได้ทุกอย่าง (นับสถิติ, เข้ารหัส, ลองใหม่เมื่อพลาด, บล็อก) โดยที่ตัวแอปไม่ต้องเขียนโค้ดอะไรเลย</p>
+        <p><strong>sidecar</strong> คือรูปแบบการวาง proxy แบบหนึ่ง: ยัด container พิเศษเข้าไปอยู่<strong>ใน pod เดียวกัน</strong>กับแอป แล้วบังคับให้ traffic ของแอปวิ่งผ่านมันก่อนเสมอ ชื่อมาจากรถพ่วงข้างมอเตอร์ไซค์ — ไปไหนไปด้วยกัน</p>
+        <p><strong>service mesh</strong> คือการทำแบบนั้นทั้งระบบ แล้วมีตัวควบคุมกลางคอยสั่งการ proxy ทุกตัวพร้อมกัน ทำให้กำหนดกฎทีเดียวมีผลทั้งคลัสเตอร์</p>
+        <p><strong>mTLS (mutual TLS)</strong> — TLS ปกติ (เช่นเว็บ HTTPS) <strong>ฝั่งเดียว</strong>ที่ต้องพิสูจน์ตัวตนคือเซิร์ฟเวอร์ ส่วนเราในฐานะผู้ใช้ไม่ต้องพิสูจน์อะไร แต่ <strong>mutual</strong> แปลว่า <strong>ทั้งสองฝั่ง</strong>ต้องยื่นบัตรให้ตรวจ — ผลคือ service ปลายทางมั่นใจได้ว่าคนเรียกคือ service ที่อ้างจริง ไม่ใช่ใครก็ได้ที่บังเอิญส่งถึง</p>`,
+        try:[
+          {i:"ดูว่า pod หนึ่งตัวมีกี่ container — ถ้ามี mesh แบบ sidecar ตัวเลขนี้จะมากกว่า 1", c:"kubectl get pods -o custom-columns='POD:.metadata.name,CONTAINERS:.spec.containers[*].name' | head -6", e:"ตอนนี้ส่วนใหญ่มี container เดียว เพราะคอร์สนี้ใช้ Cilium ซึ่งเป็นแบบ sidecar-less (ใช้ eBPF ที่ระดับ kernel แทนการยัด proxy เข้าทุก pod)"},
+          {i:"ดูว่า Cilium ทำหน้าที่ proxy ระดับ L7 ให้จากส่วนกลาง โดยไม่ต้องแตะ pod ของแอปเลย", c:"kubectl -n kube-system get pods -l k8s-app=cilium -o custom-columns='POD:.metadata.name,CONTAINERS:.spec.containers[*].name'", e:"proxy ทั้งหมดรวมอยู่ที่ agent ของ Cilium ระดับ node — นี่คือความต่างของ sidecar-less เทียบกับ mesh แบบดั้งเดิม"}
+        ]
+      },
       concept:`<p>Service mesh เพิ่มชั้น traffic management/observability/mTLS เหนือ Service ปกติ มี 2 สถาปัตยกรรมหลัก</p>
       <ul>
         <li><strong>Sidecar mesh</strong> (เช่น Istio แบบดั้งเดิม) — ฉีด proxy container (Envoy) เข้าทุก pod ควบคุม traffic ได้ละเอียดมากแต่เพิ่ม resource overhead ต่อ pod</li>
@@ -486,6 +714,21 @@ const MODULES = [
   topics:[
     { id:"m4-t1", title:"NetworkPolicy พื้นฐาน: Default-Deny และ Selectors", summary:"กติกาพื้นฐานที่สุดของ network security ใน k8s",
       diagram:"netpolDeny",
+      primer:{
+        need:"firewall ทำงานยังไง แล้ว allow-list ต่างจาก deny-list ตรงไหน",
+        body:`<p><strong>firewall</strong> คือด่านตรวจที่ดูข้อมูลแต่ละก้อนที่วิ่งผ่าน แล้วตัดสินว่า <strong>ให้ผ่าน</strong> หรือ <strong>ทิ้ง</strong> โดยเทียบกับรายการกฎที่เราเขียนไว้ ปกติดูจาก: ใครส่ง (source), ส่งถึงใคร (destination), port อะไร, โปรโตคอลอะไร</p>
+        <p>สองแนวคิดที่ต้องแยกให้ขาด</p>
+        <ul>
+          <li><strong>deny-list</strong> (บัญชีดำ) — เปิดหมดก่อน แล้วค่อยไล่ปิดตัวที่รู้ว่าอันตราย ปัญหาคือ<strong>สิ่งที่เรายังไม่รู้ว่าอันตรายจะผ่านได้เสมอ</strong></li>
+          <li><strong>allow-list</strong> (บัญชีขาว) — <strong>ปิดหมดก่อน</strong> แล้วเปิดเฉพาะที่จำเป็นจริงๆ ปลอดภัยกว่ามาก เพราะของที่ไม่ได้รับอนุญาตไว้ล่วงหน้าจะถูกบล็อกโดยอัตโนมัติ</li>
+        </ul>
+        <p>NetworkPolicy ของ k8s ทำงานแบบ <strong>allow-list</strong> ล้วน — เขียนได้แต่กฎ "อนุญาต" ไม่มีกฎ "ห้าม" เพราะพอมี policy ตัวแรกมาจับ pod ไหน ทุกอย่างที่ไม่ได้อนุญาตไว้จะถูกห้ามเองโดยปริยาย (เรียกว่า <strong>default-deny</strong>)</p>
+        <p>อีกคำที่ต้องรู้: <strong>stateful</strong> แปลว่าระบบจำได้ว่า "การเชื่อมต่อนี้เราเป็นคนเริ่มเอง" ดังนั้น<strong>ขาตอบกลับจะผ่านได้เสมอ</strong>โดยไม่ต้องเขียนกฎเปิดขากลับเพิ่ม — เป็นจุดที่คนเขียน policy ใหม่ๆ สับสนบ่อยที่สุด</p>`,
+        try:[
+          {i:"ดูว่าตอนนี้ยังไม่มี policy อะไรเลย ทุก pod จึงคุยกันได้หมด (ค่าเริ่มต้นของ k8s คือเปิดหมด)", c:"kubectl get networkpolicy -A", e:"ได้ \"No resources found\" — ยืนยันว่ายังไม่มีด่านตรวจใดๆ อยู่เลย"},
+          {i:"พิสูจน์ว่าเปิดหมดจริง โดยให้ pod ที่ไม่เกี่ยวข้องกันเลยคุยกันดู", c:"kubectl exec dns-test -- wget -qO- --timeout=3 http://web-clusterip | grep -o '<title>.*</title>'", e:"ได้หน้าเว็บกลับมา ทั้งที่ไม่มีใครอนุญาตไว้ — นี่คือสถานะเริ่มต้นที่หัวข้อนี้จะสอนให้ปิด"}
+        ]
+      },
       concept:`<p>โดยปริยาย k8s อนุญาตให้ทุก pod คุยกับทุก pod ได้หมด (flat network) — <strong>NetworkPolicy</strong> เป็นทรัพยากรที่เปลี่ยนพฤติกรรมนี้ แต่มีกติกาสำคัญที่ต้องจำให้แม่น</p>
       <ul>
         <li>ทันทีที่มี NetworkPolicy อย่างน้อยหนึ่งตัวเลือก pod ใด (ผ่าน podSelector) namespace/pod นั้นเข้าสู่โหมด <strong>default-deny</strong> สำหรับทิศทางที่ policy นั้นระบุ (ingress และ/หรือ egress)</li>
@@ -504,6 +747,21 @@ const MODULES = [
       }
     },
     { id:"m4-t2", title:"CNI-specific Policy Extensions: L7 และ DNS-aware", summary:"NetworkPolicy มาตรฐานทำได้แค่ L3/L4 — ถ้าต้องการ L7 ต้องพึ่ง CRD เฉพาะ CNI",
+      primer:{
+        need:"L3 / L4 / L7 ที่พูดถึงกันบ่อยๆ คือชั้นอะไร",
+        body:`<p>การส่งข้อมูลผ่านเครือข่ายถูกแบ่งเป็นชั้นๆ แต่ละชั้นรับผิดชอบคนละเรื่อง และ<strong>เห็นข้อมูลได้ไม่เท่ากัน</strong> — สามชั้นที่ต้องรู้จักสำหรับงาน k8s networking</p>
+        <ul>
+          <li><strong>L3 (Network)</strong> — ระดับ <strong>IP</strong> ตอบได้แค่ "ก้อนนี้จากเครื่องไหนไปเครื่องไหน"</li>
+          <li><strong>L4 (Transport)</strong> — ระดับ <strong>port และ TCP/UDP</strong> เพิ่มความสามารถระบุว่า "คุยกับโปรแกรมตัวไหนบนเครื่องนั้น"</li>
+          <li><strong>L7 (Application)</strong> — ระดับ<strong>เนื้อหาจริง</strong> เช่น HTTP method (GET/POST), path (<code>/admin</code>), header, หรือชื่อโดเมนที่ขอ</li>
+        </ul>
+        <p>ทำไมถึงสำคัญกับหัวข้อนี้: NetworkPolicy มาตรฐานเห็นได้แค่ <strong>L3/L4</strong> จึงเขียนได้แค่ "pod นี้คุยกับ pod นั้นที่ port 80 ได้" — แต่<strong>แยกไม่ออก</strong>ว่าที่ port 80 นั้นเขากำลังสั่ง <code>GET /health</code> (อ่านอย่างเดียว ปลอดภัย) หรือ <code>DELETE /admin/users</code> (ลบข้อมูล อันตราย) เพราะทั้งคู่หน้าตาเหมือนกันหมดเมื่อมองที่ L4</p>
+        <p>การจะแยกสองอย่างนั้นออกต้องมีคนแกะอ่านเนื้อในถึง L7 ซึ่งเป็นสิ่งที่ CRD เฉพาะของแต่ละ CNI เพิ่มเข้ามา — แลกมาด้วย latency ที่สูงขึ้นเล็กน้อย เพราะต้องมีตัวกลางแกะอ่านก่อนตัดสินใจ</p>`,
+        try:[
+          {i:"ดูข้อมูลระดับ L3/L4 ของการเชื่อมต่อ — เห็นแค่ IP กับ port เท่านั้น", c:"kubectl exec -n secdemo frontend -- sh -c 'nc -zv backend 80 2>&1'", e:"บอกได้แค่ว่า port 80 ของ backend เปิดอยู่หรือไม่ — ข้อมูลระดับนี้คือทั้งหมดที่ NetworkPolicy มาตรฐานมองเห็น"},
+          {i:"เทียบกับข้อมูลระดับ L7 — วิธีการ (method) และ path ที่ L4 มองไม่เห็นเลย", c:"kubectl exec -n secdemo frontend -- curl -s -o /dev/null -w 'GET  /      → %{http_code}\\n' http://backend/\nkubectl exec -n secdemo frontend -- curl -s -o /dev/null -w 'GET  /admin → %{http_code}\\n' http://backend/admin", e:"สอง request นี้ไปที่ IP และ port เดียวกันเป๊ะ ต่างกันแค่ path — ถ้าอยากอนุญาตอันแรกแต่บล็อกอันที่สอง ต้องใช้ policy ระดับ L7 เท่านั้น"}
+        ]
+      },
       concept:`<p>NetworkPolicy มาตรฐานของ k8s ทำงานที่ L3/L4 เท่านั้น (IP, port, protocol) — ถ้าต้องการควบคุมระดับ L7 (HTTP method, path) หรือจำกัด egress ตามชื่อโดเมน ต้องใช้ CRD เฉพาะของแต่ละ CNI</p>
       <ul>
         <li><strong>CiliumNetworkPolicy</strong> — เพิ่ม field <code>toPorts[].rules.http</code> ให้ระบุ method/path ที่อนุญาตได้ เช่น อนุญาตเฉพาะ GET /health แต่บล็อก DELETE /admin</li>
@@ -523,6 +781,21 @@ const MODULES = [
       }
     },
     { id:"m4-t3", title:"Encryption in Transit: mTLS และ WireGuard", summary:"เข้ารหัส traffic ระหว่าง node แบบโปร่งใส โดย workload ไม่ต้องรู้ตัว",
+      primer:{
+        need:"\"เข้ารหัส\" คืออะไร แล้วถ้าไม่เข้ารหัสมีใครอ่านได้บ้าง",
+        body:`<p>ข้อมูลที่ส่งแบบไม่เข้ารหัส (<strong>plaintext</strong>) ใครก็ตามที่อยู่<strong>ระหว่างทาง</strong>สามารถอ่านได้ทั้งหมด ไม่ใช่แค่ผู้รับปลายทาง — "ระหว่างทาง" หมายถึงทุกอุปกรณ์ที่ข้อมูลวิ่งผ่าน เช่น switch, router, ผู้ให้บริการเครือข่าย หรือคนที่แอบดักฟังอยู่บนสายเดียวกัน</p>
+        <p><strong>การเข้ารหัส</strong> คือการแปลงข้อมูลให้อ่านไม่ออกด้วยกุญแจ (key) ใครดักได้กลางทางก็เห็นเป็นขยะ ถอดไม่ได้ถ้าไม่มีกุญแจ</p>
+        <ul>
+          <li><strong>symmetric</strong> — ใช้กุญแจดอกเดียวกันทั้งล็อกและปลดล็อก เร็วมาก แต่ปัญหาคือจะส่งกุญแจให้อีกฝั่งอย่างปลอดภัยได้ยังไง</li>
+          <li><strong>asymmetric</strong> — มีกุญแจเป็นคู่ ล็อกด้วยดอกหนึ่ง ปลดได้ด้วยอีกดอก ช้ากว่ามาก แต่แก้ปัญหาการแลกกุญแจได้</li>
+          <li>ระบบจริงใช้<strong>ทั้งสองอย่าง</strong>: ใช้ asymmetric ตอนเริ่มต้นเพื่อตกลงกุญแจ symmetric แล้วใช้ symmetric ส่งข้อมูลจริงเพราะเร็วกว่า</li>
+        </ul>
+        <p>ประเด็นของหัวข้อนี้คือ <strong>เข้ารหัสที่ชั้นไหน</strong> — ถ้าเข้ารหัสที่ชั้นล่าง (ระหว่าง node) แอปไม่ต้องแก้อะไรเลยแม้แต่บรรทัดเดียว แต่ถ้าทำที่ชั้นแอป (mTLS) จะรู้ตัวตนของคู่สนทนาด้วย ไม่ใช่แค่กันคนแอบอ่าน</p>`,
+        try:[
+          {i:"ดักดูข้อมูลที่ยังไม่เข้ารหัส — สร้าง traffic แล้วจับดูว่าอ่านออกไหม", c:"kubectl exec netcheck -- sh -c 'nohup wget -qO- http://web-clusterip >/dev/null 2>&1 &' ; docker exec ckne-worker timeout 5 tcpdump -i any -A -c 20 'tcp port 80' 2>/dev/null | grep -i 'HTTP\\|nginx' | head -5", e:"เห็นข้อความ HTTP อ่านออกเป็นตัวอักษรปกติ — นี่คือสิ่งที่คนกลางเห็นได้ทั้งหมดเมื่อไม่เข้ารหัส (ถ้าไม่เห็นอะไร ลองรันซ้ำให้จังหวะ traffic ตรงกัน)"},
+          {i:"ดูว่าตอนนี้คลัสเตอร์เปิดการเข้ารหัสระหว่าง node ไว้หรือยัง", c:"kubectl -n kube-system get cm cilium-config -o jsonpath='{.data.enable-wireguard}{\"\\n\"}'", e:"ถ้าว่างหรือเป็น false แปลว่ายังไม่เข้ารหัส — แล็บข้างล่างจะเปิดให้แล้วกลับมาจับ packet เทียบกันอีกรอบ"}
+        ]
+      },
       concept:`<p>การเข้ารหัส traffic ระหว่างทางทำได้หลายชั้น แต่ละชั้นมี trade-off ต่างกัน</p>
       <ul>
         <li><strong>mTLS ผ่าน service mesh</strong> — เข้ารหัสและพิสูจน์ตัวตนระดับ application (L7) แต่ละ workload มี certificate ของตัวเอง (มักผูกกับแนวคิด SPIFFE identity) เหมาะกับ zero-trust ระดับละเอียด</li>
@@ -540,6 +813,22 @@ const MODULES = [
       }
     },
     { id:"m4-t4", title:"TLS Termination และ cert-manager", summary:"ออกใบรับรองอัตโนมัติแล้วเสียบเข้า Gateway",
+      primer:{
+        need:"certificate กับ key ต่างกันยังไง แล้ว CA คือใคร",
+        diagram:"tlsHandshake",
+        body:`<p>เวลาต่อ HTTPS มีสองสิ่งที่ชื่อคล้ายกันแต่หน้าที่ต่างกันสิ้นเชิง</p>
+        <ul>
+          <li><strong>private key</strong> — กุญแจลับ <strong>ห้ามให้ใครเห็นเด็ดขาด</strong> เก็บไว้ที่เซิร์ฟเวอร์อย่างเดียว ถ้าหลุดเท่ากับปลอมเป็นเราได้</li>
+          <li><strong>certificate</strong> — เอกสารสาธารณะ <strong>แจกได้ ไม่ลับ</strong> ข้างในบอกว่า "โดเมนนี้เป็นของใคร" และมีลายเซ็นของผู้รับรองกำกับไว้</li>
+        </ul>
+        <p><strong>CA (Certificate Authority)</strong> คือคนกลางที่ทุกฝ่ายเชื่อถือร่วมกัน ทำหน้าที่ตรวจสอบแล้วเซ็นรับรอง certificate ให้ — เบราว์เซอร์และระบบปฏิบัติการมีรายชื่อ CA ที่เชื่อถือติดตั้งมาให้ตั้งแต่แรกอยู่แล้ว</p>
+        <p>เทียบกับบัตรประชาชน: ตัวบัตรคือ certificate (แสดงให้คนอื่นดูได้), ลายเซ็นของกรมการปกครองคือ CA รับรอง, ส่วนสิ่งที่พิสูจน์ว่าเราคือเจ้าของบัตรจริงคือ private key</p>
+        <p><strong>self-signed</strong> = เซ็นรับรองตัวเอง เหมือนทำบัตรประชาชนเองที่บ้าน ใช้ในแล็บได้เพราะเข้ารหัสได้จริง แต่เบราว์เซอร์จะขึ้นเตือนเพราะไม่มีคนกลางที่เชื่อถือได้มารับรอง</p>`,
+        try:[
+          {i:"ดู certificate ที่เว็บสาธารณะใช้ ว่าใครเป็นคนเซ็นรับรองให้", c:"kubectl exec netcheck -- sh -c 'echo | openssl s_client -connect one.one.one.one:443 2>/dev/null | openssl x509 -noout -subject -issuer -dates'", e:"บรรทัด subject คือเจ้าของ, issuer คือ CA ที่เซ็นให้, notAfter คือวันหมดอายุ (ถ้าเครื่องไม่มีเน็ตออก ข้ามข้อนี้ได้)"},
+          {i:"ดูว่า k8s เก็บ cert กับ key คู่กันไว้ใน Secret ชนิด tls — มีสองไฟล์เสมอ", c:"kubectl get secret -A --field-selector type=kubernetes.io/tls 2>/dev/null | head -5", e:"ถ้ายังไม่มีจะว่างเปล่า (ปกติ) — แล็บข้างล่างจะสร้างขึ้นมา แล้วจะเห็นว่าข้างในมี tls.crt (แจกได้) กับ tls.key (ห้ามหลุด) อยู่คู่กัน"}
+        ]
+      },
       concept:`<p><strong>cert-manager</strong> เป็น controller มาตรฐานของ ecosystem k8s สำหรับออกและต่ออายุ TLS certificate อัตโนมัติ ผูกกับ Gateway API ได้ตรงๆ</p>
       <ul>
         <li><strong>Issuer / ClusterIssuer</strong> — นิยามแหล่งออก cert (self-signed, Let's Encrypt ผ่าน ACME, หรือ private CA ภายในองค์กร)</li>
@@ -576,6 +865,21 @@ const MODULES = [
   blurb:"ถ้า debug ไม่เป็นก็ fix ไม่ได้ — เก็บ metric, สังเกต flow แบบ real-time ด้วย Hubble, และไล่ connection ระดับ packet",
   topics:[
     { id:"m5-t1", title:"Prometheus และ CNI Metrics", summary:"metric อะไรบ้างที่บอกสุขภาพของ network layer และดึงมาดูยังไง",
+      primer:{
+        need:"metric คืออะไร แล้ว Prometheus ทำอะไรกับมัน",
+        body:`<p><strong>metric</strong> คือตัวเลขที่ระบบวัดตัวเองแล้วเปิดให้อ่านได้ เช่น "ทิ้งแพ็กเก็ตไปแล้วกี่ก้อน" — ต่างจาก <strong>log</strong> ตรงที่ log เป็นข้อความบรรยายเหตุการณ์ทีละครั้ง ส่วน metric เป็นตัวเลขสรุปที่เอาไปพล็อตกราฟและตั้งแจ้งเตือนได้ง่ายกว่ามาก</p>
+        <p>ชนิดที่เจอบ่อยสองแบบ</p>
+        <ul>
+          <li><strong>counter</strong> — ตัวนับที่<strong>เพิ่มขึ้นอย่างเดียว ไม่เคยลด</strong> เช่นจำนวนแพ็กเก็ตที่ถูกทิ้งสะสม</li>
+          <li><strong>gauge</strong> — ค่าที่ขึ้นลงได้ เช่นจำนวน connection ที่เปิดอยู่ตอนนี้</li>
+        </ul>
+        <p>จุดที่คนใหม่พลาดบ่อย: <strong>ค่าของ counter ดูตรงๆ ไม่มีความหมาย</strong> เห็นเลข 5,000 แล้วบอกไม่ได้ว่าดีหรือแย่ เพราะเป็นยอดสะสมตั้งแต่เปิดเครื่อง สิ่งที่มีความหมายคือ<strong>มันเพิ่มเร็วแค่ไหน</strong> — ต้องเทียบสองจุดเวลา ซึ่งใน Prometheus ใช้ฟังก์ชัน <code>rate()</code></p>
+        <p><strong>Prometheus</strong> ทำงานแบบ <strong>ดึง (scrape)</strong> ไม่ใช่รอรับ — มันจะเข้าไปเรียก URL <code>/metrics</code> ของแต่ละบริการเป็นรอบๆ (เช่นทุก 15 วินาที) แล้วเก็บค่าพร้อมเวลาไว้ ทำให้ย้อนดูอดีตและเทียบช่วงเวลาได้</p>`,
+        try:[
+          {i:"ดูหน้าตาดิบๆ ของ metric ที่บริการเปิดให้ scrape — เป็นข้อความบรรทัดละค่า", c:"kubectl -n kube-system exec ds/cilium -- curl -s localhost:9962/metrics | grep -v '^#' | head -8", e:"แต่ละบรรทัดคือ ชื่อ metric ตามด้วย label ในวงเล็บปีกกา แล้วจบด้วยตัวเลข — Prometheus แค่มาดึงข้อความชุดนี้ไปเก็บเป็นรอบๆ"},
+          {i:"ดู metric ตัวเดียวกันสองครั้งห่างกัน 5 วินาที เพื่อเข้าใจว่าทำไมต้องดู \"อัตราการเพิ่ม\" ไม่ใช่ค่าดิบ", c:"kubectl -n kube-system exec ds/cilium -- curl -s localhost:9962/metrics | grep '^cilium_forward_count_total' | head -2\nsleep 5\nkubectl -n kube-system exec ds/cilium -- curl -s localhost:9962/metrics | grep '^cilium_forward_count_total' | head -2", e:"ตัวเลขรอบสองมากกว่ารอบแรก (ไม่มีทางน้อยลง เพราะเป็น counter) — ส่วนต่างหารด้วยเวลาคือสิ่งที่ rate() คำนวณให้"}
+        ]
+      },
       concept:`<p>Cilium expose metric แบบ Prometheus format ในตัว ครอบคลุมทั้ง datapath, policy, และ service — เป็น metric ชุดแรกที่ควรรู้จักก่อนไปตั้ง dashboard เต็มรูปแบบ</p>
       <ul>
         <li><strong>cilium_drop_count_total</strong> — จำนวน packet ที่ถูก drop พร้อม label เหตุผล (เช่น POLICY_DENIED) — metric สำคัญที่สุดตัวหนึ่งสำหรับ debug NetworkPolicy</li>
@@ -595,6 +899,22 @@ const MODULES = [
     },
     { id:"m5-t2", title:"Hubble: สังเกต Flow แบบ Real-Time", summary:"เครื่องมือที่ทรงพลังที่สุดสำหรับ debug NetworkPolicy และ connectivity ใน Cilium",
       diagram:"hubbleFlow",
+      primer:{
+        need:"\"flow\" คืออะไร ต่างจาก packet ยังไง",
+        body:`<p><strong>packet</strong> คือข้อมูลก้อนเล็กๆ หนึ่งก้อน การโหลดหน้าเว็บหน้าเดียวอาจใช้เป็นพันก้อน — ดูทีละก้อนจึงเยอะเกินกว่าจะเข้าใจภาพรวม</p>
+        <p><strong>flow</strong> คือการ<strong>จับกลุ่ม packet ที่เป็นบทสนทนาเดียวกัน</strong>มาสรุปเป็นบรรทัดเดียว "ใครคุยกับใคร ที่ port ไหน ผลเป็นยังไง" — อ่านง่ายกว่ามาก</p>
+        <p>สิ่งที่ใช้ระบุว่าเป็นบทสนทนาเดียวกันเรียกว่า <strong>5-tuple</strong> คือข้อมูล 5 อย่างประกอบกัน: source IP, source port, destination IP, destination port และ protocol — ถ้าห้าอย่างนี้ตรงกันหมด ถือว่าเป็น flow เดียวกัน</p>
+        <p>คำที่จะเจอบ่อยตอนอ่านผลลัพธ์</p>
+        <ul>
+          <li><strong>verdict</strong> — คำตัดสินของแต่ละ flow: <code>FORWARDED</code> (ปล่อยผ่าน) หรือ <code>DROPPED</code> (ทิ้ง)</li>
+          <li><strong>drop reason</strong> — เหตุผลที่ถูกทิ้ง เช่น <code>POLICY_DENIED</code> แปลว่าโดน NetworkPolicy บล็อก</li>
+        </ul>
+        <p>ทำไมเครื่องมือนี้ถึงมีค่ามาก: เวลาแอปเชื่อมต่อไม่ได้ ฝั่งแอปจะเห็นแค่ "timeout" ซึ่งบอกไม่ได้เลยว่าเพราะอะไร แต่ flow log บอกตรงๆ ว่าถูกใครบล็อกและด้วยเหตุผลอะไร</p>`,
+        try:[
+          {i:"ดูรายชื่อ pod ที่กำลังคุยกันอยู่ตอนนี้ (ยังไม่ต้องใช้ hubble — ดูจาก connection ที่เปิดอยู่ก่อน)", c:"kubectl exec dns-test -- netstat -tn 2>/dev/null | head -5 || kubectl exec dns-test -- ss -tn | head -5", e:"แต่ละบรรทัดคือหนึ่งบทสนทนา มี IP:port ของทั้งสองฝั่ง — นี่คือแนวคิดเดียวกับ flow แต่เห็นเฉพาะจากมุมของ pod ตัวนี้"},
+          {i:"สร้าง flow ที่จะถูกบล็อกเพื่อเอาไว้ตามหาในแล็บข้างล่าง", c:"kubectl -n secdemo exec frontend -- curl -s -X POST --max-time 3 http://backend/ || echo '(ถูกบล็อก — ฝั่งผู้เรียกเห็นแค่เท่านี้)'", e:"ฝั่งผู้เรียกได้แค่ความเงียบหรือ timeout ไม่รู้สาเหตุ — แล็บข้างล่างจะใช้ Hubble หาคำตอบว่าใครบล็อกและเพราะอะไร"}
+        ]
+      },
       concept:`<p><strong>Hubble</strong> คือ observability layer ของ Cilium ที่แสดง flow (การเชื่อมต่อ) ทุกเส้นในคลัสเตอร์แบบ near real-time พร้อมบอกว่าแต่ละ flow ถูก <strong>allow</strong> หรือ <strong>drop</strong> โดย policy ตัวไหน</p>
       <ul>
         <li><strong>Hubble (per-node)</strong> — เก็บ flow log จาก eBPF datapath ของ node ตัวเอง</li>
@@ -614,6 +934,21 @@ const MODULES = [
       }
     },
     { id:"m5-t3", title:"Packet และ Connection-Level Tooling", summary:"tcpdump, conntrack, ss — เครื่องมือ Linux มาตรฐานที่ยังจำเป็นแม้มี Hubble แล้ว",
+      primer:{
+        need:"TCP connection มีสถานะอะไรบ้าง แล้วทำไมต้องดูถึงระดับ packet",
+        body:`<p>TCP ไม่ได้ยิงข้อมูลทิ้งเลย แต่<strong>ต่อสายก่อนคุย</strong> — ขั้นตอนนี้เรียก <strong>three-way handshake</strong>: ฝั่งเริ่มส่ง SYN (ขอต่อ) ปลายทางตอบ SYN-ACK (รับทราบ พร้อม) แล้วฝั่งเริ่มตอบ ACK อีกที ถึงเริ่มส่งข้อมูลจริงได้</p>
+        <p>สถานะที่จะเจอตอนอ่านผลลัพธ์ และความหมายเวลา debug</p>
+        <ul>
+          <li><strong>ESTABLISHED</strong> — ต่อสำเร็จ กำลังคุยกันอยู่ ปกติดี</li>
+          <li><strong>SYN-SENT</strong> — ส่ง SYN ไปแล้วแต่<strong>ยังไม่มีใครตอบ</strong> ถ้าค้างอยู่ท่านี้นานๆ มักแปลว่าโดน firewall ทิ้งเงียบ หรือปลายทางไม่มีอยู่จริง</li>
+          <li><strong>TIME-WAIT</strong> — ปิดไปแล้วแต่ระบบยังกันเบอร์ไว้สักครู่กันของเก่าหลงมา ปกติไม่ต้องตกใจ</li>
+        </ul>
+        <p>ทำไมยังต้องใช้เครื่องมือระดับ packet ทั้งที่มี Hubble แล้ว: Hubble ตอบเก่งเรื่อง "โดน policy บล็อกไหม" แต่ถ้าปัญหาอยู่ต่ำกว่านั้น — เช่นแพ็กเก็ตใหญ่เกินจนไปไม่รอด (MTU), ปลายทางรีเซ็ตการเชื่อมต่อทิ้ง, หรือแอปเองไม่ตอบ — ต้องลงไปดูของจริงถึงจะเห็น</p>`,
+        try:[
+          {i:"ดูสถานะ connection ที่เปิดอยู่จริงในเครื่อง", c:"kubectl exec dns-test -- sh -c 'wget -qO- http://web-clusterip >/dev/null & sleep 1; ss -tn state all | head -6'", e:"เห็นคอลัมน์สถานะ เช่น ESTAB — ถ้าเจอ SYN-SENT ค้าง แปลว่ากำลังต่อไม่ติด"},
+          {i:"เทียบ: ลองต่อไปยัง port ที่ไม่มีใครเปิดรอ ดูว่าอาการต่างจากตอนปกติยังไง", c:"kubectl exec dns-test -- sh -c 'nc -zv -w 3 web-clusterip 9999 2>&1; nc -zv -w 3 web-clusterip 80 2>&1'", e:"port 9999 ถูกปฏิเสธหรือ timeout ส่วน port 80 ต่อได้ — ความต่างของสองอาการนี้คือเบาะแสสำคัญตอน debug จริง"}
+        ]
+      },
       concept:`<p>Hubble เก่งเรื่อง policy verdict แต่บางครั้งต้องลงลึกกว่านั้นถึงระดับ packet/connection จริง — นี่คือเครื่องมือ Linux มาตรฐานที่ CKNE คาดหวังให้ใช้คล่อง</p>
       <ul>
         <li><strong>tcpdump</strong> — จับ packet ดิบบน interface ที่ระบุ ใช้ debug เมื่อสงสัยว่าปัญหาอยู่ต่ำกว่าระดับที่ Hubble มองเห็น (เช่น malformed packet, MTU issue)</li>
@@ -670,7 +1005,7 @@ const MOCK_EXAM = { questions: [
 
 /* ============ STATE ============ */
 const STORE_KEY = "ckne-course-progress-v2";
-function defaultState(){ return { completedTopics:{}, labSteps:{}, quizScores:{}, lastRoute:null, theme:null }; }
+function defaultState(){ return { completedTopics:{}, labSteps:{}, primerSteps:{}, quizScores:{}, lastRoute:null, theme:null }; }
 function loadState(){
   const def = defaultState();
   try{
@@ -682,6 +1017,7 @@ function loadState(){
         return Object.assign(def, p, {
           completedTopics: obj(p.completedTopics),
           labSteps: obj(p.labSteps),
+          primerSteps: obj(p.primerSteps),
           quizScores: obj(p.quizScores)
         });
       }
@@ -778,6 +1114,70 @@ function renderSidebar(){
 
 /* ============ SVG DIAGRAMS ============ */
 const DIAGRAMS = {
+
+k8sObjects: ()=>`<figure><svg viewBox="0 0 640 240" role="img" aria-label="โครงสร้างซ้อนกันของ Kubernetes: container อยู่ใน pod, pod อยู่บน node, node หลายตัวรวมกันเป็น cluster">
+  <g font-size="11">
+    <rect x="20" y="24" width="600" height="196" rx="12" fill="none" stroke="currentColor"/>
+    <text x="34" y="44" style="fill:var(--text-dim)">Cluster — ทั้งระบบที่ kubectl คุยด้วย</text>
+    <rect x="40" y="58" width="270" height="146" rx="10" fill="none" stroke="currentColor"/>
+    <text x="54" y="78" style="fill:var(--text-dim)">Node — เครื่อง (VM/server) หนึ่งตัว</text>
+    <rect x="58" y="92" width="234" height="96" rx="8" fill="none" style="stroke:var(--flow)"/>
+    <text x="72" y="112" style="fill:var(--flow)">Pod — หน่วยเล็กสุดที่ k8s จัดการ</text>
+    <text x="72" y="127" font-size="9" style="fill:var(--text-dim)">มี IP เป็นของตัวเอง 1 เบอร์</text>
+    <rect x="72" y="138" width="94" height="38" rx="6" fill="none" stroke="currentColor"/>
+    <text x="84" y="162" font-size="10">container</text>
+    <rect x="180" y="138" width="94" height="38" rx="6" fill="none" stroke="currentColor" stroke-dasharray="4 3" opacity=".6"/>
+    <text x="188" y="162" font-size="9" opacity=".7">(อีกตัวก็ได้)</text>
+    <rect x="330" y="58" width="270" height="146" rx="10" fill="none" stroke="currentColor"/>
+    <text x="344" y="78" style="fill:var(--text-dim)">Node อีกตัว</text>
+    <rect x="348" y="92" width="234" height="96" rx="8" fill="none" style="stroke:var(--flow)"/>
+    <text x="362" y="112" style="fill:var(--flow)">Pod</text>
+    <text x="362" y="127" font-size="9" style="fill:var(--text-dim)">คนละ IP กับ pod ฝั่งซ้าย</text>
+    <rect x="362" y="138" width="94" height="38" rx="6" fill="none" stroke="currentColor"/>
+    <text x="374" y="162" font-size="10">container</text>
+  </g>
+</svg><figcaption>ทุกอย่างซ้อนกันเป็นชั้น: container รันอยู่ใน pod, pod ถูกวางบน node, node หลายตัวรวมเป็น cluster — เวลาพูดถึง "pod network" คือเรื่องที่ว่า pod สองตัวนี้คุยกันได้อย่างไร</figcaption></figure>`,
+
+cidrRuler: ()=>`<figure><svg viewBox="0 0 640 200" role="img" aria-label="เปรียบเทียบช่วง IP ที่ prefix ขนาดต่างกันครอบคลุม: /16 กว้าง 65536 เบอร์ ส่วน /24 กว้าง 256 เบอร์ และ /32 คือเบอร์เดียว">
+  <g font-size="11">
+    <text x="20" y="30" style="fill:var(--text-dim)">ตัวเลขหลัง / คือ "จำนวนบิตที่ถูกล็อกไว้" — ยิ่งมาก ช่วงยิ่งแคบ</text>
+    <text x="20" y="62">10.244.0.0/16</text>
+    <rect x="150" y="48" width="440" height="20" rx="4" style="fill:var(--flow-soft);stroke:var(--flow)"/>
+    <text x="160" y="63" font-size="10" style="fill:var(--flow)">10.244.0.0 – 10.244.255.255  (65,536 เบอร์)</text>
+    <text x="20" y="104">10.244.1.0/24</text>
+    <rect x="150" y="90" width="110" height="20" rx="4" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+    <text x="268" y="105" font-size="10" style="fill:var(--accent)">10.244.1.0 – 10.244.1.255  (256 เบอร์)</text>
+    <text x="20" y="146">10.244.1.7/32</text>
+    <rect x="150" y="132" width="7" height="20" rx="2" style="fill:var(--text-dim);stroke:var(--text-dim)"/>
+    <text x="165" y="147" font-size="10" style="fill:var(--text-dim)">เบอร์เดียว — ใช้ระบุเครื่องเจาะจง</text>
+    <line x1="150" y1="170" x2="590" y2="170" stroke="currentColor" opacity=".35"/>
+    <text x="150" y="186" font-size="9" style="fill:var(--text-dim)">แคบ</text>
+    <text x="560" y="186" font-size="9" style="fill:var(--text-dim)">กว้าง</text>
+  </g>
+</svg><figcaption>ทั้งสามบรรทัดขึ้นต้น 10.244 เหมือนกัน ต่างกันแค่ตัวเลขหลัง / ซึ่งบอกว่าช่วงนั้นกินกี่เบอร์ — k8s ใช้ /16 เป็นช่วงของทั้งคลัสเตอร์ แล้วซอย /24 แจกให้ node ละก้อน</figcaption></figure>`,
+
+tlsHandshake: ()=>`<figure><svg viewBox="0 0 640 210" role="img" aria-label="ลำดับการทำ TLS handshake: client ขอเชื่อมต่อ server ส่ง certificate กลับ client ตรวจกับ CA ที่เชื่อถือ แล้วจึงเข้ารหัสข้อมูลคุยกัน">
+  <g font-size="11">
+    <rect x="24" y="24" width="110" height="34" rx="6" fill="none" style="stroke:var(--flow)"/>
+    <text x="46" y="46" style="fill:var(--flow)">Client</text>
+    <rect x="506" y="24" width="110" height="34" rx="6" fill="none" stroke="currentColor"/>
+    <text x="530" y="46">Server</text>
+    <line x1="79" y1="58" x2="79" y2="196" stroke="currentColor" stroke-dasharray="3 4" opacity=".4"/>
+    <line x1="561" y1="58" x2="561" y2="196" stroke="currentColor" stroke-dasharray="3 4" opacity=".4"/>
+    <line x1="79" y1="82" x2="555" y2="82" stroke="currentColor" marker-end="url(#arrTls)"/>
+    <text x="90" y="76" font-size="9" style="fill:var(--text-dim)">1. ขอเชื่อมต่อ (hello)</text>
+    <line x1="561" y1="116" x2="85" y2="116" stroke="currentColor" marker-end="url(#arrTls)"/>
+    <text x="90" y="110" font-size="9" style="fill:var(--text-dim)">2. ส่ง certificate — "นี่คือตัวฉัน ลงนามโดย CA นี้"</text>
+    <rect x="150" y="128" width="330" height="26" rx="6" fill="none" style="stroke:var(--accent)"/>
+    <text x="162" y="146" font-size="9" style="fill:var(--accent)">3. client ตรวจว่า CA ที่ลงนามอยู่ในรายชื่อที่เชื่อถือไหม</text>
+    <line x1="79" y1="180" x2="555" y2="180" style="stroke:var(--good)" marker-end="url(#arrTlsOk)"/>
+    <text x="90" y="174" font-size="9" style="fill:var(--good)">4. ผ่านแล้ว — ข้อมูลหลังจากนี้ถูกเข้ารหัสทั้งหมด</text>
+  </g>
+  <defs>
+    <marker id="arrTls" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor"/></marker>
+    <marker id="arrTlsOk" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--good)"/></marker>
+  </defs>
+</svg><figcaption>certificate ไม่ใช่รหัสผ่าน แต่เป็นเอกสารยืนยันตัวตนที่มี CA ลงนามไว้ — self-signed คือลงนามด้วยตัวเอง เบราว์เซอร์จึงไม่เชื่อถือ เพราะไม่มีคนกลางรับรอง</figcaption></figure>`,
 
 cniPath: ()=>`<figure><svg viewBox="0 0 640 235" role="img" aria-label="Pod A บน Node 1 ส่ง packet ผ่าน veth เข้า Cilium eBPF datapath แล้วออกทาง VXLAN tunnel ไปยัง Pod B บน Node 2">
   <g style="color:var(--text-dim)" font-size="11">
@@ -982,6 +1382,7 @@ function renderDashboard(){
     <div class="eyebrow">CKNE · Certified Kubernetes Network Engineer</div>
     <h1 class="h1">แผนการเตรียมสอบของคุณ</h1>
     <p class="lede">คอร์สนี้เรียงตาม official blueprint 5 domain ของ CKNE (BETA, 2 ชั่วโมง, performance-based) แต่ละหัวข้อมี concept สั้นๆ ตามด้วย hands-on lab ที่รันบน cluster จริง เพราะข้อสอบจริงคือการลงมือทำ ไม่ใช่ข้อสอบปรนัย</p>
+    <p class="lede" style="margin-top:-.4em"><strong style="color:var(--flow)">เพิ่งเริ่มต้น?</strong> ทุกหัวข้อมีกล่อง <strong>“พื้นฐาน”</strong> พับไว้ด้านบน อธิบายศัพท์และแนวคิดที่หัวข้อนั้นถือว่าคุณรู้แล้ว (ทั้งฝั่ง Kubernetes และฝั่ง network) พร้อมคำสั่งให้ลองเองสั้นๆ — กดเปิดเมื่อไม่แน่ใจ ข้ามได้ถ้ารู้อยู่แล้ว</p>
     <div class="dash-hero">
       <div class="dash-stat"><div class="n">${pct}%</div><div class="l">Overall Readiness</div></div>
       <div class="bp-chart">${rows}</div>
@@ -1031,6 +1432,31 @@ function renderTopic(modId, topId){
   let diagramHtml = "";
   if(t.diagram && DIAGRAMS[t.diagram]) diagramHtml = `<div class="section">${DIAGRAMS[t.diagram]()}</div>`;
 
+  /* primer: ชั้นปูพื้นสำหรับผู้เริ่มต้น — ปิดไว้เป็นค่าเริ่มต้นเพื่อไม่ขวางคนที่รู้อยู่แล้ว */
+  let primerHtml = "";
+  if(t.primer){
+    const pDone = state.primerSteps[t.id] || [];
+    const tries = t.primer.try || [];
+    const pDiagram = (t.primer.diagram && DIAGRAMS[t.primer.diagram]) ? DIAGRAMS[t.primer.diagram]() : "";
+    const trySteps = tries.map((s,si)=>`<div class="p-step">
+        <input type="checkbox" ${pDone[si]?"checked":""} onchange="togglePrimerStep('${t.id}',${si},this.checked)">
+        <div class="p-step-body">
+          <div class="p-step-instr">${esc(s.i)}</div>
+          <div class="cmd-block">
+            <div class="cmd-bar"><span class="cmd-lang">shell</span><button class="copy-btn" onclick="copyCmd(this)" data-cmd="${esc(s.c)}">คัดลอก</button></div>
+            <div class="cmd-scroll"><pre>${esc(s.c)}</pre></div>
+          </div>
+          <div class="p-step-expect">→ ${esc(s.e)}</div>
+        </div>
+      </div>`).join("");
+    const tryHtml = tries.length ? `<div class="p-try"><div class="p-try-head">ลองเองใน 2 นาที</div>${trySteps}</div>` : "";
+    const counter = tries.length ? `<span class="p-count">พื้นฐาน ${pDone.filter(Boolean).length}/${tries.length}</span>` : "";
+    primerHtml = `<details class="primer">
+      <summary><span class="p-tag">พื้นฐาน</span><span class="p-need">${esc(t.primer.need)}</span>${counter}</summary>
+      <div class="primer-body">${t.primer.body}${pDiagram}${tryHtml}</div>
+    </details>`;
+  }
+
   let labHtml = "";
   if(t.lab){
     const doneArr = state.labSteps[t.id] || [];
@@ -1073,6 +1499,7 @@ function renderTopic(modId, topId){
   document.getElementById("main").innerHTML = `
     <div class="eyebrow">${esc(m.title)}</div>
     <h1 class="h1">${esc(t.title)}</h1>
+    ${primerHtml}
     <div class="section card concept">${t.concept}</div>
     ${diagramHtml}
     ${labHtml}
@@ -1093,6 +1520,15 @@ function toggleStep(topicId, idx, val){
   if(!Array.isArray(state.labSteps[topicId])) state.labSteps[topicId]=[];
   state.labSteps[topicId][idx]=val;
   saveState(); renderSidebar(); updateTopProgress();
+}
+/* primer steps เก็บแยกและไม่นับรวมใน % พร้อมสอบ — readiness ถ่วงน้ำหนักตาม blueprint ข้อสอบเท่านั้น */
+function togglePrimerStep(topicId, idx, val){
+  if(!Array.isArray(state.primerSteps[topicId])) state.primerSteps[topicId]=[];
+  state.primerSteps[topicId][idx]=val;
+  saveState();
+  const done = state.primerSteps[topicId].filter(Boolean).length;
+  const el = document.querySelector(".primer .p-count");
+  if(el){ const total = el.textContent.split("/")[1]; el.textContent = `พื้นฐาน ${done}/${total}`; }
 }
 function copyCmd(btn){
   const txt = btn.getAttribute("data-cmd");
