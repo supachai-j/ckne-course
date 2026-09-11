@@ -1,3 +1,17 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="คอร์สเตรียมสอบ CKNE (Certified Kubernetes Network Engineer) แบบ hands-on ครบทั้ง 5 domain พร้อมแล็บรันบน cluster จริง 73 ขั้นตอน และแบบทดสอบ 65 ข้อ">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="CKNE Lab Manual">
+<meta property="og:description" content="คอร์สเตรียมสอบ CKNE แบบ hands-on ครบทั้ง 5 domain พร้อมแล็บบน cluster จริง">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128752;</text></svg>">
+<style>:root{color-scheme:light dark}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
 <title>CKNE Lab Manual</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
@@ -36,10 +50,11 @@ h1,h2,h3,h4{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;font-weight:70
 code,.mono,pre,.cmd{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
 a{color:var(--flow)}
 ::selection{background:var(--accent-soft)}
-.app{display:grid;grid-template-columns:280px 1fr;grid-template-rows:56px 1fr;grid-template-areas:"top top" "side main";min-height:100vh}
-@media (max-width:820px){.app{grid-template-columns:1fr}.app{grid-template-areas:"top" "main"}.sidebar{position:fixed;inset:56px 0 0 0;transform:translateX(-100%);transition:transform .25s ease;z-index:40;background:var(--bg)}.sidebar.open{transform:translateX(0)}}
-.topbar{grid-area:top;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:30}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap;cursor:pointer;background:none;border:none;color:var(--text);font-family:inherit;font-size:1rem}
+.app{display:grid;grid-template-columns:280px minmax(0,1fr);grid-template-rows:56px 1fr;grid-template-areas:"top top" "side main";min-height:100vh}
+@media (max-width:820px){.app{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "main"}.sidebar{position:fixed;inset:56px 0 0 0;transform:translateX(-100%);transition:transform .25s ease;z-index:40;background:var(--bg)}.sidebar.open{transform:translateX(0)}}
+.topbar{grid-area:top;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:30;min-width:0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap;cursor:pointer;background:none;border:none;color:var(--text);font-family:inherit;font-size:1rem;flex:none}
+@media (max-width:560px){.topbar{gap:9px;padding:0 10px}.brand-name{display:none}.theme-btn{padding:6px 8px}}
 .brand .mark{width:26px;height:26px;border-radius:6px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:"IBM Plex Mono";font-weight:700;font-size:.8rem}
 .progress-strip{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
 .progress-track{flex:1;height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;min-width:60px}
@@ -88,10 +103,13 @@ figcaption{font-size:.82rem;color:var(--text-dim);margin-top:8px;padding-top:8px
 .step-num{font-family:"IBM Plex Mono";font-size:.75rem;color:var(--text-dim);flex:none;padding-top:2px}
 .step-body{flex:1;min-width:0}
 .step-instr{font-size:.92rem;margin-bottom:8px}
-.cmd-block{position:relative;background:#0d1319;border:1px solid #26313c;border-radius:8px;overflow-x:auto}
-.cmd-block pre{margin:0;padding:12px 44px 12px 14px;color:#d9e6ee;font-size:.82rem;white-space:pre;overflow-x:auto}
-.copy-btn{position:absolute;top:8px;right:8px;background:#1d2732;border:1px solid #2b3742;color:#93a2af;border-radius:6px;font-family:"IBM Plex Mono";font-size:.68rem;padding:4px 7px;cursor:pointer}
-.copy-btn:hover{color:#e7edf2}
+.cmd-block{background:#0d1319;border:1px solid #26313c;border-radius:8px;overflow:hidden}
+.cmd-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 7px 5px 13px;border-bottom:1px solid #26313c;background:#121a22}
+.cmd-lang{font-family:"IBM Plex Mono";font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;color:#5d6f7e}
+.cmd-scroll{overflow-x:auto}
+.cmd-scroll pre{margin:0;padding:12px 14px;color:#d9e6ee;font-size:.82rem;white-space:pre}
+.copy-btn{background:#1d2732;border:1px solid #2b3742;color:#93a2af;border-radius:6px;font-family:"IBM Plex Mono";font-size:.68rem;padding:4px 9px;cursor:pointer;flex:none}
+.copy-btn:hover{color:#e7edf2;border-color:#3d4b58}
 .disclose{margin-top:8px}
 .disclose summary{font-size:.78rem;color:var(--text-dim);cursor:pointer;font-family:"IBM Plex Mono";list-style:none}
 .disclose summary::-webkit-details-marker{display:none}
@@ -148,7 +166,7 @@ svg text{fill:currentColor;font-family:"IBM Plex Mono"}
 <div class="app" id="app">
   <div class="topbar">
     <button class="menu-btn" id="menuBtn">☰</button>
-    <button class="brand" id="brandBtn"><span class="mark">CK</span>CKNE Lab Manual</button>
+    <button class="brand" id="brandBtn"><span class="mark">CK</span><span class="brand-name">CKNE Lab Manual</span></button>
     <div class="progress-strip">
       <div class="progress-track"><div class="progress-fill" id="topProgressFill" style="width:0%"></div></div>
       <span class="progress-label" id="topProgressLabel">0% พร้อมสอบ</span>
@@ -403,9 +421,9 @@ const MODULES = [
         <li>ต่างจาก NAT gateway ของ cloud provider ตรงที่นี่ควบคุมได้ระดับ pod/namespace ไม่ใช่ระดับ subnet ทั้งก้อน</li>
       </ul>`,
       lab:{ title:"เปิด Egress Gateway แล้วพิสูจน์ว่า source IP คงที่จริง",
-        prereqs:"ต้อง helm upgrade เปิด egressGateway.enabled=true ก่อน (ถ้ายังไม่เปิดตอน Module 0)",
+        prereqs:"Egress Gateway ต้องการทั้ง egressGateway.enabled=true และ bpf.masquerade=true คู่กัน (และต้องมี kubeProxyReplacement ซึ่งเปิดไว้แล้วตั้งแต่ Module 0)",
         steps:[
-          {i:"เปิด feature egress gateway บน Cilium ที่ติดตั้งไว้แล้ว", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --reuse-values --set egressGateway.enabled=true\nkubectl -n kube-system rollout status ds/cilium", e:"DaemonSet cilium restart แล้วขึ้น Ready ครบทุก node", tr:"ถ้า pod cilium ติด CrashLoopBackOff หลังเปิด feature นี้ ตรวจว่า kernel ของ node รองรับ eBPF feature ที่จำเป็น (บน kind มักไม่มีปัญหาเพราะใช้ kernel ของ host)"},
+          {i:"เปิด feature egress gateway บน Cilium — ต้องเปิด bpf.masquerade ด้วยเสมอ ไม่งั้น SNAT ของ egress gateway จะไม่ทำงาน", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --reuse-values \\\n  --set egressGateway.enabled=true \\\n  --set bpf.masquerade=true\nkubectl -n kube-system rollout status ds/cilium", e:"DaemonSet cilium restart แล้วขึ้น Ready ครบทุก node", tr:"ถ้าลืม bpf.masquerade=true policy จะ apply ผ่านแต่ source IP ปลายทางจะไม่เปลี่ยนเป็น IP ของ gateway; ถ้า pod cilium ติด CrashLoopBackOff ตรวจว่า kernel ของ node รองรับ eBPF masquerade (บน kind ใช้ kernel ของ host จึงมักผ่าน)"},
           {i:"สร้าง label ให้ node หนึ่งตัวเป็น egress gateway", c:"kubectl label node ckne-worker2 egress-gateway=true", e:"node ckne-worker2 มี label egress-gateway=true เพิ่มขึ้นมา", tr:"ตรวจสอบด้วย kubectl get node --show-labels | grep egress-gateway"},
           {i:"สร้าง CiliumEgressGatewayPolicy ให้ namespace default ออกผ่าน node นั้นด้วย SNAT IP คงที่", c:"cat <<EOF | kubectl apply -f -\napiVersion: cilium.io/v2\nkind: CiliumEgressGatewayPolicy\nmetadata:\n  name: egress-sample\nspec:\n  selectors:\n  - podSelector:\n      matchLabels:\n        run: netcheck\n  destinationCIDRs:\n  - \"0.0.0.0/0\"\n  egressGateway:\n    nodeSelector:\n      matchLabels:\n        egress-gateway: \"true\"\nEOF", e:"kubectl get ciliumegressgatewaypolicy แสดง policy สร้างสำเร็จ", tr:"ถ้า apply ไม่ผ่าน ตรวจ apiVersion ให้ตรงกับ version ของ Cilium CRD ที่ติดตั้งจริง (kubectl get crd | grep egress)"},
           {i:"ยิง request ออกไปยังปลายทางทดสอบเพื่อดู source IP ที่ปลายทางเห็น", c:"kubectl exec netcheck -- curl -s ifconfig.me", e:"ได้ IP กลับมาเป็น IP ของ node ckne-worker2 (egress gateway) ไม่ใช่ IP เดิมของ pod", tr:"ถ้าเครื่อง lab ไม่มี internet ออก ให้จำลองปลายทางด้วย pod อีกตัวที่รัน netshoot แล้วดูจาก log ของมันแทนว่า source IP เปลี่ยนเป็น IP ของ node gateway"}
@@ -606,7 +624,7 @@ const MODULES = [
       lab:{ title:"ไล่ connection จาก conntrack กลับไปหา pod เจ้าของ",
         steps:[
           {i:"สร้าง long-lived connection ค้างไว้เพื่อให้มีอะไรให้ไล่", c:"kubectl -n secdemo exec frontend -- sh -c 'while true; do curl -s backend -o /dev/null; sleep 1; done' &", e:"background job ยิง curl ทุกวินาทีต่อเนื่อง (รันฝั่ง client ผ่าน kubectl exec ค้างไว้)", tr:"ถ้า kubectl exec หลุดเพราะ timeout ให้เปิด terminal แยกไว้เฉพาะสำหรับ job นี้"},
-          {i:"เข้าไปที่ node ที่ pod backend รันอยู่ แล้วดู conntrack table กรองเฉพาะ IP ของ backend", c:"kubectl -n secdemo get pod -l app=backend -o jsonpath='{.items[0].status.hostIP}'\ndocker exec -it ckne-worker conntrack -L | grep <backend-pod-ip>", e:"เห็นบรรทัด connection state ESTABLISHED ระหว่าง IP ของ frontend กับ backend พร้อม source/destination port", tr:"ถ้า conntrack ไม่มีในเครื่อง node ให้ apt-get install -y conntrack ก่อน (kind node เป็น container ที่ install เพิ่มได้)"},
+          {i:"หาว่า pod backend รันอยู่ node ไหน แล้วเข้า node นั้น (ไม่ใช่ ckne-worker เสมอไป) เพื่อดู conntrack table", c:"NODE=$(kubectl -n secdemo get pod -l app=backend -o jsonpath='{.items[0].spec.nodeName}')\nPODIP=$(kubectl -n secdemo get pod -l app=backend -o jsonpath='{.items[0].status.podIP}')\necho \"backend อยู่บน $NODE ที่ IP $PODIP\"\ndocker exec -it $NODE conntrack -L | grep $PODIP", e:"เห็นบรรทัด connection state ESTABLISHED ระหว่าง IP ของ frontend กับ backend พร้อม source/destination port", tr:"ถ้า conntrack ไม่มีในเครื่อง node ให้ docker exec -it $NODE apt-get update && apt-get install -y conntrack ก่อน (kind node เป็น container ที่ install เพิ่มได้)"},
           {i:"ใช้ ss ดู socket ฝั่ง backend ว่า process ไหนถือ connection นี้อยู่", c:"kubectl -n secdemo exec deploy/backend -- ss -tnp | grep ESTAB", e:"เห็นบรรทัด ESTAB พร้อม local/peer address:port และ process nginx ที่ถือ socket นั้นอยู่", tr:"ถ้า image nginx ไม่มี ss ในตัว ให้ kubectl debug หรือใช้ nicolaka/netshoot เป็น ephemeral container แนบเข้าไปแทน"},
           {i:"หยุด background job เพื่อความสะอาดของ lab environment", c:"kill %1", e:"background curl loop หยุดทำงาน", tr:"ถ้าจำ job number ไม่ได้ ใช้ jobs ดูลิสต์ก่อน kill"}
         ],
@@ -1024,7 +1042,10 @@ function renderTopic(modId, topId){
           <span class="step-num">${String(si+1).padStart(2,'0')}</span>
           <div class="step-body">
             <div class="step-instr">${esc(s.i)}</div>
-            <div class="cmd-block"><pre>${esc(s.c)}</pre><button class="copy-btn" onclick="copyCmd(this)" data-cmd="${esc(s.c)}">คัดลอก</button></div>
+            <div class="cmd-block">
+              <div class="cmd-bar"><span class="cmd-lang">shell</span><button class="copy-btn" onclick="copyCmd(this)" data-cmd="${esc(s.c)}">คัดลอก</button></div>
+              <div class="cmd-scroll"><pre>${esc(s.c)}</pre></div>
+            </div>
             <details class="disclose expect"><summary>ผลลัพธ์ที่ควรเห็น</summary><div class="box">${esc(s.e)}</div></details>
             <details class="disclose trouble"><summary>ถ้าไม่สำเร็จ</summary><div class="box">${esc(s.tr)}</div></details>
           </div>
@@ -1082,17 +1103,21 @@ function copyCmd(btn){
 }
 
 /* ============ RENDER: QUIZ ============ */
-function renderQuizGeneric(title, questions, onFinish){
+function renderQuizGeneric(title, questions, onFinish, backRoute, backLabel){
   let qs = questions.map((q,qi)=>{
     let opts = q.options.map((o,oi)=>`<label class="opt" data-qi="${qi}" data-oi="${oi}"><input type="radio" name="q${qi}" value="${oi}">${esc(o)}</label>`).join("");
     return `<div class="quiz-q" id="qwrap-${qi}"><p class="qtext">${qi+1}. ${esc(q.q)}</p>${opts}<div class="qexplain" id="explain-${qi}">${esc(q.explain)}</div></div>`;
   }).join("");
   document.getElementById("main").innerHTML = `
-    <div class="eyebrow">Quiz</div>
+    <div class="eyebrow">Quiz · ${questions.length} ข้อ</div>
     <h1 class="h1">${esc(title)}</h1>
     <div class="card">${qs}<button class="quiz-submit" id="quizSubmit">ส่งคำตอบ</button><div class="quiz-result" id="quizResult"></div></div>
-    <div class="mark-row"><button class="nav-btn" onclick="history.back()">← กลับ</button><span></span></div>
+    <div class="mark-row">
+      <button class="nav-btn" onclick="go('${backRoute||'#/dashboard'}')">← ${esc(backLabel||'Dashboard')}</button>
+      <button class="nav-btn" id="quizRetry">ทำใหม่อีกครั้ง</button>
+    </div>
   `;
+  document.getElementById("quizRetry").addEventListener("click", ()=>render());
   document.getElementById("quizSubmit").addEventListener("click", ()=>{
     let score=0;
     questions.forEach((q,qi)=>{
@@ -1117,13 +1142,13 @@ function renderQuiz(modId){
   renderQuizGeneric(`แบบทดสอบ: ${m.short}`, m.quiz, (score,total)=>{
     state.quizScores[m.id] = {score,total,ts:Date.now()};
     saveState();
-  });
+  }, `#/module/${m.id}`, m.short);
 }
 function renderMockExam(){
   renderQuizGeneric("Mock Exam (คละทุก domain)", MOCK_EXAM.questions, (score,total)=>{
     state.quizScores["mock"] = {score,total,ts:Date.now()};
     saveState();
-  });
+  }, "#/dashboard", "Dashboard");
 }
 
 /* ============ MAIN RENDER ============ */
@@ -1143,3 +1168,6 @@ function render(){
 }
 render();
 </script>
+
+</body>
+</html>
