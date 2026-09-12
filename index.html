@@ -154,6 +154,31 @@ figcaption{font-size:.82rem;color:var(--text-dim);margin-top:8px;padding-top:8px
 .p-step-body{flex:1;min-width:0}
 .p-step-instr{font-size:.88rem;margin-bottom:7px}
 .p-step-expect{font-size:.8rem;color:var(--text-dim);margin-top:7px}
+.timer-bar{position:sticky;top:56px;z-index:20;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);margin-bottom:18px}
+.timer-clock{font-family:"IBM Plex Mono";font-size:1.55rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.timer-clock.warn{color:var(--accent)}
+.timer-clock.over{color:var(--bad)}
+.timer-meta{font-size:.78rem;color:var(--text-dim);flex:1;min-width:150px}
+.timer-btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:8px;padding:8px 15px;font-weight:700;cursor:pointer;font-size:.85rem;flex:none}
+.timer-btn.ghost{background:var(--surface);color:var(--text-dim);border:1px solid var(--border);font-weight:500}
+.task{border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+.task.passed{border-color:var(--good)}
+.task-head{display:flex;align-items:flex-start;gap:11px;padding:14px 17px;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.task-num{font-family:"IBM Plex Mono";font-size:.72rem;color:var(--accent-ink);background:var(--accent);border-radius:5px;padding:3px 8px;font-weight:700;flex:none}
+.task-dom{font-family:"IBM Plex Mono";font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);flex:none;align-self:center}
+.task-title{font-weight:700;font-size:.97rem;flex:1;min-width:140px}
+.task-body{padding:15px 17px}
+.task-body p{margin:.5em 0;font-size:.92rem}
+.task-body code{background:var(--surface-2);border-radius:4px;padding:.1em .4em;font-size:.88em;overflow-wrap:anywhere}
+.task-crit{margin:12px 0 0;padding:12px 14px;background:var(--flow-soft);border-radius:9px}
+.task-crit h5{margin:0 0 7px;font-family:"IBM Plex Mono";font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim)}
+.task-crit ul{margin:0;padding-left:1.25em;font-size:.88rem}
+.task-crit li{margin:.28em 0}
+.task-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 17px;border-top:1px solid var(--border)}
+.task-foot label{display:flex;align-items:center;gap:8px;font-size:.87rem;cursor:pointer}
+.task-foot input{width:17px;height:17px;accent-color:var(--good);cursor:pointer}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.score-num{font-family:"IBM Plex Mono";font-size:2.2rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
 .mark-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
 .mark-btn{background:var(--good);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer;font-size:.88rem}
 .mark-btn.done{background:var(--surface-2);color:var(--text-dim)}
@@ -215,8 +240,53 @@ svg text{fill:currentColor;font-family:"IBM Plex Mono"}
 const MODULES = [
 {
   id:"m0", short:"Lab Setup", title:"Module 0 · เตรียม Lab Environment", weight:0,
-  blurb:"สร้างคลัสเตอร์จริงไว้รันแล็บทุกโมดูลในคอร์สนี้ ทุกแล็บใช้ Cilium เป็น CNI หลักตลอดทั้งคอร์ส เพราะ Cilium ครอบคลุม feature ที่ CKNE blueprint ต้องการเกือบทั้งหมดในตัวเดียว: CNI/IPAM, kube-proxy replacement, NetworkPolicy แบบ L7/DNS-aware, Gateway API, egress gateway, ClusterMesh, WireGuard encryption และ Hubble observability",
+  blurb:"เตรียมเครื่อง homelab ติดตั้งเครื่องมือให้ครบ แล้วสร้างคลัสเตอร์จริงไว้รันแล็บทุกโมดูลในคอร์สนี้ ทุกแล็บใช้ Cilium เป็น CNI หลักตลอดทั้งคอร์ส เพราะ Cilium ครอบคลุม feature ที่ CKNE blueprint ต้องการเกือบทั้งหมดในตัวเดียว: CNI/IPAM, kube-proxy replacement, NetworkPolicy แบบ L7/DNS-aware, Gateway API, egress gateway, ClusterMesh, WireGuard encryption และ Hubble observability",
   topics:[
+    {
+      id:"m0-prep", title:"เตรียมเครื่อง homelab และติดตั้งเครื่องมือ", summary:"สเปกที่ต้องมี เลือก OS ให้เหมาะ แล้วลงเครื่องมือให้ครบก่อนสร้างคลัสเตอร์",
+      primer:{
+        need:"homelab คืออะไร ต้องซื้อเซิร์ฟเวอร์ไหม?",
+        body:`<p><strong>homelab</strong> คือเครื่องที่เราใช้ทดลองเองได้เต็มที่ พังแล้วสร้างใหม่ได้ ไม่กระทบใคร — <strong>ไม่จำเป็นต้องซื้ออุปกรณ์ใหม่</strong> คอร์สนี้ใช้ <code>kind</code> ซึ่งจำลอง node ของ Kubernetes เป็น container บนเครื่องเดียว ดังนั้นโน้ตบุ๊กที่ใช้อยู่ก็พอ ถ้า RAM ถึง</p>
+        <ul>
+          <li><strong>ทำไมไม่ใช้คลัสเตอร์ของบริษัท</strong> — แล็บในคอร์สนี้ต้องถอด/เปลี่ยน CNI, ปิด kube-proxy, ทำ default-deny ทั้ง namespace, เปิด/ปิดการเข้ารหัส ซึ่งทำบนระบบที่มีคนใช้จริงไม่ได้</li>
+          <li><strong>ทำไมไม่ใช้ cloud แบบ managed (EKS/GKE)</strong> — พวกนั้นล็อก control plane ไว้ เราแตะ kube-proxy หรือเปลี่ยน CNI ไม่ได้ และคิดเงินตามเวลาที่เปิดทิ้งไว้</li>
+          <li>ถ้าเครื่องไม่ไหวจริงๆ เช่าเครื่อง cloud รายชั่วโมงแล้วลบทิ้งหลังเรียนเสร็จก็เป็นทางเลือกที่ถูกกว่าซื้อเครื่อง</li>
+        </ul>`,
+        try:[
+          {i:"ดู RAM ทั้งหมดกับที่ยังว่างอยู่ (ตัวเลข available สำคัญกว่า total)", c:"free -h 2>/dev/null || vm_stat | head -5", e:"ดูแถว available/free — ถ้าเหลือน้อยกว่า 6 GB ให้ปิดโปรแกรมหนักๆ ก่อนเริ่มแล็บ"},
+          {i:"ดูจำนวน CPU core และพื้นที่ว่างของดิสก์", c:"nproc 2>/dev/null || sysctl -n hw.ncpu\ndf -h / | tail -1", e:"ควรมีอย่างน้อย 4 core และพื้นที่ว่าง 20 GB สำหรับ image ของ Kubernetes + Cilium"}
+        ]
+      },
+      concept:`<p>ก่อนสร้างคลัสเตอร์ต้องมีเครื่องที่พร้อมและเครื่องมือครบก่อน หน้านี้คือรายการทั้งหมดที่คอร์สนี้ใช้ ตั้งแต่ต้นจนจบทุกโมดูล</p>
+      <p><strong>สเปกขั้นต่ำ</strong></p>
+      <ul>
+        <li><strong>RAM</strong> — 8 GB พอสำหรับ Module 0-2 และ 4-5 (คลัสเตอร์ 3 node + Cilium + Hubble) แต่ <strong>Module 3 เรื่อง ClusterMesh ต้องเปิดคลัสเตอร์ที่สองพร้อมกัน</strong> จุดนั้นควรมี 16 GB ถ้ามีแค่ 8 GB ให้ลดคลัสเตอร์แรกเหลือ worker เดียวชั่วคราวตอนทำแล็บนั้น</li>
+        <li><strong>CPU</strong> — 4 core ขึ้นไป</li>
+        <li><strong>Disk</strong> — ว่างอย่างน้อย 20 GB สำหรับ image</li>
+      </ul>
+      <p><strong>เลือก OS</strong> — มีผลกับแล็บบางตัวจริง ไม่ใช่แค่ความชอบ</p>
+      <ul>
+        <li><strong>Linux ติดตั้งตรงบนเครื่อง</strong> — ดีที่สุด เพราะ kind ใช้ kernel ของเครื่องโดยตรง ฟีเจอร์ eBPF/WireGuard ของ Cilium จึงทำงานครบ</li>
+        <li><strong>macOS / Windows (Docker Desktop)</strong> — ใช้เรียนได้เกือบทั้งหมด แต่ container ไปรันบน Linux VM ที่ Docker Desktop สร้างให้ ทำให้ <strong>แล็บที่แตะ kernel โดยตรงอาจติดข้อจำกัด</strong> โดยเฉพาะ WireGuard encryption (Module 4) และการ <code>docker exec</code> เข้า node เพื่อดู interface — ถ้าติดตรงนั้นให้ข้ามไปก่อนแล้วกลับมาทำบน Linux ทีหลัง</li>
+        <li><strong>Windows + WSL2</strong> — ให้ลง Docker ใน WSL2 แล้วทำงานในนั้นทั้งหมด จะใกล้เคียง Linux จริงมากกว่าใช้ Docker Desktop ฝั่ง Windows</li>
+        <li><strong>VM หรือเครื่อง cloud</strong> — Ubuntu 22.04+ ขนาด 4 vCPU / 16 GB ทำงานได้ครบทุกแล็บ เปิดเฉพาะตอนเรียนแล้วลบทิ้งได้</li>
+      </ul>
+      <p><strong>เครื่องมือที่ต้องมี</strong> — <code>docker</code> (รัน node), <code>kind</code> (สร้างคลัสเตอร์), <code>kubectl</code> (คุยกับคลัสเตอร์), <code>helm</code> (ติดตั้ง Cilium), <code>cilium</code> CLI (ตรวจสถานะ/เปิดฟีเจอร์) และ <code>hubble</code> CLI (ดู flow ใน Module 5) — สองตัวหลังเป็นคนละ binary กัน คนมักลืมตัวหลัง</p>`,
+      lab:{ title:"ติดตั้งเครื่องมือให้ครบแล้วตรวจทีละตัว",
+        prereqs:"คำสั่งข้างล่างเป็นของ Linux x86_64 — ถ้าใช้ macOS แทนด้วย brew install docker kubectl kind helm cilium-cli hubble ได้เลย",
+        steps:[
+          {i:"ติดตั้ง Docker แล้วเพิ่มตัวเองเข้ากลุ่ม docker เพื่อไม่ต้องพิมพ์ sudo ทุกครั้ง", c:"curl -fsSL https://get.docker.com | sh\nsudo usermod -aG docker $USER\nnewgrp docker\ndocker run --rm hello-world", e:"เห็นข้อความ \"Hello from Docker!\" แปลว่า Docker ทำงานและสิทธิ์ถูกต้องแล้ว", tr:"ถ้ายังขึ้น permission denied ให้ออกจาก session แล้ว login ใหม่ (การเพิ่มกลุ่มมีผลเมื่อเริ่ม session ใหม่); บน WSL2 ให้เปิด systemd ใน /etc/wsl.conf ก่อนถ้า Docker ไม่ยอมสตาร์ท"},
+          {i:"ติดตั้ง kubectl (ดึงเวอร์ชัน stable ล่าสุดอัตโนมัติ)", c:"curl -LO \"https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl\"\nsudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl\nrm kubectl\nkubectl version --client", e:"แสดง Client Version โดยไม่ error (ตอนนี้ยังไม่มีคลัสเตอร์ให้ต่อ เป็นเรื่องปกติ)", tr:"ถ้าเครื่องเป็น ARM (Apple Silicon / Raspberry Pi) ให้เปลี่ยน linux/amd64 เป็น linux/arm64 ในลิงก์"},
+          {i:"ติดตั้ง kind", c:"curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64\nchmod +x ./kind\nsudo mv ./kind /usr/local/bin/kind\nkind version", e:"แสดงเวอร์ชัน kind v0.23.0 ขึ้นไป", tr:"ถ้าคำสั่ง kind ไม่เจอ ให้เช็คว่า /usr/local/bin อยู่ใน PATH ด้วย echo $PATH"},
+          {i:"ติดตั้ง Helm", c:"curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash\nhelm version --short", e:"แสดงเวอร์ชัน v3.x", tr:"ถ้าองค์กรบล็อกสคริปต์จากอินเทอร์เน็ต ให้ดาวน์โหลด binary จากหน้า release ของ Helm แล้ววางใน /usr/local/bin เอง"},
+          {i:"ติดตั้ง Cilium CLI (คนละตัวกับ Cilium ที่จะไปรันในคลัสเตอร์)", c:"CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)\ncurl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-amd64.tar.gz\nsudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin\nrm cilium-linux-amd64.tar.gz\ncilium version --client", e:"แสดงเวอร์ชันของ cilium CLI", tr:"cilium CLI เป็นแค่เครื่องมือฝั่งเครื่องเรา ใช้สั่งงาน/ตรวจสถานะ Cilium ที่อยู่ในคลัสเตอร์ ไม่ใช่ตัว CNI เอง"},
+          {i:"ติดตั้ง Hubble CLI (Module 5 ต้องใช้ — เป็นคนละ binary กับ cilium CLI)", c:"HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)\ncurl -L --fail --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz\nsudo tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin\nrm hubble-linux-amd64.tar.gz\nhubble version", e:"แสดงเวอร์ชันของ hubble CLI", tr:"ถ้าข้ามข้อนี้ไป จะไปติดตอน Module 5 ที่ต้องรัน hubble observe แล้วขึ้น command not found"},
+          {i:"ตรวจครบทุกตัวในคำสั่งเดียวก่อนไปต่อ", c:"for t in docker kubectl kind helm cilium hubble; do\n  printf '%-9s ' \"$t\"\n  command -v $t >/dev/null 2>&1 && echo OK || echo 'ยังไม่มี'\ndone", e:"ขึ้น OK ครบทั้ง 6 บรรทัด — พร้อมไปสร้างคลัสเตอร์ในหัวข้อถัดไป", tr:"ตัวไหนยังไม่มีให้ย้อนกลับไปทำขั้นตอนของตัวนั้นซ้ำ อย่าเพิ่งข้ามไปหัวข้อถัดไปเพราะแล็บทุกโมดูลอ้างอิงเครื่องมือชุดนี้"}
+        ],
+        challenge:{ task:"ประเมินว่าเครื่องของคุณจะทำแล็บ ClusterMesh (Module 3) ที่ต้องเปิดสองคลัสเตอร์พร้อมกันไหวไหม ถ้าไม่ไหวจะปรับยังไงโดยไม่ต้องซื้อเครื่องใหม่",
+                    reveal:"ประมาณคร่าวๆ: แต่ละ node ของ kind กิน RAM ~0.8-1.5 GB เมื่อรวม Cilium + Hubble — คลัสเตอร์แรก 3 node ≈ 4 GB, คลัสเตอร์ที่สอง 2 node ≈ 2.5 GB รวมกับ Docker และ OS แล้วควรมีว่างราว 8-10 GB ตอนทำแล็บนั้น ถ้าไม่พอมีสามทาง: (1) ลดคลัสเตอร์แรกเหลือ control-plane + worker เดียวชั่วคราว (2) ทำแล็บ ClusterMesh แยกวันแล้วปิดโปรแกรมอื่นให้หมด (3) เช่าเครื่อง cloud 16 GB รายชั่วโมงเฉพาะวันที่ทำแล็บนั้นแล้วลบทิ้ง" }
+      }
+    },
     {
       id:"m0-t1", title:"ติดตั้ง kind cluster + Cilium", summary:"สร้าง multi-node cluster ด้วย kind แล้วติดตั้ง Cilium แทน CNI default",
       primer:{
@@ -257,7 +327,7 @@ const MODULES = [
         <li>เมื่อสร้าง cluster ด้วย <code>--name ckne</code> node จะชื่อ <code>ckne-control-plane</code>, <code>ckne-worker</code>, <code>ckne-worker2</code> และ kubectl context ชื่อ <code>kind-ckne</code> — ชื่อเหล่านี้ถูกอ้างถึงในแล็บทุกโมดูล</li>
       </ul>`,
       lab:{ title:"สร้างคลัสเตอร์ 3 node และติดตั้ง Cilium",
-        prereqs:"ติดตั้ง Docker, kind, kubectl, Helm ในเครื่องให้พร้อมก่อน",
+        prereqs:"ต้องผ่านหัวข้อ \"เตรียมเครื่อง homelab\" ข้างบนก่อน — ต้องมี docker, kind, kubectl, helm, cilium, hubble ครบทั้ง 6 ตัว",
         steps:[
           {i:"สร้างไฟล์ config ของ kind ที่ปิด default CNI, ไม่ติดตั้ง kube-proxy (ให้ Cilium ทำแทน) และกำหนด pod subnet", c:"cat <<EOF > kind-config.yaml\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnetworking:\n  disableDefaultCNI: true\n  kubeProxyMode: \"none\"\n  podSubnet: \"10.244.0.0/16\"\nnodes:\n  - role: control-plane\n  - role: worker\n  - role: worker\nEOF\nkind create cluster --config kind-config.yaml --name ckne", e:"kind สร้าง node 3 ตัวสำเร็จ ข้อความท้ายสุด \"Set kubectl context to kind-ckne\"", tr:"ถ้า Docker daemon ไม่รัน ให้ start Docker ก่อน; ถ้า port ชนให้ลบ cluster เก่าด้วย kind delete cluster --name ckne"},
           {i:"ตรวจว่า node ยัง NotReady เพราะยังไม่มี CNI", c:"kubectl get nodes", e:"ทุก node ขึ้นสถานะ NotReady — ถูกต้องแล้ว เพราะยังไม่มี CNI ติดตั้ง pod network จึงยังไม่พร้อม", tr:"ถ้า kubectl ต่อ cluster ไม่ได้ ตรวจ context ด้วย kubectl config current-context ควรเป็น kind-ckne"},
@@ -990,6 +1060,108 @@ const MODULES = [
   ]
 }
 ];
+const MOCK_LAB = {
+  minutes: 120,
+  prereqs: "คลัสเตอร์จาก Module 0 ต้องพร้อมใช้งาน และควรล้างของจากแล็บก่อนหน้าก่อนเริ่มจับเวลา: kubectl delete ns exam secdemo --ignore-not-found",
+  tasks: [
+    {
+      id:"ml1", domain:"Core & CNI", title:"วาง pod ให้กระจายคนละ node แล้วพิสูจน์ว่าคุยกันข้าม node ได้",
+      scenario:`สร้าง namespace <code>exam</code> และ Deployment ชื่อ <code>web</code> ที่ใช้ image <code>nginx</code> จำนวน 2 replica โดย<strong>บังคับ</strong>ให้ pod ทั้งสองตัวต้องไปอยู่คนละ node กัน (ห้ามพึ่งโชคจาก scheduler) จากนั้นพิสูจน์ว่า pod ทั้งสองเชื่อมต่อถึงกันได้`,
+      criteria:[
+        "namespace <code>exam</code> มีอยู่จริง",
+        "Deployment <code>web</code> มี 2 pod สถานะ Running",
+        "pod ทั้งสองอยู่คนละ node (ดูคอลัมน์ NODE)",
+        "curl จาก pod หนึ่งไปยัง IP ของอีก pod ได้ HTTP 200"
+      ],
+      verify:"kubectl -n exam get pods -o wide\n# ต้องเห็น NODE ต่างกัน แล้วทดสอบเชื่อมต่อ:\nA=$(kubectl -n exam get pod -l app=web -o jsonpath='{.items[0].metadata.name}')\nB=$(kubectl -n exam get pod -l app=web -o jsonpath='{.items[1].status.podIP}')\nkubectl -n exam exec $A -- curl -s -o /dev/null -w 'cross-node HTTP %{http_code}\\n' http://$B",
+      solution:"kubectl create ns exam\ncat <<EOF | kubectl apply -f -\napiVersion: apps/v1\nkind: Deployment\nmetadata: {name: web, namespace: exam}\nspec:\n  replicas: 2\n  selector: {matchLabels: {app: web}}\n  template:\n    metadata: {labels: {app: web}}\n    spec:\n      affinity:\n        podAntiAffinity:\n          requiredDuringSchedulingIgnoredDuringExecution:\n          - labelSelector:\n              matchLabels: {app: web}\n            topologyKey: kubernetes.io/hostname\n      containers:\n      - {name: nginx, image: nginx}\nEOF"
+    },
+    {
+      id:"ml2", domain:"Service & DNS", title:"เปิด Service ให้เรียกข้าม namespace ด้วยชื่อได้",
+      scenario:`ทำให้ Deployment <code>web</code> เข้าถึงได้ผ่าน Service ชื่อ <code>web</code> ที่ port 80 และต้องเรียกได้จาก pod ที่อยู่ <strong>namespace อื่น</strong> ด้วยชื่อ DNS ไม่ใช่ IP`,
+      criteria:[
+        "Service <code>web</code> ชนิด ClusterIP อยู่ใน namespace exam",
+        "Service มี endpoint ครบ 2 ตัว (ไม่ใช่ &lt;none&gt;)",
+        "pod ใน namespace <code>default</code> resolve ชื่อเต็ม <code>web.exam.svc.cluster.local</code> ได้",
+        "curl ผ่านชื่อนั้นได้ HTTP 200"
+      ],
+      verify:"kubectl -n exam get svc web\nkubectl -n exam get endpointslices -l kubernetes.io/service-name=web\nkubectl run dnschk --rm -it --restart=Never --image=nicolaka/netshoot -- \\\n  sh -c 'nslookup web.exam.svc.cluster.local && curl -s -o /dev/null -w \"HTTP %{http_code}\\n\" http://web.exam.svc.cluster.local'",
+      solution:"kubectl -n exam expose deployment web --port=80 --name=web\n# ชื่อสั้นใช้ได้เฉพาะใน namespace เดียวกัน ข้าม namespace ต้องใช้ชื่อเต็ม\n# <service>.<namespace>.svc.cluster.local"
+    },
+    {
+      id:"ml3", domain:"Service & DNS", title:"เพิ่ม stub domain ใน CoreDNS",
+      scenario:`ทีมแจ้งว่าโดเมนภายใน <code>corp.internal</code> ต้องถูกส่งไปถาม DNS server ที่ <code>1.1.1.1</code> แทนที่จะวิ่งออก upstream ปกติ — ปรับ CoreDNS ให้รองรับโดยไม่กระทบการ resolve ชื่อในคลัสเตอร์เดิม`,
+      criteria:[
+        "Corefile มี zone block ของ <code>corp.internal</code> ที่ forward ไป 1.1.1.1",
+        "pod ของ CoreDNS ยัง Running ครบ (ไม่ CrashLoop จาก Corefile ผิดรูป)",
+        "การ resolve ชื่อในคลัสเตอร์เดิม เช่น <code>web.exam.svc.cluster.local</code> ยังทำงานปกติ"
+      ],
+      verify:"kubectl -n kube-system get cm coredns -o jsonpath='{.data.Corefile}' | grep -A3 'corp.internal'\nkubectl -n kube-system get pods -l k8s-app=kube-dns\nkubectl run dnschk2 --rm -it --restart=Never --image=nicolaka/netshoot -- nslookup web.exam.svc.cluster.local",
+      solution:"kubectl -n kube-system edit configmap coredns\n# เพิ่ม block นี้ต่อท้าย Corefile (นอก block .:53 เดิม):\n# corp.internal:53 {\n#     errors\n#     cache 30\n#     forward . 1.1.1.1\n# }\n# plugin reload จะรับค่าใหม่เองใน ~30 วินาที ถ้าไม่ขยับ:\n# kubectl -n kube-system rollout restart deployment coredns"
+    },
+    {
+      id:"ml4", domain:"Traffic Mgmt", title:"แบ่ง traffic 70/30 ระหว่างสองเวอร์ชันด้วย Gateway API",
+      scenario:`กำลังจะปล่อยเวอร์ชันใหม่แบบ canary — สร้าง Deployment/Service ชื่อ <code>web-v2</code> (image <code>nginxdemos/hello</code>) แล้วทำให้ traffic ที่เข้ามาทาง Gateway ถูกแบ่งไปที่ <code>web</code> 70% และ <code>web-v2</code> 30% โดย<strong>ไม่แก้ Gateway</strong>`,
+      criteria:[
+        "Gateway มีสถานะ Programmed: True",
+        "HTTPRoute มีสถานะ Accepted: True และมี backendRefs สองตัว",
+        "weight เป็น 70 และ 30 ตามลำดับ",
+        "ยิง curl ซ้ำๆ แล้วเห็นผลตกทั้งสองฝั่งตามสัดส่วนคร่าวๆ"
+      ],
+      verify:"kubectl -n exam get gateway,httproute\nkubectl -n exam get httproute -o jsonpath='{range .items[0].spec.rules[0].backendRefs[*]}{.name}{\"=\"}{.weight}{\" \"}{end}{\"\\n\"}'",
+      solution:"kubectl -n exam create deployment web-v2 --image=nginxdemos/hello\nkubectl -n exam expose deployment web-v2 --port=80 --name=web-v2\ncat <<EOF | kubectl apply -f -\napiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata: {name: exam-gw, namespace: exam}\nspec:\n  gatewayClassName: cilium\n  listeners: [{name: http, protocol: HTTP, port: 80}]\n---\napiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata: {name: exam-route, namespace: exam}\nspec:\n  parentRefs: [{name: exam-gw}]\n  rules:\n  - backendRefs:\n    - {name: web, port: 80, weight: 70}\n    - {name: web-v2, port: 80, weight: 30}\nEOF"
+    },
+    {
+      id:"ml5", domain:"Traffic Mgmt", title:"บังคับ traffic ขาออกของ namespace ให้ใช้ IP เดียว",
+      scenario:`ทีม compliance ต้องการให้ทุก traffic ที่ออกจาก namespace <code>exam</code> ไปยังปลายทางภายนอก ออกผ่าน node เดียวที่กำหนดเสมอ เพื่อให้ปลายทาง whitelist IP ได้ — ตั้งค่าให้สำเร็จ`,
+      criteria:[
+        "node หนึ่งตัวถูกติด label ที่ใช้เลือกเป็น egress gateway",
+        "มี CiliumEgressGatewayPolicy ที่เลือก pod ใน namespace exam",
+        "destinationCIDRs ครอบคลุมปลายทางภายนอก (0.0.0.0/0)",
+        "policy อ้าง nodeSelector ตรงกับ label ที่ติดไว้จริง"
+      ],
+      verify:"kubectl get nodes -l egress-gw=true\nkubectl get ciliumegressgatewaypolicy -o jsonpath='{range .items[*]}{.metadata.name}{\" → node:\"}{.spec.egressGateway.nodeSelector.matchLabels}{\" cidr:\"}{.spec.destinationCIDRs}{\"\\n\"}{end}'",
+      solution:"kubectl label node ckne-worker2 egress-gw=true --overwrite\ncat <<EOF | kubectl apply -f -\napiVersion: cilium.io/v2\nkind: CiliumEgressGatewayPolicy\nmetadata: {name: exam-egress}\nspec:\n  selectors:\n  - podSelector:\n      matchLabels:\n        io.kubernetes.pod.namespace: exam\n  destinationCIDRs: [\"0.0.0.0/0\"]\n  egressGateway:\n    nodeSelector:\n      matchLabels: {egress-gw: \"true\"}\nEOF\n# ต้องเปิด feature ไว้ก่อน: --set egressGateway.enabled=true --set bpf.masquerade=true"
+    },
+    {
+      id:"ml6", domain:"Security & Policy", title:"ล็อกดาวน์ namespace แบบ default-deny แล้วเปิดเฉพาะที่จำเป็น",
+      scenario:`namespace <code>exam</code> ต้องถูกปิดขาเข้าทั้งหมดก่อน แล้วเปิดให้เฉพาะ pod ที่มี label <code>role=client</code> เรียก pod ของ <code>web</code> ที่ port 80 ได้เท่านั้น — pod อื่นใน namespace เดียวกันต้องเรียกไม่ได้`,
+      criteria:[
+        "มี NetworkPolicy ที่ทำให้ namespace เป็น default-deny ขาเข้า",
+        "pod ที่มี label <code>role=client</code> curl ไปที่ web ได้ HTTP 200",
+        "pod ที่ไม่มี label นั้น curl ไม่ได้ (timeout)",
+        "ทั้งสองกรณีต้องพิสูจน์ได้ด้วยคำสั่ง ไม่ใช่แค่มีไฟล์ policy"
+      ],
+      verify:"kubectl -n exam run allowed --rm -it --restart=Never --labels=role=client --image=nicolaka/netshoot \\\n  -- curl -s -o /dev/null -w 'allowed → %{http_code}\\n' --max-time 5 http://web\nkubectl -n exam run denied --rm -it --restart=Never --image=nicolaka/netshoot \\\n  -- curl -s -o /dev/null -w 'denied → %{http_code}\\n' --max-time 5 http://web || echo 'denied → ถูกบล็อก (ถูกต้อง)'",
+      solution:"cat <<EOF | kubectl apply -f -\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata: {name: default-deny, namespace: exam}\nspec:\n  podSelector: {}\n  policyTypes: [\"Ingress\"]\n---\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata: {name: allow-client, namespace: exam}\nspec:\n  podSelector: {matchLabels: {app: web}}\n  policyTypes: [\"Ingress\"]\n  ingress:\n  - from:\n    - podSelector: {matchLabels: {role: client}}\n    ports:\n    - {protocol: TCP, port: 80}\nEOF"
+    },
+    {
+      id:"ml7", domain:"Security & Policy", title:"จำกัดถึงระดับ HTTP method ไม่ใช่แค่ port",
+      scenario:`ความต้องการเพิ่มเติม: pod <code>role=client</code> ต้องเรียก <code>web</code> ได้<strong>เฉพาะ method GET</strong> เท่านั้น ส่วน POST ต้องถูกปฏิเสธ ทั้งที่เป็น port เดียวกัน — ทำให้สำเร็จ`,
+      criteria:[
+        "มี CiliumNetworkPolicy ที่ระบุ rule ระดับ L7 (http)",
+        "GET ได้ HTTP 200",
+        "POST ถูกปฏิเสธ (403 หรือถูกตัดการเชื่อมต่อ)",
+        "ทั้งสองยิงไปที่ port 80 เหมือนกัน"
+      ],
+      verify:"kubectl -n exam run l7chk --rm -it --restart=Never --labels=role=client --image=nicolaka/netshoot -- sh -c \\\n  'curl -s -o /dev/null -w \"GET  → %{http_code}\\n\" --max-time 5 http://web; curl -s -o /dev/null -w \"POST → %{http_code}\\n\" --max-time 5 -X POST http://web'",
+      solution:"cat <<EOF | kubectl apply -f -\napiVersion: cilium.io/v2\nkind: CiliumNetworkPolicy\nmetadata: {name: l7-get-only, namespace: exam}\nspec:\n  endpointSelector: {matchLabels: {app: web}}\n  ingress:\n  - fromEndpoints:\n    - matchLabels: {role: client}\n    toPorts:\n    - ports: [{port: \"80\", protocol: TCP}]\n      rules:\n        http:\n        - method: \"GET\"\nEOF\n# หมายเหตุ: ถ้ามี NetworkPolicy มาตรฐานจากข้อก่อนค้างอยู่ อาจต้องลบออกก่อน\n# เพื่อไม่ให้สองชั้นซ้อนกันจนงงผลลัพธ์"
+    },
+    {
+      id:"ml8", domain:"Observability", title:"หาสาเหตุที่แท้จริงว่าใครบล็อก traffic",
+      scenario:`มีรายงานว่า POST จากข้อที่แล้วถูกปฏิเสธ แต่ทีมแอปยืนยันว่า "ไม่ได้ทำอะไรผิด" — ใช้เครื่องมือ observability หาหลักฐานว่า traffic ถูกปฏิเสธที่ชั้นไหนและด้วยกติกาอะไร แล้วแสดง metric ที่สอดคล้องกัน`,
+      criteria:[
+        "แสดง flow ของ POST ที่ถูกปฏิเสธจาก Hubble ได้",
+        "ระบุได้ว่าถูกปฏิเสธที่ชั้น L7 ไม่ใช่ L3/L4",
+        "ดึงค่า metric ที่สอดคล้องกับการปฏิเสธระดับ L7 ออกมาได้",
+        "อธิบายได้ว่าทำไม cilium_drop_count_total อาจไม่ขยับในเคสนี้"
+      ],
+      verify:"cilium hubble port-forward &\nsleep 3\nhubble observe --namespace exam --protocol http --last 50\n# แล้วดู metric ฝั่ง L7:\nPOD=$(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}')\nkubectl -n kube-system exec $POD -- curl -s localhost:9962/metrics | grep -E 'l7_denied|drop_count' | grep -v '^#'",
+      solution:"# 1) ดู flow ที่ถูกปฏิเสธ พร้อมข้อมูล L7\nhubble observe --namespace exam --verdict DROPPED --protocol http -o json | head -20\n# ใน output จะเห็น http.method = POST และ verdict ที่มาจาก L7 policy\n#\n# 2) เหตุผลที่ drop_count_total ไม่ขยับ:\n# การปฏิเสธระดับ L7 เกิดที่ Envoy proxy ของ Cilium ซึ่งตอบ 403 กลับไป\n# ถือเป็น \"ตอบกลับด้วยสถานะปฏิเสธ\" ไม่ใช่การทิ้ง packet ที่ datapath\n# ตัวที่ขยับจึงเป็น cilium_policy_l7_denied_total ไม่ใช่ cilium_drop_count_total"
+    }
+  ]
+};
+
 const MOCK_EXAM = { questions: [
   {q:"[Core/CNI] kubelet เรียก CNI plugin ผ่านช่องทางใดเมื่อสร้าง pod ใหม่?", options:["REST API ของ apiserver โดยตรง","binary ใน /opt/cni/bin ตาม config ใน /etc/cni/net.d","gRPC ไปยัง CoreDNS","SSH เข้า node อื่น"], correct:1, explain:"kubelet เรียก CNI plugin binary ที่ /opt/cni/bin พร้อม config จาก /etc/cni/net.d ตาม CNI spec ทุกครั้งที่ pod ถูกสร้าง/ลบ"},
   {q:"[Core/CNI] อะไรคือข้อดีหลักของ native routing (BGP) เทียบกับ overlay?", options:["ตั้งค่าง่ายกว่าเสมอ","ไม่มี encapsulation overhead และ debug ด้วย tool มาตรฐานอย่าง traceroute ได้ตรงไปตรงมากว่า","ไม่ต้องมี CNI plugin เลย","รองรับเฉพาะ IPv4"], correct:1, explain:"native routing ส่ง packet ตรงแบบ L3 ไม่ต้องห่อ header ใหม่ ลด overhead และเห็น hop จริงเวลา troubleshoot ต่างจาก overlay ที่ traceroute จะเห็นแค่ tunnel endpoint"},
@@ -1016,7 +1188,7 @@ const MOCK_EXAM = { questions: [
 
 /* ============ STATE ============ */
 const STORE_KEY = "ckne-course-progress-v2";
-function defaultState(){ return { completedTopics:{}, labSteps:{}, primerSteps:{}, quizScores:{}, lastRoute:null, theme:null }; }
+function defaultState(){ return { completedTopics:{}, labSteps:{}, primerSteps:{}, quizScores:{}, mockLab:{startedAt:null,done:{}}, lastRoute:null, theme:null }; }
 function loadState(){
   const def = defaultState();
   try{
@@ -1047,6 +1219,8 @@ function loadState(){
           labSteps: obj(p.labSteps),
           primerSteps: obj(p.primerSteps),
           quizScores: scores(p.quizScores),
+          mockLab: (()=>{ const m = obj(p.mockLab); const t = Number(m.startedAt);
+            return { startedAt: Number.isFinite(t) && t > 0 ? t : null, done: obj(m.done) }; })(),
           /* ต้อง validate ด้วย — ถ้าเป็นค่าอื่นที่ไม่ใช่ string จะทำให้ dashboard พังทั้งหน้า */
           lastRoute: (typeof p.lastRoute === "string" && /^#\/[A-Za-z0-9/_-]{1,120}$/.test(p.lastRoute)) ? p.lastRoute : null,
           theme: (p.theme === "dark" || p.theme === "light") ? p.theme : null
@@ -1147,7 +1321,8 @@ function renderSidebar(){
     }
     html += `</div></div>`;
   });
-  html += `<button class="side-mod" onclick="go('#/mock-exam')" style="margin-top:10px"><span class="num">FN</span>Mock Exam</button>`;
+  html += `<button class="side-mod" onclick="go('#/mock-lab')" style="margin-top:10px"><span class="num">FN</span>Mock Lab · ทำจริง</button>`;
+  html += `<button class="side-mod" onclick="go('#/mock-exam')"><span class="num">FN</span>Mock Exam · ปรนัย</button>`;
   side.innerHTML = html;
 }
 
@@ -1429,7 +1604,8 @@ function renderDashboard(){
     </div>
     <div class="section" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       ${resumeBtn}
-      <button class="nav-btn" onclick="go('#/mock-exam')">Mock Exam</button>
+      <button class="nav-btn" onclick="go('#/mock-lab')">Mock Lab (ทำจริง)</button>
+      <button class="nav-btn" onclick="go('#/mock-exam')">Mock Exam (ปรนัย)</button>
       <span class="progress-label">${mockLine}</span>
     </div>
     <div class="section"><h2>โมดูล</h2><div class="grid-tiles">${tiles}</div></div>
@@ -1630,6 +1806,103 @@ function renderQuiz(modId){
     saveState();
   }, `#/module/${m.id}`, m.short);
 }
+/* ============ RENDER: MOCK LAB (ทำจริง จับเวลา) ============ */
+let mockTimer = null;
+function fmtClock(ms){
+  const neg = ms < 0; const t = Math.abs(Math.floor(ms/1000));
+  const h = String(Math.floor(t/3600)).padStart(2,"0");
+  const m = String(Math.floor(t%3600/60)).padStart(2,"0");
+  const s = String(t%60).padStart(2,"0");
+  return (neg?"-":"") + h + ":" + m + ":" + s;
+}
+function tickMockLab(){
+  const el = document.getElementById("mockClock");
+  if(!el){ if(mockTimer){ clearInterval(mockTimer); mockTimer = null; } return; }
+  const started = state.mockLab.startedAt;
+  const totalMs = MOCK_LAB.minutes*60*1000;
+  if(!started){ el.textContent = fmtClock(totalMs); el.className = "timer-clock"; return; }
+  const left = started + totalMs - Date.now();
+  el.textContent = fmtClock(left);
+  el.className = "timer-clock" + (left < 0 ? " over" : (left < 15*60*1000 ? " warn" : ""));
+}
+function startMockLab(){
+  state.mockLab.startedAt = Date.now(); saveState(); keepScroll = true; render();
+}
+function resetMockLab(){
+  state.mockLab = { startedAt:null, done:{} }; saveState(); keepScroll = true; render();
+}
+function toggleMockTask(id, val){
+  state.mockLab.done[id] = !!val; saveState();
+  const passed = MOCK_LAB.tasks.filter(t=>state.mockLab.done[t.id]).length;
+  const sc = document.getElementById("mockScore");
+  if(sc) sc.textContent = passed + "/" + MOCK_LAB.tasks.length;
+  const card = document.getElementById("task-"+id);
+  if(card) card.classList.toggle("passed", !!val);
+}
+function renderMockLab(){
+  const tasks = MOCK_LAB.tasks;
+  const passed = tasks.filter(t=>state.mockLab.done[t.id]).length;
+  const started = state.mockLab.startedAt;
+
+  const body = tasks.map((t,i)=>`
+    <div class="task ${state.mockLab.done[t.id]?'passed':''}" id="task-${esc(t.id)}">
+      <div class="task-head">
+        <span class="task-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="task-title">${esc(t.title)}</span>
+        <span class="task-dom">${esc(t.domain)}</span>
+      </div>
+      <div class="task-body">
+        <p>${t.scenario}</p>
+        <div class="task-crit"><h5>เกณฑ์ผ่าน</h5><ul>${t.criteria.map(c=>`<li>${c}</li>`).join("")}</ul></div>
+        <details class="disclose expect" style="margin-top:12px">
+          <summary>คำสั่งตรวจคำตอบตัวเอง</summary>
+          <div class="cmd-block" style="margin-top:8px">
+            <div class="cmd-bar"><span class="cmd-lang">verify</span><button class="copy-btn" onclick="copyCmd(this)" data-cmd="${esc(t.verify)}">คัดลอก</button></div>
+            <div class="cmd-scroll"><pre>${esc(t.verify)}</pre></div>
+          </div>
+        </details>
+        <details class="disclose trouble" style="margin-top:8px">
+          <summary>เฉลย (เปิดหลังจากลองเองแล้วเท่านั้น)</summary>
+          <div class="cmd-block" style="margin-top:8px">
+            <div class="cmd-bar"><span class="cmd-lang">solution</span><button class="copy-btn" onclick="copyCmd(this)" data-cmd="${esc(t.solution)}">คัดลอก</button></div>
+            <div class="cmd-scroll"><pre>${esc(t.solution)}</pre></div>
+          </div>
+        </details>
+      </div>
+      <div class="task-foot">
+        <label><input type="checkbox" ${state.mockLab.done[t.id]?'checked':''} onchange="toggleMockTask('${esc(t.id)}',this.checked)"> ทำผ่านเกณฑ์แล้ว</label>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("main").innerHTML = `
+    <div class="eyebrow">Mock Lab · ทำจริงบนคลัสเตอร์ · ${tasks.length} โจทย์</div>
+    <h1 class="h1">ข้อสอบจำลองแบบลงมือทำ</h1>
+    <p class="lede">ข้อสอบ CKNE จริงเป็น performance-based ล้วน ไม่มีปรนัยเลย — หน้านี้จึงจำลองของจริง: โจทย์บอกแค่ <strong>ผลลัพธ์ที่ต้องการ</strong> ไม่บอกวิธี คุณต้องลงมือทำบนคลัสเตอร์เองแล้วตรวจด้วยคำสั่งที่ให้ไว้ เวลา ${MOCK_LAB.minutes} นาทีเท่าข้อสอบจริง</p>
+    <div class="timer-bar">
+      <span class="timer-clock" id="mockClock">${fmtClock(MOCK_LAB.minutes*60*1000)}</span>
+      <span class="timer-meta">${started ? 'กำลังจับเวลา — เวลาเดินต่อแม้ปิดหน้านี้ไป' : 'กดเริ่มเมื่อพร้อม แล้วอย่าเปิดเฉลยจนกว่าจะหมดเวลา'}</span>
+      <span class="timer-meta" style="flex:none">ผ่าน <strong id="mockScore">${passed}/${tasks.length}</strong></span>
+      ${started
+        ? `<button class="timer-btn ghost" onclick="resetMockLab()">รีเซ็ต</button>`
+        : `<button class="timer-btn" onclick="startMockLab()">เริ่มจับเวลา</button>`}
+    </div>
+    <div class="lab-prereq" style="border:1px solid var(--border);border-radius:10px;margin-bottom:18px">
+      <strong>ก่อนเริ่ม:</strong> ${esc(MOCK_LAB.prereqs)}
+    </div>
+    ${body}
+    <div class="section score-card">
+      <div><div class="score-num">${passed}/${tasks.length}</div><div class="dash-stat"><span class="l">โจทย์ที่ผ่าน</span></div></div>
+      <div class="timer-meta">เกณฑ์ผ่านของข้อสอบจริงอยู่ที่ราว 70% — ในที่นี้คือทำได้ ${Math.ceil(tasks.length*0.7)} จาก ${tasks.length} ข้อขึ้นไป โดยไม่เปิดเฉลย</div>
+    </div>
+    <div class="mark-row">
+      <button class="nav-btn" onclick="go('#/dashboard')">← Dashboard</button>
+      <button class="nav-btn" onclick="go('#/mock-exam')">ไปทำ Mock Exam แบบปรนัย →</button>
+    </div>
+  `;
+  tickMockLab();
+  if(mockTimer) clearInterval(mockTimer);
+  mockTimer = setInterval(tickMockLab, 1000);
+}
 function renderMockExam(){
   renderQuizGeneric("Mock Exam (คละทุก domain)", MOCK_EXAM.questions, (score,total)=>{
     state.quizScores["mock"] = {score,total,ts:Date.now()};
@@ -1640,6 +1913,7 @@ function renderMockExam(){
 /* ============ MAIN RENDER ============ */
 let keepScroll = false;
 function render(){
+  if(mockTimer){ clearInterval(mockTimer); mockTimer = null; }
   renderSidebar();
   updateTopProgress();
   document.getElementById("sidebar").classList.remove("open");
@@ -1650,6 +1924,7 @@ function render(){
   else if((mm=hash.match(/^#\/module\/([^\/]+)$/))){ renderModule(mm[1]); }
   else if((mm=hash.match(/^#\/quiz\/([^\/]+)$/))){ renderQuiz(mm[1]); }
   else if(hash==="#/mock-exam"){ renderMockExam(); }
+  else if(hash==="#/mock-lab"){ renderMockLab(); }
   else { renderDashboard(); }
   if(keepScroll){ keepScroll = false; } else { window.scrollTo(0,0); }
 }
