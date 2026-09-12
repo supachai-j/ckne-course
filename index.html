@@ -88,6 +88,8 @@ main{grid-area:main;min-width:0;padding:28px 32px 80px;max-width:880px;margin:0 
 .concept ul{margin:.5em 0;padding-left:1.3em}
 .concept li{margin:.3em 0}
 .concept code{background:var(--surface-2);border-radius:4px;padding:.1em .4em;font-size:.88em}
+/* ชื่อ flag/field ยาวๆ เป็นคำเดียวไม่มีช่องว่าง ต้องยอมให้ตัดบรรทัดได้ ไม่งั้นดันหน้าล้นที่จอแคบ */
+.concept code, .primer-body code, .lede code{overflow-wrap:anywhere}
 figure{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px 10px;box-shadow:var(--shadow)}
 figure svg{width:100%;height:auto;display:block}
 figcaption{font-size:.82rem;color:var(--text-dim);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
@@ -243,6 +245,7 @@ const MODULES = [
         <li><strong>kind</strong> — รัน node เป็น container, เหมาะกับแล็บ networking เพราะควบคุม topology ได้เต็มที่</li>
         <li><strong>disableDefaultCNI: true</strong> — ปิด kindnet ไม่ให้ชนกับ Cilium ที่จะติดตั้งเอง</li>
         <li><strong>kubeProxyMode: "none"</strong> — ไม่ให้ kind ติดตั้ง kube-proxy เลย เพราะเราจะให้ Cilium ทำหน้าที่แทนด้วย eBPF (kube-proxy replacement) ซึ่งเป็นสิ่งที่ Module 2 จะเข้าไปตรวจสอบ</li>
+        <li><strong>podSubnet ใน kind ไม่ได้สั่ง Cilium โดยตรง</strong> — ค่านี้ตั้งให้ kube-controller-manager เท่านั้น ส่วน Cilium ในโหมด cluster-pool แจก IP จาก pool ของตัวเอง (ค่า default คือ 10.0.0.0/8) เราจึงต้องบอก Cilium ซ้ำอีกครั้งด้วย <code>ipam.operator.clusterPoolIPv4PodCIDRList</code> ตอนติดตั้ง ไม่งั้นเลข IP ที่เห็นจะไม่ตรงกับที่แล็บอ้างถึง</li>
         <li>เมื่อสร้าง cluster ด้วย <code>--name ckne</code> node จะชื่อ <code>ckne-control-plane</code>, <code>ckne-worker</code>, <code>ckne-worker2</code> และ kubectl context ชื่อ <code>kind-ckne</code> — ชื่อเหล่านี้ถูกอ้างถึงในแล็บทุกโมดูล</li>
       </ul>`,
       lab:{ title:"สร้างคลัสเตอร์ 3 node และติดตั้ง Cilium",
@@ -250,7 +253,7 @@ const MODULES = [
         steps:[
           {i:"สร้างไฟล์ config ของ kind ที่ปิด default CNI, ไม่ติดตั้ง kube-proxy (ให้ Cilium ทำแทน) และกำหนด pod subnet", c:"cat <<EOF > kind-config.yaml\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnetworking:\n  disableDefaultCNI: true\n  kubeProxyMode: \"none\"\n  podSubnet: \"10.244.0.0/16\"\nnodes:\n  - role: control-plane\n  - role: worker\n  - role: worker\nEOF\nkind create cluster --config kind-config.yaml --name ckne", e:"kind สร้าง node 3 ตัวสำเร็จ ข้อความท้ายสุด \"Set kubectl context to kind-ckne\"", tr:"ถ้า Docker daemon ไม่รัน ให้ start Docker ก่อน; ถ้า port ชนให้ลบ cluster เก่าด้วย kind delete cluster --name ckne"},
           {i:"ตรวจว่า node ยัง NotReady เพราะยังไม่มี CNI", c:"kubectl get nodes", e:"ทุก node ขึ้นสถานะ NotReady — ถูกต้องแล้ว เพราะยังไม่มี CNI ติดตั้ง pod network จึงยังไม่พร้อม", tr:"ถ้า kubectl ต่อ cluster ไม่ได้ ตรวจ context ด้วย kubectl config current-context ควรเป็น kind-ckne"},
-          {i:"เพิ่ม Helm repo ของ Cilium แล้วติดตั้ง — เปิด kube-proxy replacement, Hubble และ Prometheus metrics ไว้ล่วงหน้าให้ครบสำหรับทุกโมดูล", c:"helm repo add cilium https://helm.cilium.io/\nhelm repo update\nhelm install cilium cilium/cilium --version 1.15.6 \\\n  --namespace kube-system \\\n  --set kubeProxyReplacement=true \\\n  --set k8sServiceHost=ckne-control-plane \\\n  --set k8sServicePort=6443 \\\n  --set hubble.relay.enabled=true \\\n  --set hubble.ui.enabled=true \\\n  --set prometheus.enabled=true \\\n  --set operator.prometheus.enabled=true", e:"Helm แสดง \"STATUS: deployed\"", tr:"k8sServiceHost/k8sServicePort จำเป็นเมื่อไม่มี kube-proxy เพราะ Cilium ต้องรู้ที่อยู่ API server ตรงๆ ก่อนที่ datapath ของตัวเองจะพร้อม — ชื่อ ckne-control-plane ใช้ได้เพราะ Docker resolve ชื่อ container บน network kind ให้; ถ้า pull image ช้าให้รอแล้วเช็ค kubectl -n kube-system get pods อีกครั้ง"},
+          {i:"เพิ่ม Helm repo ของ Cilium แล้วติดตั้ง — เปิด kube-proxy replacement, Hubble และ Prometheus metrics ไว้ล่วงหน้าให้ครบสำหรับทุกโมดูล", c:"helm repo add cilium https://helm.cilium.io/\nhelm repo update\nhelm install cilium cilium/cilium --version 1.15.6 \\\n  --namespace kube-system \\\n  --set kubeProxyReplacement=true \\\n  --set k8sServiceHost=ckne-control-plane \\\n  --set k8sServicePort=6443 \\\n  --set ipam.operator.clusterPoolIPv4PodCIDRList='{10.244.0.0/16}' \\\n  --set cluster.name=ckne1 \\\n  --set cluster.id=1 \\\n  --set hubble.relay.enabled=true \\\n  --set hubble.ui.enabled=true \\\n  --set prometheus.enabled=true \\\n  --set operator.prometheus.enabled=true", e:"Helm แสดง \"STATUS: deployed\"", tr:"สอง flag ที่คนลืมบ่อย: (1) k8sServiceHost/Port จำเป็นเมื่อไม่มี kube-proxy เพราะ Cilium ต้องรู้ที่อยู่ API server ตรงๆ ก่อน datapath ของตัวเองพร้อม (2) clusterPoolIPv4PodCIDRList จำเป็นเพราะ Cilium ในโหมด cluster-pool ไม่ได้อ่าน podSubnet ที่ตั้งใน kind — ถ้าไม่ระบุ มันจะแจก IP จากค่า default 10.0.0.0/8 แล้วผลลัพธ์ทุกแล็บที่อ้าง 10.244.x จะไม่ตรง; ส่วน cluster.name/id ตั้งไว้ตั้งแต่ตอนนี้เพื่อให้ Module 3 เชื่อม ClusterMesh ได้โดยไม่ต้องแก้คลัสเตอร์ที่รันอยู่"},
           {i:"ติดตั้ง Cilium CLI แล้วตรวจสถานะให้ครบทุก component เป็นสีเขียว", c:"cilium status --wait", e:"บรรทัด Cilium, Operator, Hubble Relay ทุกตัวขึ้น OK และ Cluster Pods: X/X managed", tr:"ถ้าค้างนาน ตรวจ kubectl -n kube-system get pods -l k8s-app=cilium ว่ามี pod ติด CrashLoopBackOff หรือไม่ แล้วดู logs"},
           {i:"ยืนยันว่า node กลับมา Ready ทั้งหมดแล้ว", c:"kubectl get nodes -o wide", e:"ทั้ง 3 node ขึ้นสถานะ Ready", tr:"ถ้ายัง NotReady ให้รอ 1-2 นาทีให้ CNI daemonset ขึ้นครบทุก node ก่อน"}
         ],
@@ -316,7 +319,7 @@ const MODULES = [
       concept:`<p><strong>IPAM (IP Address Management)</strong> คือกลไกที่ CNI plugin ใช้แจก IP ให้ pod แต่ละตัวโดยไม่ชนกัน มี 3 ช่วง CIDR ที่ต้องแยกให้ออกเพราะข้อสอบชอบถามสลับกัน</p>
       <ul>
         <li><strong>Pod CIDR</strong> — ช่วง IP ของ pod ทั้งคลัสเตอร์ (เช่น 10.244.0.0/16) มักถูกแบ่งย่อยเป็น per-node block (เช่น /24 ต่อ node)</li>
-        <li><strong>Service CIDR</strong> — ช่วง virtual IP ของ ClusterIP Service (เช่น 10.96.0.0/12) ไม่มี route จริง เป็นแค่ VIP ที่ kube-proxy/eBPF ทำ DNAT</li>
+        <li><strong>Service CIDR</strong> — ช่วง virtual IP ของ ClusterIP Service (บน kind คือ 10.96.0.0/16) ไม่มี route จริง เป็นแค่ VIP ที่ kube-proxy/eBPF ทำ DNAT</li>
         <li><strong>Cluster CIDR</strong> — บางเอกสารใช้คำนี้แทน Pod CIDR ต้องดู context</li>
         <li>Cilium ใช้ <strong>CiliumNode</strong> CRD เก็บ IPAM allocation ต่อ node แทนที่จะพึ่ง kube-controller-manager เพียงอย่างเดียว (โหมด cluster-pool)</li>
       </ul>`,
@@ -324,7 +327,7 @@ const MODULES = [
         steps:[
           {i:"ดู CIDR ที่จองให้แต่ละ node ผ่าน CiliumNode CRD", c:"kubectl get ciliumnodes -o jsonpath='{range .items[*]}{.metadata.name}{\": \"}{.spec.ipam.podCIDRs}{\"\\n\"}{end}'", e:"เห็นชื่อ node คู่กับ CIDR เช่น ckne-worker: [10.244.1.0/24]", tr:"ถ้า field ว่าง ให้ตรวจว่า Cilium ตั้งค่า ipam.mode เป็น cluster-pool (ค่า default) หรือยัง ผ่าน kubectl -n kube-system get cm cilium-config -o yaml | grep ipam"},
           {i:"ดู IP ที่ pod แต่ละตัวได้รับจริงเทียบกับ pod CIDR ของ node นั้น", c:"kubectl get pods -o wide | grep netcheck", e:"IP ของ pod netcheck ต้องอยู่ในช่วง CIDR ของ node ที่มันรันอยู่ (เช่น 10.244.1.5)", tr:"ถ้า IP อยู่นอกช่วง อาจเป็นเพราะ config podSubnet ตอนสร้าง kind cluster ไม่ตรงกับที่ Cilium ตั้งไว้"},
-          {i:"ดู Service CIDR แยกจาก Pod CIDR เพื่อยืนยันว่าเป็นคนละช่วง", c:"kubectl cluster-info dump | grep -m1 service-cluster-ip-range", e:"เห็นช่วงเช่น 10.96.0.0/12 ซึ่งไม่ทับกับ Pod CIDR (10.244.0.0/16)", tr:"ถ้าคำสั่งไม่เจอบรรทัดนี้ ลองดูใน docker exec -it ckne-control-plane cat /etc/kubernetes/manifests/kube-apiserver.yaml แทน"}
+          {i:"ดู Service CIDR แยกจาก Pod CIDR เพื่อยืนยันว่าเป็นคนละช่วง", c:"kubectl cluster-info dump | grep -m1 service-cluster-ip-range", e:"เห็นช่วงเช่น 10.96.0.0/16 (ค่า default ของ kind ไม่ใช่ 10.96.0.0/12 แบบ kubeadm ปกติ) ซึ่งไม่ทับกับ Pod CIDR (10.244.0.0/16)", tr:"ถ้าคำสั่งไม่เจอบรรทัดนี้ ลองดูใน docker exec -it ckne-control-plane cat /etc/kubernetes/manifests/kube-apiserver.yaml แทน"}
         ],
         challenge:{ task:"ถ้าต้องขยายคลัสเตอร์เกิน 256 pod ต่อ node (เกิน /24) จะปรับตรงไหน และมีผลกระทบอะไรตามมา", reveal:"ต้องปรับ per-node CIDR mask ผ่าน --set ipam.operator.clusterPoolIPv4PodCIDRList และ --set ipam.operator.clusterPoolIPv4MaskSize ตอนติดตั้ง Cilium (หรือแก้ cilium-config แล้ว restart operator) — ผลกระทบคือต้อง plan pod CIDR รวมให้ใหญ่พอตั้งแต่แรก เพราะเปลี่ยน mask size ของ node ที่มี pod รันอยู่แล้วจะทำให้ IP เดิมขัดแย้งได้"}
       }
@@ -387,7 +390,7 @@ const MODULES = [
         prereqs:"ใช้ pod netcheck จาก topic ก่อนหน้า และสร้าง pod ที่สองบน node อื่น",
         steps:[
           {i:"บังคับสร้าง pod ที่สองให้ไปอยู่คนละ node กับ netcheck ด้วย node affinity แบบง่ายผ่าน nodeName", c:"kubectl get pod netcheck -o jsonpath='{.spec.nodeName}'\nkubectl run netcheck2 --image=nicolaka/netshoot --overrides='{\"spec\":{\"nodeName\":\"ckne-worker2\"}}' --command -- sleep 3600", e:"netcheck2 ถูก schedule ไปยัง ckne-worker2 ซึ่งเป็นคนละ node จาก netcheck", tr:"ถ้า overrides ไม่ทำงานบน kubectl version เก่า ให้เขียนเป็นไฟล์ YAML แล้ว kubectl apply -f แทน"},
-          {i:"เปิด tcpdump ดัก VXLAN traffic (UDP port 8472) บน overlay interface ของ node ที่ netcheck รันอยู่", c:"docker exec -it ckne-worker tcpdump -i any -n udp port 8472 -c 10", e:"ค้างรอ packet — ยังไม่เห็นอะไรจนกว่าจะมี traffic ข้าม node จริง", tr:"ถ้า interface any ไม่รองรับ ลองระบุชื่อ interface ตรงๆ เช่น cilium_vxlan"},
+          {i:"เปิด tcpdump ดัก VXLAN traffic (UDP port 8472) บน overlay interface ของ node ที่ netcheck รันอยู่", c:"# kindest/node ไม่มี tcpdump มาให้ ต้องติดตั้งก่อนครั้งแรก\ndocker exec -it ckne-worker sh -c 'command -v tcpdump || (apt-get update -qq && apt-get install -y -qq tcpdump)'\ndocker exec -it ckne-worker tcpdump -i any -n udp port 8472 -c 10", e:"ค้างรอ packet — ยังไม่เห็นอะไรจนกว่าจะมี traffic ข้าม node จริง", tr:"ถ้า apt-get ใช้ไม่ได้เพราะเครื่องไม่มีเน็ตออก ใช้ pod netshoot แทนได้: kubectl run tcpd --image=nicolaka/netshoot --overrides='{\"spec\":{\"hostNetwork\":true,\"nodeName\":\"ckne-worker\"}}' --command -- sleep 600 แล้ว exec tcpdump ข้างใน; ถ้า interface any ไม่รองรับ ลองระบุชื่อตรงๆ เช่น cilium_vxlan"},
           {i:"เปิด terminal ใหม่ ping จาก netcheck ไปยัง netcheck2 เพื่อ generate traffic ข้าม node", c:"kubectl exec netcheck -- ping -c 5 $(kubectl get pod netcheck2 -o jsonpath='{.status.podIP}')", e:"ได้ reply กลับมาสำเร็จ 5 ครั้ง latency ต่ำ (sub-millisecond ถึงหลัก ms บนเครื่อง local)", tr:"ถ้า ping ไม่สำเร็จ กลับไปเช็ค cilium status ว่า cluster mesh/agent ทุก node ยัง healthy"},
           {i:"กลับไปดู terminal tcpdump ว่าจับ VXLAN packet ได้จริง", c:"# ดูผลลัพธ์ที่ terminal tcpdump ค้างไว้", e:"เห็น packet UDP port 8472 ระหว่าง IP ของทั้งสอง node แสดงว่า ICMP ของ pod ถูกห่อเป็น VXLAN ส่งข้าม node", tr:"ถ้าไม่เห็นเลย ให้ตรวจว่า routingMode ของ Cilium เป็น tunnel จริงด้วย cilium config view | grep routing-mode"}
         ],
@@ -439,7 +442,7 @@ const MODULES = [
           {i:"deploy Deployment ตัวอย่างและสร้าง ClusterIP Service", c:"kubectl create deployment web --image=nginx --replicas=3\nkubectl expose deployment web --port=80 --name=web-clusterip", e:"kubectl get svc web-clusterip แสดง TYPE ClusterIP พร้อม virtual IP", tr:"ถ้า pod ยังไม่ Ready ให้รอ image pull เสร็จก่อน (kubectl get pods -w)"},
           {i:"สร้าง headless service ชี้ label เดียวกัน แล้วเทียบผล DNS", c:"kubectl expose deployment web --port=80 --name=web-headless --cluster-ip=None\nkubectl run dns-test --image=nicolaka/netshoot --command -- sleep 3600\nkubectl exec dns-test -- nslookup web-headless", e:"nslookup ของ web-headless คืน IP ของ pod ทั้ง 3 ตัวตรงๆ ต่างจาก web-clusterip ที่คืน VIP เดียว", tr:"ถ้า nslookup ไม่เจอ service เลย ตรวจว่า CoreDNS ยัง Running อยู่ที่ kube-system"},
           {i:"ดู EndpointSlice ที่ผูกกับ web-clusterip", c:"kubectl get endpointslices -l kubernetes.io/service-name=web-clusterip -o yaml | grep -A2 addresses", e:"เห็น IP ของ pod 3 ตัวถูกจัดกลุ่มเป็น endpoints array ภายใต้ slice เดียว", tr:"ถ้าไม่มี endpointslice เลย ให้เช็ค label selector ของ Service ว่าตรงกับ label บน pod จริงหรือไม่"},
-          {i:"ลบ pod หนึ่งตัวแล้วดูว่า EndpointSlice อัปเดตเร็วแค่ไหน", c:"kubectl delete pod -l app=web --field-selector status.phase=Running -o name | head -1 | xargs kubectl delete\nkubectl get endpointslices -l kubernetes.io/service-name=web-clusterip -w", e:"เห็นจำนวน address ใน slice ลดลงทันทีที่ pod เก่าหลุด แล้วเพิ่มกลับเมื่อ pod ใหม่ Ready", tr:"ถ้า watch ไม่ขยับ กด Ctrl+C แล้ว get ใหม่เป็นช่วงๆ แทน"}
+          {i:"ลบ pod หนึ่งตัวแล้วดูว่า EndpointSlice อัปเดตเร็วแค่ไหน", c:"kubectl get pod -l app=web --field-selector status.phase=Running -o name | head -1 | xargs kubectl delete\nkubectl get endpointslices -l kubernetes.io/service-name=web-clusterip -w", e:"เห็นจำนวน address ใน slice ลดลงทันทีที่ pod เก่าหลุด แล้วเพิ่มกลับเมื่อ pod ใหม่ Ready", tr:"ถ้า watch ไม่ขยับ กด Ctrl+C แล้ว get ใหม่เป็นช่วงๆ แทน"}
         ],
         challenge:{ task:"อธิบายว่าทำไม EndpointSlice ถึงถูกออกแบบมาแทน Endpoints แบบเดิม โดยเฉพาะที่ scale หลักพัน pod ต่อ Service", reveal:"Endpoints แบบเก่าเก็บทุก IP ไว้ใน object เดียว ทำให้ต้อง broadcast object ก้อนใหญ่ทุกครั้งที่มี pod เปลี่ยนแม้แค่ตัวเดียว ส่ง load หนักให้ kube-apiserver/etcd และทุก node ที่ watch อยู่ EndpointSlice แบ่งเป็นชิ้นเล็ก (สูงสุด 100 endpoint ต่อ slice) ทำให้อัปเดตเฉพาะ slice ที่เปลี่ยนจริง ลด network/CPU overhead มหาศาลตอน scale ใหญ่"}
       }
@@ -594,7 +597,7 @@ const MODULES = [
         steps:[
           {i:"สร้าง Deployment/Service เวอร์ชันที่สองเพื่อเทียบกับของเดิม", c:"kubectl create deployment web-v2 --image=nginxdemos/hello --replicas=2\nkubectl expose deployment web-v2 --port=80 --name=web-v2-svc", e:"kubectl get pods -l app=web-v2 แสดง 2 pod สถานะ Running", tr:"ถ้า image pull ช้าบนเครื่อง local ให้รอสักครู่แล้วเช็คซ้ำ"},
           {i:"แก้ HTTPRoute เดิมให้มี backendRefs สองตัวพร้อม weight 80/20", c:"kubectl patch httproute web-route --type merge -p '{\"spec\":{\"rules\":[{\"matches\":[{\"path\":{\"type\":\"PathPrefix\",\"value\":\"/web\"}}],\"backendRefs\":[{\"name\":\"web-clusterip\",\"port\":80,\"weight\":80},{\"name\":\"web-v2-svc\",\"port\":80,\"weight\":20}]}]}}'", e:"kubectl get httproute web-route -o yaml แสดง backendRefs สองรายการพร้อม weight ตามที่ตั้ง", tr:"ถ้า patch fail เพราะ JSON path ไม่ตรง โครงสร้างเดิม ให้ kubectl edit httproute web-route แล้วแก้ด้วยมือแทน"},
-          {i:"ยิง request ซ้ำหลายครั้งแล้วนับว่าตกที่ backend ไหนกี่ครั้ง", c:"for i in $(seq 1 20); do curl -s http://localhost:8080/web | grep -o 'nginx\\|Hello' ; done | sort | uniq -c", e:"เห็นสัดส่วนประมาณ 16-17 ครั้งไปที่ nginx (v1) และ 3-4 ครั้งไปที่ Hello (v2) ใกล้เคียง 80/20", tr:"ถ้ายังใช้ port-forward เดิมค้างจาก Module 2 ให้เปิดใหม่ชี้ไปที่ Gateway svc ก่อนยิง curl"}
+          {i:"ยิง request ซ้ำหลายครั้งแล้วนับว่าตกที่ backend ไหนกี่ครั้ง", c:"for i in $(seq 1 20); do curl -s http://localhost:8080/web | grep -o -m1 'nginx\\|Hello' ; done | sort | uniq -c", e:"เห็นสัดส่วนประมาณ 16-17 ครั้งไปที่ nginx (v1) และ 3-4 ครั้งไปที่ Hello (v2) ใกล้เคียง 80/20", tr:"ถ้ายังใช้ port-forward เดิมค้างจาก Module 2 ให้เปิดใหม่ชี้ไปที่ Gateway svc ก่อนยิง curl"}
         ],
         challenge:{ task:"ทำ rollback แบบทันทีจาก 80/20 กลับเป็น 100% v1 โดยไม่ downtime แล้วอธิบายว่าทำไมวิธีนี้ปลอดภัยกว่าการ kubectl delete deployment web-v2 ตรงๆ", reveal:"แก้ weight เป็น {web-clusterip:100, web-v2-svc:0} (หรือเอา backendRef ของ v2 ออก) แล้ว apply — traffic หยุดไป v2 ทันทีโดย pod ของ v2 ยังรันอยู่เผื่อ roll-forward อีกครั้ง ต่างจากการ delete deployment ที่ทำลาย pod ทันที ถ้าจะ roll-forward ใหม่ต้องรอ image pull + startup ใหม่ทั้งหมด ซึ่งช้ากว่าการแค่ปรับ weight มาก"}
       }
@@ -612,7 +615,7 @@ const MODULES = [
         <p>ธนาคารหรือ payment gateway หลายเจ้าบังคับให้แจ้ง IP ล่วงหน้าแล้วเขาจะอนุญาตเฉพาะเลขนั้น (เรียกว่า <strong>whitelist</strong> หรือ allow-list) ซึ่งชนกับธรรมชาติของ k8s ตรงที่ pod เกิดใหม่ได้ IP ใหม่ตลอดเวลา และเวลาออกเน็ตมันจะติด IP ของ node ที่บังเอิญไปอยู่ ซึ่งเปลี่ยนไปเรื่อยๆ</p>
         <p>หัวข้อนี้คือวิธีบังคับให้ traffic ขาออกของ pod กลุ่มที่เรากำหนด ออกไปด้วย IP เดียวคงที่เสมอ (ทำโดย <strong>SNAT</strong> — แก้ที่อยู่ผู้ส่งระหว่างทาง)</p>`,
         try:[
-          {i:"ดูว่าตอนนี้ pod ออกเน็ตด้วย source IP อะไร (ยังไม่ได้ตั้ง egress gateway)", c:"kubectl exec netcheck -- curl -s --max-time 5 ifconfig.me", e:"ได้ IP หนึ่งเบอร์ซึ่งเป็นของ node ที่ pod นั้นอยู่ ไม่ใช่ IP ของ pod เอง — เพราะ IP ของ pod ใช้ออกเน็ตจริงไม่ได้ ต้องถูก SNAT ก่อน (ถ้าเครื่องไม่มีเน็ตออก ข้ามข้อนี้ได้)"},
+          {i:"ดูว่าตอนนี้ pod ออกเน็ตด้วย source IP อะไร (ยังไม่ได้ตั้ง egress gateway)", c:"kubectl exec netcheck -- curl -s --max-time 5 ifconfig.me\nkubectl get pod netcheck -o jsonpath='{\"  pod IP คือ \"}{.status.podIP}{\"\\n\"}'", e:"IP ที่ปลายทางเห็น ไม่ใช่ IP ของ pod — แปลว่ามีการแก้ที่อยู่ผู้ส่ง (SNAT) ระหว่างทางแล้ว; บน kind เลขที่ได้จะเป็น IP สาธารณะของเครื่อง host เพราะถูก NAT ซ้ำอีกชั้นโดย Docker ไม่ใช่ IP ของ node (ถ้าเครื่องไม่มีเน็ตออก ข้ามข้อนี้ได้)"},
           {i:"เทียบกับ IP ของ pod และของ node เพื่อดูว่าตรงกับตัวไหน", c:"kubectl get pod netcheck -o jsonpath='pod IP: {.status.podIP}{\"\\n\"}node: {.spec.nodeName}{\"\\n\"}'", e:"IP ที่ปลายทางเห็น ไม่ใช่ pod IP — ยืนยันว่ามีการแก้ที่อยู่ผู้ส่ง (SNAT) เกิดขึ้นระหว่างทางอยู่แล้วโดยปริยาย"}
         ]
       },
@@ -628,7 +631,7 @@ const MODULES = [
           {i:"เปิด feature egress gateway บน Cilium — ต้องเปิด bpf.masquerade ด้วยเสมอ ไม่งั้น SNAT ของ egress gateway จะไม่ทำงาน", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --reuse-values \\\n  --set egressGateway.enabled=true \\\n  --set bpf.masquerade=true\nkubectl -n kube-system rollout status ds/cilium", e:"DaemonSet cilium restart แล้วขึ้น Ready ครบทุก node", tr:"ถ้าลืม bpf.masquerade=true policy จะ apply ผ่านแต่ source IP ปลายทางจะไม่เปลี่ยนเป็น IP ของ gateway; ถ้า pod cilium ติด CrashLoopBackOff ตรวจว่า kernel ของ node รองรับ eBPF masquerade (บน kind ใช้ kernel ของ host จึงมักผ่าน)"},
           {i:"สร้าง label ให้ node หนึ่งตัวเป็น egress gateway", c:"kubectl label node ckne-worker2 egress-gateway=true", e:"node ckne-worker2 มี label egress-gateway=true เพิ่มขึ้นมา", tr:"ตรวจสอบด้วย kubectl get node --show-labels | grep egress-gateway"},
           {i:"สร้าง CiliumEgressGatewayPolicy ให้ namespace default ออกผ่าน node นั้นด้วย SNAT IP คงที่", c:"cat <<EOF | kubectl apply -f -\napiVersion: cilium.io/v2\nkind: CiliumEgressGatewayPolicy\nmetadata:\n  name: egress-sample\nspec:\n  selectors:\n  - podSelector:\n      matchLabels:\n        run: netcheck\n  destinationCIDRs:\n  - \"0.0.0.0/0\"\n  egressGateway:\n    nodeSelector:\n      matchLabels:\n        egress-gateway: \"true\"\nEOF", e:"kubectl get ciliumegressgatewaypolicy แสดง policy สร้างสำเร็จ", tr:"ถ้า apply ไม่ผ่าน ตรวจ apiVersion ให้ตรงกับ version ของ Cilium CRD ที่ติดตั้งจริง (kubectl get crd | grep egress)"},
-          {i:"ยิง request ออกไปยังปลายทางทดสอบเพื่อดู source IP ที่ปลายทางเห็น", c:"kubectl exec netcheck -- curl -s ifconfig.me", e:"ได้ IP กลับมาเป็น IP ของ node ckne-worker2 (egress gateway) ไม่ใช่ IP เดิมของ pod", tr:"ถ้าเครื่อง lab ไม่มี internet ออก ให้จำลองปลายทางด้วย pod อีกตัวที่รัน netshoot แล้วดูจาก log ของมันแทนว่า source IP เปลี่ยนเป็น IP ของ node gateway"}
+          {i:"ตั้งปลายทางทดสอบไว้ในคลัสเตอร์ (อย่าใช้ ifconfig.me บน kind — ดูเหตุผลใน \"ถ้าไม่สำเร็จ\") แล้วดู source IP ที่ปลายทางเห็นจริง", c:"kubectl run listener --image=nicolaka/netshoot --overrides='{\"spec\":{\"hostNetwork\":true,\"nodeName\":\"ckne-control-plane\"}}' --command -- nc -lk -p 8080\nsleep 5\nkubectl exec netcheck -- sh -c 'echo hello | nc -w 3 $(kubectl get node ckne-control-plane -o jsonpath=\"{.status.addresses[0].address}\") 8080' 2>/dev/null || true\nkubectl logs listener --tail=5", e:"ฝั่ง listener เห็น connection มาจาก IP ของ node ckne-worker2 (ตัวที่ตั้งเป็น egress gateway) ไม่ใช่ IP ของ pod netcheck และไม่ใช่ node ที่ pod นั้นรันอยู่", tr:"เหตุผลที่ไม่ใช้ ifconfig.me: บน kind ทุก node เป็น container ที่มี IP ส่วนตัวของ Docker network แล้วถูก NAT อีกชั้นตอนออกอินเทอร์เน็ตจริง ปลายทางภายนอกจึงเห็นเป็น IP สาธารณะของเครื่อง host เสมอ ไม่ว่าจะออกทาง node ไหน — แล็บจะพิสูจน์อะไรไม่ได้เลย ต้องวางปลายทางไว้ในเครือข่ายเดียวกันถึงจะเห็น source IP จริง"}
         ],
         challenge:{ task:"ถ้ามี pod สองตัวใน namespace เดียวกัน ตัวหนึ่งตรงกับ podSelector ของ policy อีกตัวไม่ตรง จะเกิดอะไรขึ้นกับ traffic ขาออกของแต่ละตัว", reveal:"เฉพาะ pod ที่ label ตรงกับ podSelector ของ CiliumEgressGatewayPolicy เท่านั้นที่ traffic ขาออกจะถูกบังคับผ่าน egress gateway node และ SNAT ด้วย IP คงที่ ส่วน pod ที่ label ไม่ตรงจะออกผ่านเส้นทางปกติ (SNAT ด้วย IP ของ node ตัวเองตามปกติ) — เพราะ policy นี้ scope แคบระดับ pod ไม่ใช่ทั้ง namespace เว้นแต่จะเขียน podSelector ให้ครอบคลุมทุก pod"}
       }
@@ -659,8 +662,8 @@ const MODULES = [
       lab:{ title:"จำลอง ClusterMesh ด้วย kind สองคลัสเตอร์ (แล็บขั้นสูง — ใช้เวลานานกว่าแล็บอื่น)",
         prereqs:"ต้องมี Cilium CLI เวอร์ชันที่รองรับ clustermesh subcommand และเครื่องมี RAM เหลือพอสำหรับ cluster ที่สอง",
         steps:[
-          {i:"สร้างคลัสเตอร์ที่สองด้วย pod CIDR ที่ไม่ทับกับคลัสเตอร์แรก แล้วติดตั้ง Cilium พร้อมตั้งชื่อ/ID ให้ชัดเจน", c:"cat <<EOF > kind-config2.yaml\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnetworking:\n  disableDefaultCNI: true\n  kubeProxyMode: \"none\"\n  podSubnet: \"10.245.0.0/16\"\nnodes:\n  - role: control-plane\n  - role: worker\nEOF\nkind create cluster --config kind-config2.yaml --name ckne2\nhelm install cilium cilium/cilium --version 1.15.6 --namespace kube-system \\\n  --kube-context kind-ckne2 \\\n  --set cluster.name=ckne2 --set cluster.id=2 \\\n  --set kubeProxyReplacement=true \\\n  --set k8sServiceHost=ckne2-control-plane \\\n  --set k8sServicePort=6443", e:"คลัสเตอร์ ckne2 พร้อมและ Cilium ขึ้น Running (cilium status --context kind-ckne2)", tr:"ถ้า RAM เครื่องไม่พอ ให้ลดจำนวน worker ของคลัสเตอร์แรกลงชั่วคราว"},
-          {i:"ตั้งชื่อ/ID ให้คลัสเตอร์แรกด้วย (ถ้ายังไม่ตั้งตอน Module 0) แล้วเปิด ClusterMesh บนทั้งสองฝั่ง", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --kube-context kind-ckne --reuse-values \\\n  --set cluster.name=ckne1 --set cluster.id=1\ncilium clustermesh enable --context kind-ckne\ncilium clustermesh enable --context kind-ckne2", e:"ทั้งสองคำสั่ง clustermesh enable รันจนจบไม่มี error, สร้าง Service แบบ LoadBalancer/NodePort สำหรับ clustermesh-apiserver", tr:"บน kind ที่ไม่มี real LoadBalancer อาจต้องรอ service ค้าง pending — ใช้ NodePort แทนผ่าน flag --service-type NodePort"},
+          {i:"สร้างคลัสเตอร์ที่สองด้วย pod CIDR ที่ไม่ทับกับคลัสเตอร์แรก แล้วติดตั้ง Cilium พร้อมตั้งชื่อ/ID ให้ชัดเจน", c:"cat <<EOF > kind-config2.yaml\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnetworking:\n  disableDefaultCNI: true\n  kubeProxyMode: \"none\"\n  podSubnet: \"10.245.0.0/16\"\nnodes:\n  - role: control-plane\n  - role: worker\nEOF\nkind create cluster --config kind-config2.yaml --name ckne2\nhelm install cilium cilium/cilium --version 1.15.6 --namespace kube-system \\\n  --kube-context kind-ckne2 \\\n  --set cluster.name=ckne2 --set cluster.id=2 \\\n  --set kubeProxyReplacement=true \\\n  --set k8sServiceHost=ckne2-control-plane \\\n  --set k8sServicePort=6443 \\\n  --set ipam.operator.clusterPoolIPv4PodCIDRList='{10.245.0.0/16}'", e:"คลัสเตอร์ ckne2 พร้อมและ Cilium ขึ้น Running (cilium status --context kind-ckne2)", tr:"ถ้า RAM เครื่องไม่พอ ให้ลดจำนวน worker ของคลัสเตอร์แรกลงชั่วคราว"},
+          {i:"เปิด ClusterMesh บนทั้งสองฝั่ง (ชื่อ/ID ของคลัสเตอร์แรกตั้งไว้แล้วตั้งแต่ Module 0 จึงไม่ต้องแก้คลัสเตอร์ที่รันอยู่)", c:"cilium clustermesh status --context kind-ckne | head -3\ncilium clustermesh enable --context kind-ckne --service-type NodePort\ncilium clustermesh enable --context kind-ckne2 --service-type NodePort", e:"ทั้งสองคำสั่งรันจนจบไม่มี error และสร้าง Service สำหรับ clustermesh-apiserver ขึ้นมา", tr:"ใช้ --service-type NodePort เพราะ kind ไม่มี LoadBalancer จริง ถ้าไม่ระบุ Service จะค้าง pending ตลอด; ถ้า cilium บอกว่า cluster.id ยังเป็น 0 แปลว่าติดตั้ง Module 0 ไว้ก่อนที่คอร์สจะเพิ่ม flag นี้ — การเปลี่ยน cluster.id บนคลัสเตอร์ที่รันอยู่กระทบทุก pod (identity/IP ถูกจัดใหม่) ทางที่สะอาดกว่าคือ kind delete cluster --name ckne แล้วทำ Module 0 ใหม่"},
           {i:"เชื่อมสองคลัสเตอร์เข้าด้วยกันแล้วตรวจสถานะ", c:"cilium clustermesh connect --context kind-ckne --destination-context kind-ckne2\ncilium clustermesh status --context kind-ckne --wait", e:"เห็น \"✅ Cluster connections: ckne2\" และ endpoint ที่ sync ข้ามคลัสเตอร์มากกว่า 0", tr:"ถ้าเชื่อมไม่สำเร็จ มักเป็นปัญหา network ระหว่าง Docker network ของสองคลัสเตอร์ — ตรวจว่าทั้งคู่อยู่ docker network เดียวกันด้วย docker network inspect kind"},
           {i:"ประกาศ Service ในคลัสเตอร์ 2 เป็น global แล้วเรียกจาก pod ในคลัสเตอร์ 1", c:"kubectl --context kind-ckne2 annotate service web-clusterip service.cilium.io/global=\"true\"\nkubectl --context kind-ckne annotate service web-clusterip service.cilium.io/global=\"true\"\nkubectl --context kind-ckne exec netcheck -- curl -s web-clusterip.default.svc.cluster.local", e:"ได้ response กลับมาแม้ pod backend อาจอยู่คนละคลัสเตอร์กับ client", tr:"ถ้า resolve ไม่เจอ ตรวจว่า Service ชื่อเดียวกันมีอยู่ทั้งสอง namespace/คลัสเตอร์จริง และ annotate ครบทั้งสองฝั่ง"}
         ],
@@ -807,7 +810,7 @@ const MODULES = [
         steps:[
           {i:"เปิด WireGuard encryption บน Cilium ที่ติดตั้งไว้", c:"helm upgrade cilium cilium/cilium --version 1.15.6 -n kube-system --reuse-values \\\n  --set encryption.enabled=true --set encryption.type=wireguard\nkubectl -n kube-system rollout status ds/cilium", e:"DaemonSet cilium restart แล้วขึ้น Ready ครบทุก node ไม่มี error", tr:"ถ้า pod ค้าง CrashLoopBackOff ตรวจว่า kernel รองรับ WireGuard module (modprobe wireguard บน host)"},
           {i:"ตรวจสถานะ encryption ผ่าน cilium CLI ว่าทุก node เชื่อมกันด้วย WireGuard แล้ว", c:"cilium encrypt status", e:"เห็นสถานะ encryption: Wireguard และจำนวน peer ที่เชื่อมสำเร็จเท่ากับจำนวน node ลบหนึ่ง (peer กับ node อื่นทุกตัว)", tr:"ถ้า peer ไม่ครบ ให้รอสักครู่ให้ key exchange เสร็จ หรือตรวจ firewall ระหว่าง Docker network ของ node ไม่ได้บล็อก UDP port ที่ WireGuard ใช้"},
-          {i:"ยิง traffic ข้าม node แล้วจับ packet บน physical interface เพื่อยืนยันว่า payload ถูกเข้ารหัส (อ่านไม่ออก)", c:"docker exec -it ckne-worker tcpdump -i any -n udp -c 5 -X", e:"เห็น packet UDP (WireGuard tunnel) ที่ payload เป็นข้อมูลไม่มีความหมาย (encrypted bytes) ต่างจากตอนไม่เข้ารหัสที่เห็น ICMP/HTTP payload อ่านได้ตรงๆ", tr:"ต้องสร้าง traffic ข้าม node ระหว่างจับ packet (เช่น ping จาก netcheck ไป netcheck2) ไม่งั้นจะไม่เห็น packet เลย"}
+          {i:"ยิง traffic ข้าม node แล้วจับ packet บน physical interface เพื่อยืนยันว่า payload ถูกเข้ารหัส (อ่านไม่ออก)", c:"docker exec -it ckne-worker sh -c 'command -v tcpdump || (apt-get update -qq && apt-get install -y -qq tcpdump)'\ndocker exec -it ckne-worker tcpdump -i any -n udp -c 5 -X", e:"เห็น packet UDP (WireGuard tunnel) ที่ payload เป็นข้อมูลไม่มีความหมาย (encrypted bytes) ต่างจากตอนไม่เข้ารหัสที่เห็น ICMP/HTTP payload อ่านได้ตรงๆ", tr:"ต้องสร้าง traffic ข้าม node ระหว่างจับ packet (เช่น ping จาก netcheck ไป netcheck2) ไม่งั้นจะไม่เห็น packet เลย"}
         ],
         challenge:{ task:"เปรียบเทียบว่า WireGuard transparent encryption กับ mTLS ระดับ service mesh ปกป้องอะไรต่างกัน — ถ้ามีแค่ WireGuard อย่างเดียว ยังมีช่องโหว่อะไรเหลืออยู่", reveal:"WireGuard เข้ารหัสเฉพาะ traffic ระหว่าง node (L3) ป้องกันคนดักฟังบน network ระหว่างทาง (เช่น switch ที่ถูก compromise) แต่ไม่ตรวจสอบ 'ตัวตน' ของ workload ที่คุยกัน — pod ไหนก็คุยกับ pod ไหนได้ถ้า NetworkPolicy อนุญาต โดยไม่มีการพิสูจน์ identity ระดับ application ส่วน mTLS ระดับ mesh พิสูจน์ตัวตนของแต่ละ workload ด้วย certificate ทำให้มั่นใจได้ว่าคู่สนทนาคือ service ที่อ้างว่าเป็นจริงๆ ทั้งสองชั้นจึงเสริมกัน ไม่ใช่แทนกัน"}
       }
@@ -892,7 +895,7 @@ const MODULES = [
         steps:[
           {i:"เปิด port-forward ไปยัง metrics endpoint ของ Cilium agent pod ใดตัวหนึ่ง", c:"kubectl -n kube-system get pods -l k8s-app=cilium -o name | head -1\nkubectl -n kube-system port-forward <cilium-pod-name> 9962:9962", e:"terminal ค้างแสดง \"Forwarding from 127.0.0.1:9962 -> 9962\"", tr:"ถ้า port ชนกับ process อื่นในเครื่อง local ให้เปลี่ยนเป็น port อื่น เช่น 19962:9962"},
           {i:"เปิด terminal ใหม่ แล้วดึง metric ทั้งหมดมากรองหา drop count", c:"curl -s localhost:9962/metrics | grep cilium_drop_count_total", e:"เห็นบรรทัด metric พร้อม label reason=\"...\" และตัวเลขจำนวน packet ที่ถูก drop สะสม", tr:"ถ้าค่าเป็น 0 ทั้งหมด ให้ไปสร้าง traffic ที่ถูกบล็อกจริงก่อน เช่น เรียก endpoint ที่ NetworkPolicy ปฏิเสธจาก topic ก่อนหน้า"},
-          {i:"generate traffic ที่ถูกบล็อกจริง (ใช้ policy จาก Module 4) แล้ว scrape metric อีกครั้งเทียบตัวเลข", c:"kubectl -n secdemo exec frontend -- curl -s -X POST backend --max-time 2 || true\ncurl -s localhost:9962/metrics | grep cilium_drop_count_total", e:"ตัวเลขของ label ที่เกี่ยวกับ POLICY_DENIED เพิ่มขึ้นจากรอบก่อนหน้า ยืนยันว่า metric สะท้อน event จริงแบบ near real-time", tr:"metric เป็น counter สะสม ไม่ reset เอง ต้องเทียบค่าก่อน/หลังเพื่อดูการเปลี่ยนแปลง ไม่ใช่ดูค่าตรงๆ"}
+          {i:"generate traffic ที่ถูกบล็อกจริง แล้ว scrape metric อีกครั้งเทียบตัวเลข — สังเกตว่าต้องดูคนละ metric ตามชั้นที่บล็อก", c:"kubectl -n secdemo exec frontend -- curl -s -X POST backend --max-time 2 || true\ncurl -s localhost:9962/metrics | grep -E 'cilium_policy_l7_denied_total|cilium_drop_count_total' | grep -v '^#'", e:"ตัวที่ขยับคือ cilium_policy_l7_denied_total เพราะ policy จาก Module 4 บล็อกที่ชั้น L7 (Envoy ตอบ 403) ไม่ใช่ drop ที่ datapath — ส่วน cilium_drop_count_total จะขยับเมื่อถูกบล็อกที่ชั้น L3/L4 เท่านั้น", tr:"นี่คือกับดักที่เจอบ่อยตอนสอบ: เห็น drop_count ไม่ขยับแล้วสรุปว่า policy ไม่ทำงาน ทั้งที่จริงมันบล็อกอยู่คนละชั้น; metric เป็น counter สะสมจึงต้องเทียบค่าก่อน/หลัง ไม่ใช่ดูค่าดิบ"}
         ],
         challenge:{ task:"ออกแบบ alert rule แบบ PromQL อย่างง่ายที่แจ้งเตือนเมื่อ drop rate เพิ่มขึ้นผิดปกติในช่วง 5 นาทีล่าสุด", reveal:"ตัวอย่างแนวคิด: rate(cilium_drop_count_total[5m]) > 10 — คำนวณอัตราการ drop ต่อวินาทีเฉลี่ยในช่วง 5 นาที ถ้าเกิน threshold ที่ยอมรับได้ (ปรับตามปริมาณ traffic ปกติของระบบ) ให้ยิง alert เพื่อสืบสวนว่าเป็น NetworkPolicy ใหม่ที่เข้มเกินไป, bug ใน policy, หรือมีการโจมตีจริงเกิดขึ้น"}
       }
@@ -1018,7 +1021,10 @@ function loadState(){
           completedTopics: obj(p.completedTopics),
           labSteps: obj(p.labSteps),
           primerSteps: obj(p.primerSteps),
-          quizScores: obj(p.quizScores)
+          quizScores: obj(p.quizScores),
+          /* ต้อง validate ด้วย — ถ้าเป็นค่าอื่นที่ไม่ใช่ string จะทำให้ dashboard พังทั้งหน้า */
+          lastRoute: (typeof p.lastRoute === "string" && /^#\/[A-Za-z0-9/_-]{1,120}$/.test(p.lastRoute)) ? p.lastRoute : null,
+          theme: (p.theme === "dark" || p.theme === "light") ? p.theme : null
         });
       }
     }
@@ -1056,12 +1062,20 @@ function findTopic(topicId){
   return null;
 }
 function labStepCount(t){ return t.lab ? t.lab.steps.length : 0; }
-function labStepsDone(topicId){ return (state.labSteps[topicId]||[]).filter(Boolean).length; }
+/* clamp กับจำนวน step ปัจจุบันเสมอ — ถ้าเนื้อหาถูกแก้ให้ step น้อยลง ค่าที่ค้างใน localStorage
+   จะดันสัดส่วนเกิน 100% ได้ และถ้าค่าที่เก็บไว้ไม่ใช่ array จะทำให้ทั้งหน้าพัง */
+function labStepsDone(topicId, max){
+  const arr = state.labSteps[topicId];
+  if(!Array.isArray(arr)) return 0;
+  const slice = (typeof max === "number") ? arr.slice(0, max) : arr;
+  return slice.filter(Boolean).length;
+}
 function topicFraction(t){
-  const total = 1 + labStepCount(t);
+  const n = labStepCount(t);
+  const total = 1 + n;
   let done = state.completedTopics[t.id] ? 1 : 0;
-  done += labStepsDone(t.id);
-  return done/total;
+  done += labStepsDone(t.id, n);
+  return Math.min(done/total, 1);
 }
 function moduleFraction(m){
   if(!m.topics.length) return 0;
@@ -1368,9 +1382,10 @@ function renderDashboard(){
     </button>`;
   }).join("");
 
-  const resume = state.lastRoute && findTopic((state.lastRoute.split("/topic/")[1]||""));
+  const resume = (typeof state.lastRoute === "string") ? findTopic(state.lastRoute.split("/topic/")[1] || "") : null;
+  /* สร้าง route ใหม่จาก id ที่ resolve ได้จริง แทนการยัดค่าดิบจาก localStorage ลง onclick */
   const resumeBtn = resume
-    ? `<button class="nav-btn" onclick="go('${state.lastRoute}')" style="border-color:var(--accent)">เรียนต่อ: ${esc(resume.t.title)} →</button>`
+    ? `<button class="nav-btn" onclick="go('#/module/${esc(resume.m.id)}/topic/${esc(resume.t.id)}')" style="border-color:var(--accent)">เรียนต่อ: ${esc(resume.t.title)} →</button>`
     : `<button class="nav-btn" onclick="go('#/module/m0')" style="border-color:var(--accent)">เริ่มที่ Module 0 · เตรียม Lab →</button>`;
 
   const mock = state.quizScores["mock"];
@@ -1514,7 +1529,9 @@ function renderTopic(modId, topId){
 }
 function toggleTopic(topicId){
   state.completedTopics[topicId] = !state.completedTopics[topicId];
-  saveState(); render();
+  saveState();
+  keepScroll = true;   /* ปุ่มนี้อยู่ท้ายหน้า — ถ้าปล่อยให้ render เด้งขึ้นบนจะเสียตำแหน่งที่อ่านค้างไว้ */
+  render();
 }
 function toggleStep(topicId, idx, val){
   if(!Array.isArray(state.labSteps[topicId])) state.labSteps[topicId]=[];
@@ -1539,9 +1556,17 @@ function copyCmd(btn){
 }
 
 /* ============ RENDER: QUIZ ============ */
+/* สลับลำดับตัวเลือกตอน render ทุกครั้ง (รวมตอนกด "ทำใหม่")
+   ค่า value/data-oi ยังเป็น index เดิมของข้อมูล การให้คะแนนจึงไม่ต้องแก้อะไร
+   จุดประสงค์: กันการเดาจากตำแหน่ง และกันการจำว่า "ข้อนี้ตอบ ข." ตอนทำซ้ำ */
+function shuffledOrder(n){
+  const a = Array.from({length:n},(_,i)=>i);
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
 function renderQuizGeneric(title, questions, onFinish, backRoute, backLabel){
   let qs = questions.map((q,qi)=>{
-    let opts = q.options.map((o,oi)=>`<label class="opt" data-qi="${qi}" data-oi="${oi}"><input type="radio" name="q${qi}" value="${oi}">${esc(o)}</label>`).join("");
+    let opts = shuffledOrder(q.options.length).map(oi=>`<label class="opt" data-qi="${qi}" data-oi="${oi}"><input type="radio" name="q${qi}" value="${oi}">${esc(q.options[oi])}</label>`).join("");
     return `<div class="quiz-q" id="qwrap-${qi}"><p class="qtext">${qi+1}. ${esc(q.q)}</p>${opts}<div class="qexplain" id="explain-${qi}">${esc(q.explain)}</div></div>`;
   }).join("");
   document.getElementById("main").innerHTML = `
@@ -1588,6 +1613,7 @@ function renderMockExam(){
 }
 
 /* ============ MAIN RENDER ============ */
+let keepScroll = false;
 function render(){
   renderSidebar();
   updateTopProgress();
@@ -1600,7 +1626,7 @@ function render(){
   else if((mm=hash.match(/^#\/quiz\/([^\/]+)$/))){ renderQuiz(mm[1]); }
   else if(hash==="#/mock-exam"){ renderMockExam(); }
   else { renderDashboard(); }
-  window.scrollTo(0,0);
+  if(keepScroll){ keepScroll = false; } else { window.scrollTo(0,0); }
 }
 render();
 </script>
