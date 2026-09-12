@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- GitHub Pages ไม่ส่ง CSP header มาให้ จึงประกาศผ่าน meta แทน
+     หน้านี้เป็น static ล้วน ไม่เรียก network เลย จึงล็อกได้แน่นเกือบทั้งหมด:
+     connect-src 'none' = ต่อให้มีสคริปต์แปลกปลอมหลุดเข้ามาก็ส่งข้อมูลออกไม่ได้
+     script-src ไม่มี 'self'/host ใดๆ = โหลดสคริปต์จากภายนอกไม่ได้เลย
+     ('unsafe-inline' จำเป็นเพราะทั้งแอปเป็น inline script/style ก้อนเดียว)
+     หมายเหตุ: frame-ancestors ใช้ผ่าน meta ไม่ได้ ต้องตั้งที่ HTTP header ซึ่ง Pages ไม่เปิดให้ตั้ง -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="description" content="คอร์สเตรียมสอบ CKNE (Certified Kubernetes Network Engineer) แบบ hands-on ครบทั้ง 5 domain พร้อมแล็บรันบน cluster จริง และกล่องปูพื้นฐานสำหรับผู้เริ่มต้นในทุกหัวข้อ">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="CKNE Lab Manual">
@@ -1017,11 +1025,28 @@ function loadState(){
       const p = JSON.parse(raw);
       if(p && typeof p === "object"){
         const obj = (v)=> (v && typeof v === "object" && !Array.isArray(v)) ? v : {};
+        /* คะแนนถูกเอาไปต่อเป็น HTML โดยตรง จึงต้องบังคับให้เป็นตัวเลขตั้งแต่ตอนอ่านเข้ามา
+           ถ้าปล่อยค่าดิบจาก localStorage ผ่านไปได้ สตริงอย่าง <img onerror=...> จะกลายเป็น DOM จริง */
+        const scores = (v)=>{
+          const out = {};
+          if(v && typeof v === "object" && !Array.isArray(v)){
+            for(const k of Object.keys(v)){
+              const e = v[k];
+              if(!e || typeof e !== "object") continue;
+              const total = Number(e.total), score = Number(e.score);
+              if(!Number.isFinite(total) || !Number.isFinite(score) || total <= 0) continue;
+              out[k] = { score: Math.min(Math.max(Math.round(score),0), Math.round(total)),
+                         total: Math.round(total),
+                         ts: Number.isFinite(Number(e.ts)) ? Number(e.ts) : 0 };
+            }
+          }
+          return out;
+        };
         return Object.assign(def, p, {
           completedTopics: obj(p.completedTopics),
           labSteps: obj(p.labSteps),
           primerSteps: obj(p.primerSteps),
-          quizScores: obj(p.quizScores),
+          quizScores: scores(p.quizScores),
           /* ต้อง validate ด้วย — ถ้าเป็นค่าอื่นที่ไม่ใช่ string จะทำให้ dashboard พังทั้งหน้า */
           lastRoute: (typeof p.lastRoute === "string" && /^#\/[A-Za-z0-9/_-]{1,120}$/.test(p.lastRoute)) ? p.lastRoute : null,
           theme: (p.theme === "dark" || p.theme === "light") ? p.theme : null
@@ -1374,7 +1399,7 @@ function renderDashboard(){
   let tiles = MODULES.map((m,mi)=>{
     const p = Math.round(moduleFraction(m)*100);
     const q = state.quizScores[m.id];
-    const quizLine = q ? ` · quiz ${q.score}/${q.total}` : (m.quiz && m.quiz.length ? " · ยังไม่ได้ทำ quiz" : "");
+    const quizLine = q ? ` · quiz ${Number(q.score)|0}/${Number(q.total)|0}` : (m.quiz && m.quiz.length ? " · ยังไม่ได้ทำ quiz" : "");
     return `<button class="tile" onclick="go('#/module/${m.id}')">
       <div class="tile-top"><h3>${mi===0?'Setup':'Module '+mi+' · '+esc(m.short)}</h3>${m.weight>0?`<span class="badge">${m.weight}%</span>`:''}</div>
       <p>${esc(m.blurb)}</p>
@@ -1390,7 +1415,7 @@ function renderDashboard(){
 
   const mock = state.quizScores["mock"];
   const mockLine = mock
-    ? `Mock exam ล่าสุด: <strong>${mock.score}/${mock.total}</strong>`
+    ? `Mock exam ล่าสุด: <strong>${Number(mock.score)|0}/${Number(mock.total)|0}</strong>`
     : `ยังไม่ได้ลอง mock exam`;
 
   document.getElementById("main").innerHTML = `
@@ -1431,7 +1456,7 @@ function renderModule(modId){
     <div class="grid-tiles">${list}</div>
     ${m.quiz && m.quiz.length? `<div class="section" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <button class="nav-btn" onclick="go('#/quiz/${m.id}')">${state.quizScores[m.id]?'ทำแบบทดสอบอีกครั้ง':'ทำแบบทดสอบท้ายบท'} (${m.quiz.length} ข้อ) →</button>
-      ${state.quizScores[m.id]?`<span class="progress-label">คะแนนล่าสุด: ${state.quizScores[m.id].score}/${state.quizScores[m.id].total}</span>`:''}
+      ${state.quizScores[m.id]?`<span class="progress-label">คะแนนล่าสุด: ${Number(state.quizScores[m.id].score)|0}/${Number(state.quizScores[m.id].total)|0}</span>`:''}
     </div>`:''}
   `;
 }
